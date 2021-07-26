@@ -1,11 +1,14 @@
 cmake_minimum_required(VERSION 3.0)
 
 # set(CMAKE_VERBOSE_MAKEFILE ON)
+
 # SET wxWidgets_ROOT_DIR=d:\wxWidgets-3.1.2
-# SET RapidJSON_DIR=D:\vcpkg\installed\x64-windows\share\rapidjson
+# SET OPENSSL_ROOT_DIR=D:/vcpkg.1/installed/x64-windows
+# SET RapidJSON_DIR=D:\vcpkg.1\installed\x64-windows\share\rapidjson
 
 project(cpp-app)
 
+find_package(OpenSSL REQUIRED)
 find_package(RapidJSON CONFIG REQUIRED)
 find_package(wxWidgets 3.1 COMPONENTS core base REQUIRED)
 
@@ -15,6 +18,7 @@ set(SRC_FILES App.cpp AppFrame.cpp)
 
 if (WIN32)
   list(APPEND SRC_FILES ${CMAKE_CURRENT_SOURCE_DIR}/sample.rc)
+  add_definitions(-D_CRT_SECURE_NO_WARNINGS)
 endif(WIN32)
 
 add_executable(${PROJECT_NAME} WIN32 MACOSX_BUNDLE ${SRC_FILES})
@@ -34,8 +38,17 @@ target_include_directories(
 target_link_libraries(
   ${PROJECT_NAME} 
   ${wxWidgets_LIBRARIES}
-  Ws2_32.lib
+  Ws2_32.lib 
+  OpenSSL::SSL
+  OpenSSL::Crypto
 )
+
+if (WIN32)
+  target_link_libraries(
+    ${PROJECT_NAME}
+    Ws2_32.lib 
+  )
+endif(WIN32)
 
 if (WIN32)
   SET (CMAKE_CXX_FLAGS_RELEASE "/Zi /Od")
