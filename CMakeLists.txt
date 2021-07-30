@@ -10,7 +10,8 @@ project(cpp-app)
 
 find_package(OpenSSL REQUIRED)
 find_package(RapidJSON CONFIG REQUIRED)
-find_package(wxWidgets 3.1 COMPONENTS core base REQUIRED)
+set(wxWidgets_CONFIG_OPTIONS --toolkit=gtk3 --prefix=/usr/local)
+find_package(wxWidgets COMPONENTS core base REQUIRED)
 
 include(${wxWidgets_USE_FILE})
 
@@ -29,16 +30,15 @@ target_include_directories(
   ${PROJECT_NAME}
   PRIVATE
   ${CMAKE_CURRENT_SOURCE_DIR}
-  ${CMAKE_CURRENT_SOURCE_DIR}/../../cpp-osl
-  ${CMAKE_CURRENT_SOURCE_DIR}/../../cpp-osl/INCLUDE
-  ${CMAKE_CURRENT_SOURCE_DIR}/../../cpp-npl
-  ${CMAKE_CURRENT_SOURCE_DIR}/../../cpp-npl/INCLUDE 
+  ${CMAKE_CURRENT_SOURCE_DIR}/../cpp-osl
+  ${CMAKE_CURRENT_SOURCE_DIR}/../cpp-osl/INCLUDE
+  ${CMAKE_CURRENT_SOURCE_DIR}/../cpp-npl
+  ${CMAKE_CURRENT_SOURCE_DIR}/../cpp-npl/INCLUDE 
 )
 
 target_link_libraries(
   ${PROJECT_NAME} 
   ${wxWidgets_LIBRARIES}
-  Ws2_32.lib 
   OpenSSL::SSL
   OpenSSL::Crypto
 )

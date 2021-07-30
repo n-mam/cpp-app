@@ -22,7 +22,7 @@ bool MyApp::OnInit()
 
   m_frame = new FrameFTP(NULL);
 
-  m_frame->SetIcon(wxICON(aaaaaaaa));
+  //m_frame->SetIcon(wxICON(aaaaaaaa));
 
   NPL::CLogger::SetLogCallback(
     [](const std::string& msg)
