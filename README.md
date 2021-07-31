@@ -6,7 +6,7 @@ ui app for cpp-npl
 
 #### Windows  
 SET wxWidgets_ROOT_DIR=d:\wxWidgets-3.1.2  
-SET RapidJSON_DIR=D:\vcpkg\installed\x64-windows\share\rapidjson  
+SET RapidJSON_DIR=D:\vcpkg.1\installed\x64-windows\share\rapidjson  
 
 md build  
 cd build  
