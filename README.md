@@ -19,6 +19,8 @@ download wxwidgets 3.1* and build it the usual way;
 make
 make install
 
-export OPENSSL_ROOT_DIR=~/vcpkg/installed/x64-linux/
-export RapidJSON_DIR=/home/nmam/vcpkg/installed/x64-linux/share/rapidjson
+export OPENSSL_ROOT_DIR=~/vcpkg/installed/x64-linux/  
+export RapidJSON_DIR=/home/nmam/vcpkg/installed/x64-linux/share/rapidjson  
 
+cmake -DCMAKE_BUILD_TYPE=Debug ..  
+cmake --build . --config Release  

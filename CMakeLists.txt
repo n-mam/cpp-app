@@ -8,9 +8,12 @@ cmake_minimum_required(VERSION 3.0)
 
 project(cpp-app)
 
+if (UNIX)
+  set(wxWidgets_CONFIG_OPTIONS --toolkit=gtk3 --prefix=/usr/local)
+endif(UNIX)
+
 find_package(OpenSSL REQUIRED)
 find_package(RapidJSON CONFIG REQUIRED)
-set(wxWidgets_CONFIG_OPTIONS --toolkit=gtk3 --prefix=/usr/local)
 find_package(wxWidgets COMPONENTS core base REQUIRED)
 
 include(${wxWidgets_USE_FILE})
