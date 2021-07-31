@@ -2,6 +2,10 @@
 #include "wx/wx.h"
 #include "ftp.hpp"
 
+#ifndef wxHAS_IMAGES_IN_RESOURCES
+  #include "images/sample.xpm"
+#endif
+
 class MyApp : public wxApp
 {
   public:
@@ -22,7 +26,7 @@ bool MyApp::OnInit()
 
   m_frame = new FrameFTP(NULL);
 
-  //m_frame->SetIcon(wxICON(aaaaaaaa));
+  m_frame->SetIcon(wxICON(aaaaaaaa));
 
   NPL::CLogger::SetLogCallback(
     [](const std::string& msg)
