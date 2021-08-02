@@ -104,7 +104,7 @@ class FrameFTP : public AppFrame
 
   virtual void iListViewLocalOnListItemActivated(wxListEvent& event)
   {
-    auto item = event.GetText().ToStdString();
+    auto item = iListViewLocal->GetItemTextFromEvent(event);
 
     std::string dir = "";
 
@@ -114,7 +114,11 @@ class FrameFTP : public AppFrame
     }
     else
     {
+      #ifdef WIN32
       dir = iCurrentDirectoryLocal + "\\" + item;
+      #else
+      dir = iCurrentDirectoryLocal + "/" + item;
+      #endif
     }
 
     if (std::filesystem::is_directory(dir))
@@ -217,7 +221,7 @@ class FrameFTP : public AppFrame
 
   virtual void iListViewRemoteOnListItemActivated(wxListEvent& event)
   {
-    auto item = event.GetText().ToStdString();
+    auto item = iListViewRemote->GetItemTextFromEvent(event);
 
     std::string dir = "";
 

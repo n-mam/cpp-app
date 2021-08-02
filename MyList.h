@@ -61,6 +61,18 @@ class MyList : public wxListCtrl
     if (m_imageList) delete m_imageList;
   }
 
+  std::string GetItemTextFromEvent(wxListEvent& event)
+  {
+    wxListItem info;
+
+    info.m_col = 0;
+    info.m_mask = wxLIST_MASK_TEXT;
+    info.m_itemId = event.m_itemIndex;
+    GetItem(info);
+
+    return info.m_text.ToStdString();
+  }
+
   TListElementVector GetSelectedItems(void)
   {
     long item = -1;
