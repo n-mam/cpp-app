@@ -23,4 +23,4 @@ export OPENSSL_ROOT_DIR=~/vcpkg/installed/x64-linux/
 export RapidJSON_DIR=/home/nmam/vcpkg/installed/x64-linux/share/rapidjson  
 
 cmake -DCMAKE_BUILD_TYPE=Debug ..  
-cmake --build . --config Release  
+cmake --build . 
