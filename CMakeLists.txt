@@ -16,7 +16,7 @@ endif(UNIX)
 
 find_package(OpenSSL REQUIRED)
 find_package(RapidJSON CONFIG REQUIRED)
-find_package(wxWidgets COMPONENTS core base REQUIRED)
+find_package(wxWidgets COMPONENTS core base richtext adv html xml REQUIRED)
 
 include(${wxWidgets_USE_FILE})
 

@@ -1,5 +1,3 @@
-#include "AppFrame.h"
-#include "MyList.h"
 #include <osl.hpp>
 
 #include <wx/stdpaths.h>
@@ -10,7 +8,6 @@
 #include <images/delete.xpm>
 #include <images/rename.xpm>
 
-#define ID_LOG_BASE 3000
 #define ID_LOCAL_BASE 4000
 #define ID_REMOTE_BASE 5000
 
@@ -25,25 +22,24 @@ using TDirectoryListCbk = std::function<void (const std::string&, const std::str
 
 uint64_t g_total = 0, g_complete = 0;
 
-class FrameFTP : public AppFrame
+class MyFTP : public FTPPanel
 {
   public:
 
-  FrameFTP(
+  MyFTP(
     wxWindow* parent,
     wxWindowID id = wxID_ANY,
-    const wxString& title = _("app"),
     const wxPoint& pos = wxDefaultPosition,
-    const wxSize& size = wxSize( 906,690 ),
-    long style = wxDEFAULT_FRAME_STYLE|wxTAB_TRAVERSAL)
-  : AppFrame(parent, id, title, pos, size, style)
+    const wxSize& size = wxSize( 500,300 ),
+    long style = wxTAB_TRAVERSAL)
+  : FTPPanel(parent, id, pos, size, style)
   {
     UpdateLocalListView(
       wxStandardPaths::Get().GetUserDir(
         wxStandardPaths::Dir::Dir_Desktop).ToStdString());
   }
 
-  virtual ~FrameFTP() {}
+  virtual ~MyFTP() {}
 
   std::string iHost;
   std::string iUser;
@@ -57,12 +53,12 @@ class FrameFTP : public AppFrame
 
   protected:
 
-  virtual void iButtonConnectOnButtonClick(wxCommandEvent& event)
+  virtual void Connect(std::string host, std::string port, std::string user, std::string pass)
   {
-    iHost = m_host->GetValue().ToStdString();
-    iUser = m_user->GetValue().ToStdString();
-    iPass = m_password->GetValue().ToStdString();
-    iPort = m_port->GetValue().ToStdString();
+    iHost = host;
+    iPort = port;
+    iUser = user;
+    iPass = pass;
 
     iFTP = NPL::make_ftp(iHost, wxAtoi(iPort), NPL::TLS::Yes);
 
@@ -75,23 +71,6 @@ class FrameFTP : public AppFrame
       [this](const std::string& path, const std::string& list){
         UpdateRemoteListView(path, list);
       });
-
-    event.Skip();
-  }
-
-  virtual void m_logOnRightDown(wxMouseEvent& event)
-  {
-    wxMenu *logMenu = new wxMenu();
-
-    wxMenuItem *itemSave = new wxMenuItem(logMenu, ID_LOG_BASE, wxString(_("Save")), wxEmptyString, wxITEM_NORMAL);
-    logMenu->Append(itemSave);
-
-    wxMenuItem *itemClear = new wxMenuItem(logMenu, ID_LOG_BASE + 1, wxString(_("Clear")) , wxEmptyString, wxITEM_NORMAL);
-    logMenu->Append(itemClear);
-
-    logMenu->Connect(wxEVT_COMMAND_MENU_SELECTED, (wxObjectEventFunction) &FrameFTP::OnLogContextMenu, NULL, this);
-
-    PopupMenu(logMenu);
   }
 
   // Local
@@ -276,36 +255,16 @@ class FrameFTP : public AppFrame
   virtual void iListViewLocalOnListItemSelected( wxListEvent& event ) 
   {
     std::string text = std::to_string(iListViewLocal->GetSelectedItemCount()) + " items selected";
-    m_status->SetStatusText(text);
+    //m_status->SetStatusText(text);
   }
 
   virtual void iListViewRemoteOnListItemSelected( wxListEvent& event )
   {
     std::string text = std::to_string(iListViewRemote->GetSelectedItemCount()) + " items selected";
-    m_status->SetStatusText(text);
+    //m_status->SetStatusText(text);
   }
 
   // common
-  void OnLogContextMenu(wxMouseEvent& e)
-  {
-    auto id = e.GetId();
-
-    switch(id)
-    {
-      case ID_LOG_BASE:  //save
-      {
-
-        break;
-      }
-      case ID_LOG_BASE + 1: //clear
-      {
-        m_log->Clear();
-        m_log->Update();
-        break;
-      }
-    }
-  }
-
   void OnListViewContextMenu(wxMouseEvent& e)
   {
     auto id = e.GetId();
@@ -448,7 +407,7 @@ class FrameFTP : public AppFrame
     itemDelete->SetBitmap(wxBitmap(delete_xpm));
     lvMenu->Append(itemDelete), id++;
 
-    lvMenu->Connect(wxEVT_COMMAND_MENU_SELECTED, (wxObjectEventFunction) &FrameFTP::OnListViewContextMenu, NULL, this);
+    lvMenu->Connect(wxEVT_COMMAND_MENU_SELECTED, (wxObjectEventFunction) &MyFTP::OnListViewContextMenu, NULL, this);
 
     PopupMenu(lvMenu);
   }

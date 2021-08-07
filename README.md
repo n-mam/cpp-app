@@ -13,6 +13,7 @@ namke -f makefile.vc BUILD=Release TARGET_CPU=AMD64
 
 ##### Build cpp-app  
 SET wxWidgets_ROOT_DIR=d:\wxWidgets-3.1.2  
+SET OPENSSL_ROOT_DIR=d:\vcpkg.1\installed\x64-windows  
 SET RapidJSON_DIR=D:\vcpkg.1\installed\x64-windows\share\rapidjson  
 
 md build  
