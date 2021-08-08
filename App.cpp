@@ -12,7 +12,7 @@ class MyApp : public wxApp
   virtual bool OnInit();
   MyFrame *m_frame;
 };
-
+ 
 IMPLEMENT_APP(MyApp)
 wxDECLARE_APP(MyApp);
 
@@ -44,7 +44,17 @@ bool MyApp::OnInit()
         }
         else
         {
-          (wxGetApp().m_frame)->m_log->AppendText(" " + log);
+          auto trace = (wxGetApp().m_frame)->m_log;
+
+          if (log.find("Command  :") == 0) {
+            trace->BeginTextColour(wxColour(0, 58, 200));
+          } else if (log.find("Response :") == 0) {
+            trace->BeginTextColour(wxColour(34, 177, 76));
+          }
+
+          trace->WriteText(" " + log);
+
+          trace->EndTextColour();
         }
       });
     });

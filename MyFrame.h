@@ -2,7 +2,9 @@
 #include "MyList.h"
 #include "ftp.hpp"
 
-#define ID_LOG_BASE 3000
+#include "images/host.xpm"
+
+#define ID_LOG_BASE 2000
 
 class MyFrame : public AppFrame
 {
@@ -23,6 +25,8 @@ class MyFrame : public AppFrame
 
   protected:
 
+  std::vector<std::pair<int, wxPanel *>> iSessionPanels;
+
   virtual void m_saveOnButtonClick( wxCommandEvent& event )
   {
     event.Skip();
@@ -31,26 +35,54 @@ class MyFrame : public AppFrame
   virtual void m_connectOnButtonClick( wxCommandEvent& event )
   {
     auto host = m_host->GetValue().ToStdString();
+    auto port = m_port->GetValue().ToStdString();
     auto user = m_user->GetValue().ToStdString();
     auto pass = m_password->GetValue().ToStdString();
-    auto port = m_port->GetValue().ToStdString();
+    auto proto = m_protocol->GetString(
+      m_protocol->GetSelection()).ToStdString();
 
-    auto ftppanel = new MyFTP(m_book);
+    if (!host.size() || !user.size() || !pass.size() || !port.size() || !proto.size())
+    {
+      wxMessageBox( wxT("Please specify all values"), wxT("Error"), wxICON_INFORMATION);
+      return;
+    }
 
-    m_book->ShowNewPage(ftppanel);
-    // iFTP = NPL::make_ftp(iHost, wxAtoi(iPort), NPL::TLS::Yes);
+    wxPanel *page = nullptr;
 
-    // iFTP->SetCredentials(iUser, iPass);
+    if (proto == "FTP") 
+    {
+      page = new MyFTP(m_book);
+    }
+ 
+    if (!page) return;
 
-    // iFTP->StartClient();
+    auto id = ID_PAGE_BASE + 1 + iSessionPanels.size();
 
-    // GetDirectoryList(
-    //   "/",
-    //   [this](const std::string& path, const std::string& list){
-    //     UpdateRemoteListView(path, list);
-    //   });
+    iSessionPanels.push_back({id, page});
+
+    m_book->ShowNewPage(page);
+
+    auto tool = m_toolBar->AddTool(id, proto + "@" + host, wxBitmap(host_xpm), wxNullBitmap, wxITEM_RADIO, wxEmptyString, wxEmptyString, NULL);
+
+    tool->Toggle();
+
+    m_toolBar->Realize();
+
+    this->Connect(tool->GetId(), wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler(MyFrame::onToolClicked));
+
+    if (proto == "FTP") 
+    {
+      auto ftppage = dynamic_cast<MyFTP *>(page);
+      ftppage->InitiateConnect(host, port, user, pass);
+    }
+    
 
     event.Skip();
+  }
+
+  void onToolClicked( wxCommandEvent& event )
+  {
+    m_book->SetSelection(event.GetId() % ID_PAGE_BASE);
   }
 
   void m_logOnRightDown(wxMouseEvent& event)

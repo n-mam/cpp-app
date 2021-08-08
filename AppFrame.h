@@ -22,6 +22,7 @@ class MyList;
 #include <wx/image.h>
 #include <wx/icon.h>
 #include <wx/toolbar.h>
+#include <wx/checkbox.h>
 #include <wx/sizer.h>
 #include <wx/panel.h>
 #include <wx/textctrl.h>
@@ -37,6 +38,7 @@ class MyList;
 
 ///////////////////////////////////////////////////////////////////////////
 
+#define ID_PAGE_BASE 1000
 
 ///////////////////////////////////////////////////////////////////////////////
 /// Class AppFrame
@@ -48,9 +50,8 @@ class AppFrame : public wxFrame
 	protected:
 		wxSplitterWindow* m_splitter3;
 		wxPanel* m_panel6;
-		wxToolBar* m_toolBar1;
-		wxToolBarToolBase* m_tool_home;
-		wxToolBarToolBase* m_tool2;
+		wxToolBarToolBase* m_toolHome;
+		wxCheckBox* m_trace;
 		wxPanel* m_panel8;
 		wxSimplebook* m_book;
 		wxPanel* m_panel9;
@@ -61,7 +62,8 @@ class AppFrame : public wxFrame
 
 		// Virtual event handlers, overide them in your derived class
 		virtual void m_logOnRightDown( wxMouseEvent& event ) { event.Skip(); }
-		virtual void m_tool_homeOnToolClicked( wxCommandEvent& event ) { event.Skip(); }
+		virtual void onToolClicked( wxCommandEvent& event ) { event.Skip(); }
+		virtual void m_traceOnCheckBox( wxCommandEvent& event ) { event.Skip(); }
 		virtual void m_protocolOnChoice( wxCommandEvent& event ) { event.Skip(); }
 		virtual void m_saveOnButtonClick( wxCommandEvent& event ) { event.Skip(); }
 		virtual void m_connectOnButtonClick( wxCommandEvent& event ) { event.Skip(); }
@@ -69,6 +71,7 @@ class AppFrame : public wxFrame
 
 	public:
 		wxRichTextCtrl* m_log;
+		wxToolBar* m_toolBar;
 		wxTextCtrl* m_host;
 		wxTextCtrl* m_port;
 		wxTextCtrl* m_user;

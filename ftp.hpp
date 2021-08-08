@@ -26,6 +26,16 @@ class MyFTP : public FTPPanel
 {
   public:
 
+  std::string iHost;
+  std::string iUser;
+  std::string iPass;
+  std::string iPort;
+
+  NPL::SPCProtocolFTP iFTP;
+  NPL::SPCProtocolFTP iFTPTransfer;
+  std::string iCurrentDirectoryLocal;
+  std::string iCurrentDirectoryRemote;
+
   MyFTP(
     wxWindow* parent,
     wxWindowID id = wxID_ANY,
@@ -41,19 +51,7 @@ class MyFTP : public FTPPanel
 
   virtual ~MyFTP() {}
 
-  std::string iHost;
-  std::string iUser;
-  std::string iPass;
-  std::string iPort;
-
-  NPL::SPCProtocolFTP iFTP;
-  NPL::SPCProtocolFTP iFTPTransfer;
-  std::string iCurrentDirectoryLocal;
-  std::string iCurrentDirectoryRemote;
-
-  protected:
-
-  virtual void Connect(std::string host, std::string port, std::string user, std::string pass)
+  virtual void InitiateConnect(std::string host, std::string port, std::string user, std::string pass)
   {
     iHost = host;
     iPort = port;
@@ -72,6 +70,8 @@ class MyFTP : public FTPPanel
         UpdateRemoteListView(path, list);
       });
   }
+
+  protected:
 
   // Local
   virtual void iComboBoxLocalOnCombobox(wxCommandEvent& event) { event.Skip(); }

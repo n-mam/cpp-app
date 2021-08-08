@@ -10,7 +10,6 @@
 #include "AppFrame.h"
 
 #include "images/config.xpm"
-#include "images/host.xpm"
 
 ///////////////////////////////////////////////////////////////////////////
 
@@ -32,14 +31,21 @@ AppFrame::AppFrame( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	m_log = new wxRichTextCtrl( m_panel6, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( -1,-1 ), 0|wxBORDER_DEFAULT|wxHSCROLL|wxVSCROLL|wxWANTS_CHARS );
 	bSizer11->Add( m_log, 1, wxTOP|wxRIGHT|wxLEFT|wxEXPAND, 5 );
 
-	m_toolBar1 = new wxToolBar( m_panel6, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTB_HORZ_LAYOUT|wxTB_HORZ_TEXT|wxTB_NODIVIDER|wxTB_TEXT );
-	m_tool_home = m_toolBar1->AddTool( wxID_ANY, _("Home"), wxBitmap( config_xpm ), wxNullBitmap, wxITEM_RADIO, wxEmptyString, wxEmptyString, NULL );
+	wxBoxSizer* bSizer12;
+	bSizer12 = new wxBoxSizer( wxHORIZONTAL );
 
-	m_tool2 = m_toolBar1->AddTool( wxID_ANY, _("tool"), wxBitmap( host_xpm ), wxNullBitmap, wxITEM_RADIO, wxEmptyString, wxEmptyString, NULL );
+	m_toolBar = new wxToolBar( m_panel6, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTB_HORZ_LAYOUT|wxTB_HORZ_TEXT|wxTB_NODIVIDER|wxTB_TEXT );
+	m_toolHome = m_toolBar->AddTool( ID_PAGE_BASE, _("Home"), wxBitmap( config_xpm ), wxNullBitmap, wxITEM_RADIO, wxEmptyString, wxEmptyString, NULL );
 
-	m_toolBar1->Realize();
+	m_toolBar->Realize();
 
-	bSizer11->Add( m_toolBar1, 0, wxEXPAND|wxTOP|wxRIGHT|wxLEFT, 5 );
+	bSizer12->Add( m_toolBar, 1, wxALL, 5 );
+
+	m_trace = new wxCheckBox( m_panel6, wxID_ANY, _("Trace"), wxDefaultPosition, wxDefaultSize, 0 );
+	bSizer12->Add( m_trace, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
+
+
+	bSizer11->Add( bSizer12, 0, wxEXPAND|wxRIGHT, 5 );
 
 
 	m_panel6->SetSizer( bSizer11 );
@@ -63,7 +69,7 @@ AppFrame::AppFrame( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	m_host = new wxTextCtrl( szNew->GetStaticBox(), wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( 180,-1 ), 0|wxBORDER_DEFAULT );
 	szLine1->Add( m_host, 1, wxALL, 5 );
 
-	m_port = new wxTextCtrl( szNew->GetStaticBox(), wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( 45,-1 ), 0|wxBORDER_DEFAULT );
+	m_port = new wxTextCtrl( szNew->GetStaticBox(), wxID_ANY, _("21"), wxDefaultPosition, wxSize( 45,-1 ), 0|wxBORDER_DEFAULT );
 	szLine1->Add( m_port, 0, wxALL, 5 );
 
 	wxString m_protocolChoices[] = { _("FTP"), _("SSH"), _("WSS") };
@@ -81,7 +87,7 @@ AppFrame::AppFrame( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	m_user = new wxTextCtrl( szNew->GetStaticBox(), wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0|wxBORDER_DEFAULT );
 	szLine2->Add( m_user, 1, wxALL, 5 );
 
-	m_password = new wxTextCtrl( szNew->GetStaticBox(), wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0|wxBORDER_DEFAULT );
+	m_password = new wxTextCtrl( szNew->GetStaticBox(), wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_PASSWORD|wxBORDER_DEFAULT );
 	szLine2->Add( m_password, 1, wxALL, 5 );
 
 
@@ -112,7 +118,7 @@ AppFrame::AppFrame( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	szNew->Add( szLine3, 0, wxEXPAND, 5 );
 
 
-	bSizer13->Add( szNew, 0, wxEXPAND|wxTOP|wxRIGHT|wxLEFT, 5 );
+	bSizer13->Add( szNew, 0, wxEXPAND|wxRIGHT|wxLEFT, 5 );
 
 	wxStaticBoxSizer* szSaved;
 	szSaved = new wxStaticBoxSizer( new wxStaticBox( m_panel9, wxID_ANY, _("Saved") ), wxVERTICAL );
@@ -121,7 +127,7 @@ AppFrame::AppFrame( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	szSaved->Add( iListViewSavedSessions, 1, wxEXPAND|wxALL, 5 );
 
 
-	bSizer13->Add( szSaved, 1, wxEXPAND|wxTOP|wxRIGHT|wxLEFT, 5 );
+	bSizer13->Add( szSaved, 1, wxEXPAND|wxRIGHT|wxLEFT, 5 );
 
 
 	m_panel9->SetSizer( bSizer13 );
@@ -147,7 +153,8 @@ AppFrame::AppFrame( wxWindow* parent, wxWindowID id, const wxString& title, cons
 
 	// Connect Events
 	m_log->Connect( wxEVT_RIGHT_DOWN, wxMouseEventHandler( AppFrame::m_logOnRightDown ), NULL, this );
-	this->Connect( m_tool_home->GetId(), wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler( AppFrame::m_tool_homeOnToolClicked ) );
+	this->Connect( m_toolHome->GetId(), wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler( AppFrame::onToolClicked ) );
+	m_trace->Connect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( AppFrame::m_traceOnCheckBox ), NULL, this );
 	m_protocol->Connect( wxEVT_COMMAND_CHOICE_SELECTED, wxCommandEventHandler( AppFrame::m_protocolOnChoice ), NULL, this );
 	m_save->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( AppFrame::m_saveOnButtonClick ), NULL, this );
 	m_connect->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( AppFrame::m_connectOnButtonClick ), NULL, this );
@@ -157,7 +164,8 @@ AppFrame::~AppFrame()
 {
 	// Disconnect Events
 	m_log->Disconnect( wxEVT_RIGHT_DOWN, wxMouseEventHandler( AppFrame::m_logOnRightDown ), NULL, this );
-	this->Disconnect( m_tool_home->GetId(), wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler( AppFrame::m_tool_homeOnToolClicked ) );
+	this->Disconnect( m_toolHome->GetId(), wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler( AppFrame::onToolClicked ) );
+	m_trace->Disconnect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( AppFrame::m_traceOnCheckBox ), NULL, this );
 	m_protocol->Disconnect( wxEVT_COMMAND_CHOICE_SELECTED, wxCommandEventHandler( AppFrame::m_protocolOnChoice ), NULL, this );
 	m_save->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( AppFrame::m_saveOnButtonClick ), NULL, this );
 	m_connect->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( AppFrame::m_connectOnButtonClick ), NULL, this );
