@@ -9,6 +9,9 @@
 
 #include "AppFrame.h"
 
+#include "images/config.xpm"
+#include "images/host.xpm"
+
 ///////////////////////////////////////////////////////////////////////////
 
 AppFrame::AppFrame( wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size, long style ) : wxFrame( parent, id, title, pos, size, style )
@@ -19,44 +22,40 @@ AppFrame::AppFrame( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	wxBoxSizer* szTop;
 	szTop = new wxBoxSizer( wxVERTICAL );
 
-	m_splitter = new wxSplitterWindow( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxSP_3D|wxSP_LIVE_UPDATE|wxBORDER_STATIC|wxCLIP_CHILDREN );
-	m_splitter->Connect( wxEVT_IDLE, wxIdleEventHandler( AppFrame::m_splitterOnIdle ), NULL, this );
+	m_splitter3 = new wxSplitterWindow( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxSP_LIVE_UPDATE|wxSP_THIN_SASH );
+	m_splitter3->Connect( wxEVT_IDLE, wxIdleEventHandler( AppFrame::m_splitter3OnIdle ), NULL, this );
 
-	m_nav = new wxPanel( m_splitter, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
-	wxBoxSizer* szNav;
-	szNav = new wxBoxSizer( wxVERTICAL );
-
-	m_listBox1 = new wxListBox( m_nav, wxID_ANY, wxDefaultPosition, wxDefaultSize, 0, NULL, 0|wxBORDER_DEFAULT );
-	m_listBox1->Append( _("Home") );
-	szNav->Add( m_listBox1, 1, wxEXPAND|wxTOP|wxBOTTOM|wxLEFT, 5 );
-
-
-	m_nav->SetSizer( szNav );
-	m_nav->Layout();
-	szNav->Fit( m_nav );
-	m_page = new wxPanel( m_splitter, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
-	wxBoxSizer* szPage;
-	szPage = new wxBoxSizer( wxVERTICAL );
-
+	m_panel6 = new wxPanel( m_splitter3, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
 	wxBoxSizer* bSizer11;
 	bSizer11 = new wxBoxSizer( wxVERTICAL );
 
-	m_log = new wxRichTextCtrl( m_page, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0|wxBORDER_DEFAULT|wxHSCROLL|wxVSCROLL|wxWANTS_CHARS );
-	bSizer11->Add( m_log, 1, wxEXPAND|wxTOP|wxRIGHT|wxLEFT, 5 );
+	m_log = new wxRichTextCtrl( m_panel6, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( -1,-1 ), 0|wxBORDER_DEFAULT|wxHSCROLL|wxVSCROLL|wxWANTS_CHARS );
+	bSizer11->Add( m_log, 1, wxTOP|wxRIGHT|wxLEFT|wxEXPAND, 5 );
+
+	m_toolBar1 = new wxToolBar( m_panel6, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTB_HORZ_LAYOUT|wxTB_HORZ_TEXT|wxTB_NODIVIDER|wxTB_TEXT );
+	m_tool_home = m_toolBar1->AddTool( wxID_ANY, _("Home"), wxBitmap( config_xpm ), wxNullBitmap, wxITEM_RADIO, wxEmptyString, wxEmptyString, NULL );
+
+	m_tool2 = m_toolBar1->AddTool( wxID_ANY, _("tool"), wxBitmap( host_xpm ), wxNullBitmap, wxITEM_RADIO, wxEmptyString, wxEmptyString, NULL );
+
+	m_toolBar1->Realize();
+
+	bSizer11->Add( m_toolBar1, 0, wxEXPAND|wxTOP|wxRIGHT|wxLEFT, 5 );
 
 
-	szPage->Add( bSizer11, 1, wxEXPAND, 5 );
+	m_panel6->SetSizer( bSizer11 );
+	m_panel6->Layout();
+	bSizer11->Fit( m_panel6 );
+	m_panel8 = new wxPanel( m_splitter3, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
+	wxBoxSizer* bSizer17;
+	bSizer17 = new wxBoxSizer( wxVERTICAL );
 
-	m_book = new wxSimplebook( m_page, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxBORDER_NONE );
-	m_home = new wxPanel( m_book, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxBORDER_NONE|wxTAB_TRAVERSAL );
-	wxBoxSizer* szHome;
-	szHome = new wxBoxSizer( wxVERTICAL );
-
-	wxBoxSizer* bSizer12;
-	bSizer12 = new wxBoxSizer( wxHORIZONTAL );
+	m_book = new wxSimplebook( m_panel8, wxID_ANY, wxDefaultPosition, wxDefaultSize, 0 );
+	m_panel9 = new wxPanel( m_book, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
+	wxBoxSizer* bSizer13;
+	bSizer13 = new wxBoxSizer( wxHORIZONTAL );
 
 	wxStaticBoxSizer* szNew;
-	szNew = new wxStaticBoxSizer( new wxStaticBox( m_home, wxID_ANY, _("New") ), wxVERTICAL );
+	szNew = new wxStaticBoxSizer( new wxStaticBox( m_panel9, wxID_ANY, _("New") ), wxVERTICAL );
 
 	wxBoxSizer* szLine1;
 	szLine1 = new wxBoxSizer( wxHORIZONTAL );
@@ -88,6 +87,12 @@ AppFrame::AppFrame( wxWindow* parent, wxWindowID id, const wxString& title, cons
 
 	szNew->Add( szLine2, 0, wxEXPAND, 5 );
 
+	wxStaticBoxSizer* szProtocol;
+	szProtocol = new wxStaticBoxSizer( new wxStaticBox( szNew->GetStaticBox(), wxID_ANY, _("FTP") ), wxVERTICAL );
+
+
+	szNew->Add( szProtocol, 1, wxEXPAND|wxALL, 5 );
+
 	wxBoxSizer* szLine3;
 	szLine3 = new wxBoxSizer( wxHORIZONTAL );
 
@@ -107,40 +112,31 @@ AppFrame::AppFrame( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	szNew->Add( szLine3, 0, wxEXPAND, 5 );
 
 
-	bSizer12->Add( szNew, 0, wxALL|wxEXPAND, 5 );
-
-	wxStaticBoxSizer* szTrace;
-	szTrace = new wxStaticBoxSizer( new wxStaticBox( m_home, wxID_ANY, _("Trace") ), wxVERTICAL );
-
-
-	bSizer12->Add( szTrace, 1, wxEXPAND|wxALL, 5 );
-
-
-	szHome->Add( bSizer12, 1, wxEXPAND, 5 );
+	bSizer13->Add( szNew, 0, wxEXPAND|wxTOP|wxRIGHT|wxLEFT, 5 );
 
 	wxStaticBoxSizer* szSaved;
-	szSaved = new wxStaticBoxSizer( new wxStaticBox( m_home, wxID_ANY, _("Saved") ), wxVERTICAL );
+	szSaved = new wxStaticBoxSizer( new wxStaticBox( m_panel9, wxID_ANY, _("Saved") ), wxVERTICAL );
 
-	iListViewSavedSessions = new MyList( szSaved->GetStaticBox(), wxID_ANY, wxDefaultPosition, wxSize( -1,150 ), wxLC_REPORT|wxBORDER_DEFAULT );
+	iListViewSavedSessions = new MyList( szSaved->GetStaticBox(), wxID_ANY, wxDefaultPosition, wxSize( -1,-1 ), wxLC_REPORT|wxBORDER_DEFAULT );
 	szSaved->Add( iListViewSavedSessions, 1, wxEXPAND|wxALL, 5 );
 
 
-	szHome->Add( szSaved, 1, wxEXPAND|wxTOP|wxRIGHT|wxLEFT, 5 );
+	bSizer13->Add( szSaved, 1, wxEXPAND|wxTOP|wxRIGHT|wxLEFT, 5 );
 
 
-	m_home->SetSizer( szHome );
-	m_home->Layout();
-	szHome->Fit( m_home );
-	m_book->AddPage( m_home, _("a page"), false );
+	m_panel9->SetSizer( bSizer13 );
+	m_panel9->Layout();
+	bSizer13->Fit( m_panel9 );
+	m_book->AddPage( m_panel9, _("a page"), false );
 
-	szPage->Add( m_book, 1, wxEXPAND|wxTOP|wxBOTTOM, 5 );
+	bSizer17->Add( m_book, 1, wxEXPAND|wxBOTTOM, 5 );
 
 
-	m_page->SetSizer( szPage );
-	m_page->Layout();
-	szPage->Fit( m_page );
-	m_splitter->SplitVertically( m_nav, m_page, 150 );
-	szTop->Add( m_splitter, 1, wxEXPAND, 5 );
+	m_panel8->SetSizer( bSizer17 );
+	m_panel8->Layout();
+	bSizer17->Fit( m_panel8 );
+	m_splitter3->SplitHorizontally( m_panel6, m_panel8, 150 );
+	szTop->Add( m_splitter3, 1, wxEXPAND, 5 );
 
 
 	this->SetSizer( szTop );
@@ -151,6 +147,8 @@ AppFrame::AppFrame( wxWindow* parent, wxWindowID id, const wxString& title, cons
 
 	// Connect Events
 	m_log->Connect( wxEVT_RIGHT_DOWN, wxMouseEventHandler( AppFrame::m_logOnRightDown ), NULL, this );
+	this->Connect( m_tool_home->GetId(), wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler( AppFrame::m_tool_homeOnToolClicked ) );
+	m_protocol->Connect( wxEVT_COMMAND_CHOICE_SELECTED, wxCommandEventHandler( AppFrame::m_protocolOnChoice ), NULL, this );
 	m_save->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( AppFrame::m_saveOnButtonClick ), NULL, this );
 	m_connect->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( AppFrame::m_connectOnButtonClick ), NULL, this );
 }
@@ -159,6 +157,8 @@ AppFrame::~AppFrame()
 {
 	// Disconnect Events
 	m_log->Disconnect( wxEVT_RIGHT_DOWN, wxMouseEventHandler( AppFrame::m_logOnRightDown ), NULL, this );
+	this->Disconnect( m_tool_home->GetId(), wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler( AppFrame::m_tool_homeOnToolClicked ) );
+	m_protocol->Disconnect( wxEVT_COMMAND_CHOICE_SELECTED, wxCommandEventHandler( AppFrame::m_protocolOnChoice ), NULL, this );
 	m_save->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( AppFrame::m_saveOnButtonClick ), NULL, this );
 	m_connect->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( AppFrame::m_connectOnButtonClick ), NULL, this );
 
@@ -201,7 +201,7 @@ FTPPanel::FTPPanel( wxWindow* parent, wxWindowID id, const wxPoint& pos, const w
 	m_right->SetSizer( bSizerRight );
 	m_right->Layout();
 	bSizerRight->Fit( m_right );
-	m_splitter->SplitVertically( m_left, m_right, 260 );
+	m_splitter->SplitVertically( m_left, m_right, 320 );
 	szFTP->Add( m_splitter, 1, wxEXPAND|wxTOP|wxRIGHT|wxLEFT, 5 );
 
 

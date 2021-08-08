@@ -12,7 +12,7 @@ class MyApp : public wxApp
   virtual bool OnInit();
   MyFrame *m_frame;
 };
- 
+
 IMPLEMENT_APP(MyApp)
 wxDECLARE_APP(MyApp);
 

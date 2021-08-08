@@ -12,22 +12,22 @@
 #include <wx/intl.h>
 class MyList;
 
-#include <wx/string.h>
-#include <wx/listbox.h>
+#include <wx/richtext/richtextctrl.h>
 #include <wx/gdicmn.h>
 #include <wx/font.h>
 #include <wx/colour.h>
 #include <wx/settings.h>
-#include <wx/sizer.h>
-#include <wx/panel.h>
-#include <wx/richtext/richtextctrl.h>
-#include <wx/textctrl.h>
-#include <wx/choice.h>
+#include <wx/string.h>
 #include <wx/bitmap.h>
 #include <wx/image.h>
 #include <wx/icon.h>
-#include <wx/button.h>
+#include <wx/toolbar.h>
+#include <wx/sizer.h>
+#include <wx/panel.h>
+#include <wx/textctrl.h>
+#include <wx/choice.h>
 #include <wx/statbox.h>
+#include <wx/button.h>
 #include <wx/listctrl.h>
 #include <wx/simplebook.h>
 #include <wx/splitter.h>
@@ -46,12 +46,14 @@ class AppFrame : public wxFrame
 	private:
 
 	protected:
-		wxSplitterWindow* m_splitter;
-		wxPanel* m_nav;
-		wxListBox* m_listBox1;
-		wxPanel* m_page;
+		wxSplitterWindow* m_splitter3;
+		wxPanel* m_panel6;
+		wxToolBar* m_toolBar1;
+		wxToolBarToolBase* m_tool_home;
+		wxToolBarToolBase* m_tool2;
+		wxPanel* m_panel8;
 		wxSimplebook* m_book;
-		wxPanel* m_home;
+		wxPanel* m_panel9;
 		wxChoice* m_protocol;
 		wxButton* m_save;
 		wxButton* m_connect;
@@ -59,6 +61,8 @@ class AppFrame : public wxFrame
 
 		// Virtual event handlers, overide them in your derived class
 		virtual void m_logOnRightDown( wxMouseEvent& event ) { event.Skip(); }
+		virtual void m_tool_homeOnToolClicked( wxCommandEvent& event ) { event.Skip(); }
+		virtual void m_protocolOnChoice( wxCommandEvent& event ) { event.Skip(); }
 		virtual void m_saveOnButtonClick( wxCommandEvent& event ) { event.Skip(); }
 		virtual void m_connectOnButtonClick( wxCommandEvent& event ) { event.Skip(); }
 
@@ -71,14 +75,14 @@ class AppFrame : public wxFrame
 		wxTextCtrl* m_password;
 		wxStatusBar* m_status;
 
-		AppFrame( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = _("cpp-app"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 867,710 ), long style = wxDEFAULT_FRAME_STYLE|wxTAB_TRAVERSAL );
+		AppFrame( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = _("cpp-app"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 901,738 ), long style = wxDEFAULT_FRAME_STYLE|wxTAB_TRAVERSAL );
 
 		~AppFrame();
 
-		void m_splitterOnIdle( wxIdleEvent& )
+		void m_splitter3OnIdle( wxIdleEvent& )
 		{
-			m_splitter->SetSashPosition( 150 );
-			m_splitter->Disconnect( wxEVT_IDLE, wxIdleEventHandler( AppFrame::m_splitterOnIdle ), NULL, this );
+			m_splitter3->SetSashPosition( 150 );
+			m_splitter3->Disconnect( wxEVT_IDLE, wxIdleEventHandler( AppFrame::m_splitter3OnIdle ), NULL, this );
 		}
 
 };
@@ -119,7 +123,7 @@ class FTPPanel : public wxPanel
 
 		void m_splitterOnIdle( wxIdleEvent& )
 		{
-			m_splitter->SetSashPosition( 260 );
+			m_splitter->SetSashPosition( 320 );
 			m_splitter->Disconnect( wxEVT_IDLE, wxIdleEventHandler( FTPPanel::m_splitterOnIdle ), NULL, this );
 		}
 
