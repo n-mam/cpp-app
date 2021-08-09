@@ -27,11 +27,9 @@ class MyList;
 #include <wx/textctrl.h>
 #include <wx/choice.h>
 #include <wx/statbox.h>
-#include <wx/button.h>
 #include <wx/listctrl.h>
-#include <wx/filepicker.h>
+#include <wx/button.h>
 #include <wx/checkbox.h>
-#include <wx/stattext.h>
 #include <wx/simplebook.h>
 #include <wx/splitter.h>
 #include <wx/statusbr.h>
@@ -57,12 +55,10 @@ class AppFrame : public wxFrame
 		wxSimplebook* m_book;
 		wxPanel* m_homePage;
 		wxChoice* m_protocol;
+		MyList* iListViewSavedSessions;
 		wxButton* m_save;
 		wxButton* m_connect;
-		MyList* iListViewSavedSessions;
 		wxCheckBox* m_trace;
-		wxStaticText* m_staticText1;
-		wxFilePickerCtrl* m_filePicker2;
 
 		// Virtual event handlers, overide them in your derived class
 		virtual void onToolClicked( wxCommandEvent& event ) { event.Skip(); }
@@ -70,7 +66,6 @@ class AppFrame : public wxFrame
 		virtual void m_protocolOnChoice( wxCommandEvent& event ) { event.Skip(); }
 		virtual void m_saveOnButtonClick( wxCommandEvent& event ) { event.Skip(); }
 		virtual void m_connectOnButtonClick( wxCommandEvent& event ) { event.Skip(); }
-		virtual void m_cfgOnFileChanged( wxFileDirPickerEvent& event ) { event.Skip(); }
 		virtual void m_traceOnCheckBox( wxCommandEvent& event ) { event.Skip(); }
 
 
@@ -81,7 +76,6 @@ class AppFrame : public wxFrame
 		wxTextCtrl* m_port;
 		wxTextCtrl* m_user;
 		wxTextCtrl* m_password;
-		wxFilePickerCtrl* m_cfg;
 		wxStatusBar* m_status;
 
 		AppFrame( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = _("cpp-app"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 901,738 ), long style = wxDEFAULT_FRAME_STYLE|wxTAB_TRAVERSAL );

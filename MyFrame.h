@@ -7,7 +7,7 @@
 #define ID_LOG_BASE 2000
 
 class MyFrame : public AppFrame
-{ 
+{
   public:
 
   MyFrame(
@@ -15,11 +15,13 @@ class MyFrame : public AppFrame
     wxWindowID id = wxID_ANY,
     const wxString& title = _("app"),
     const wxPoint& pos = wxDefaultPosition,
-    const wxSize& size = wxSize( 700,600 ),
+    const wxSize& size = wxSize( 700,550 ),
     long style = wxDEFAULT_FRAME_STYLE|wxTAB_TRAVERSAL)
   : AppFrame(parent, id, title, pos, size, style)
   {
     iListViewSavedSessions->Initialize({"Host", "Port", "Protocol", "Username", "Password"});
+    iListViewSavedSessions->SetColumnWidth(0, 165);
+    iListViewSavedSessions->EnableCheckBoxes(true);
     m_splitter->Unsplit(m_panel6);
     m_host->SetFocus();
   }
@@ -28,13 +30,22 @@ class MyFrame : public AppFrame
 
   protected:
 
+  struct TSessionDetails
+  {
+    std::string host;
+    std::string port;
+    std::string user;
+    std::string pass;
+    std::string proto;
+  };
+
   std::vector<std::pair<int, wxPanel *>> iSessionPanels;
- 
+
   void onToolClicked( wxCommandEvent& event )
   {
     m_book->SetSelection(event.GetId() % ID_PAGE_BASE);
   }
-
+ 
   void m_traceOnCheckBox( wxCommandEvent& event )
   {
     if (event.IsChecked()) {
@@ -44,12 +55,7 @@ class MyFrame : public AppFrame
     }
   }
 
-  virtual void m_saveOnButtonClick( wxCommandEvent& event )
-  {
-    event.Skip();
-  }
-  
-  virtual void m_connectOnButtonClick( wxCommandEvent& event )
+  TSessionDetails GetSessionDetails(void)
   {
     auto host = m_host->GetValue().ToStdString();
     auto port = m_port->GetValue().ToStdString();
@@ -63,8 +69,34 @@ class MyFrame : public AppFrame
       wxMessageBox(
        "Please specify all the values", 
         "Error", wxOK, this);
-      return;
+      return {};
     }
+
+    m_host->Clear();
+    m_port->Clear();
+    m_user->Clear();
+    m_password->Clear();
+    m_protocol->Clear();
+
+    return {host, port, user, pass, proto};
+  }
+
+  virtual void m_saveOnButtonClick( wxCommandEvent& event )
+  {
+    auto [host, port, user, pass, proto] = GetSessionDetails();
+
+    auto idx = iListViewSavedSessions->InsertItem(
+      iListViewSavedSessions->GetItemCount(), host);
+
+    iListViewSavedSessions->SetItem(idx, 1, port);
+    iListViewSavedSessions->SetItem(idx, 2, proto);
+    iListViewSavedSessions->SetItem(idx, 3, user);
+    iListViewSavedSessions->SetItem(idx, 4, pass);
+  }
+  
+  virtual void m_connectOnButtonClick( wxCommandEvent& event )
+  {
+    auto [host, port, user, pass, proto] = GetSessionDetails();
 
     wxPanel *page = nullptr;
 
@@ -94,8 +126,6 @@ class MyFrame : public AppFrame
       auto ftppage = dynamic_cast<MyFTP *>(page);
       ftppage->InitiateConnect(host, port, user, pass);
     }
-
-    event.Skip();
   }
 
   void m_logOnRightDown(wxMouseEvent& event)

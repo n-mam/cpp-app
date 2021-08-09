@@ -60,6 +60,9 @@ AppFrame::AppFrame( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	wxBoxSizer* bSizer13;
 	bSizer13 = new wxBoxSizer( wxHORIZONTAL );
 
+	wxBoxSizer* bSizer14;
+	bSizer14 = new wxBoxSizer( wxVERTICAL );
+
 	wxStaticBoxSizer* szNew;
 	szNew = new wxStaticBoxSizer( new wxStaticBox( m_homePage, wxID_ANY, _("New") ), wxVERTICAL );
 
@@ -79,15 +82,15 @@ AppFrame::AppFrame( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	szLine1->Add( m_protocol, 0, wxALL, 5 );
 
 
-	szNew->Add( szLine1, 0, 0, 5 );
+	szNew->Add( szLine1, 0, wxEXPAND, 5 );
 
 	wxBoxSizer* szLine2;
 	szLine2 = new wxBoxSizer( wxHORIZONTAL );
 
-	m_user = new wxTextCtrl( szNew->GetStaticBox(), wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0|wxBORDER_DEFAULT );
+	m_user = new wxTextCtrl( szNew->GetStaticBox(), wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( 150,-1 ), 0|wxBORDER_DEFAULT );
 	szLine2->Add( m_user, 1, wxALL, 5 );
 
-	m_password = new wxTextCtrl( szNew->GetStaticBox(), wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_PASSWORD|wxBORDER_DEFAULT );
+	m_password = new wxTextCtrl( szNew->GetStaticBox(), wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( 150,-1 ), wxTE_PASSWORD|wxBORDER_DEFAULT );
 	szLine2->Add( m_password, 1, wxALL, 5 );
 
 
@@ -97,7 +100,13 @@ AppFrame::AppFrame( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	szProtocol = new wxStaticBoxSizer( new wxStaticBox( szNew->GetStaticBox(), wxID_ANY, _("FTP") ), wxVERTICAL );
 
 
-	szNew->Add( szProtocol, 1, wxEXPAND|wxALL, 5 );
+	szNew->Add( szProtocol, 0, wxEXPAND|wxALL, 5 );
+
+
+	bSizer14->Add( szNew, 0, wxEXPAND|wxRIGHT|wxLEFT, 5 );
+
+	iListViewSavedSessions = new MyList( m_homePage, wxID_ANY, wxDefaultPosition, wxSize( 300,-1 ), wxLC_REPORT|wxBORDER_DEFAULT );
+	bSizer14->Add( iListViewSavedSessions, 1, wxALL|wxEXPAND, 5 );
 
 	wxBoxSizer* szLine3;
 	szLine3 = new wxBoxSizer( wxHORIZONTAL );
@@ -105,20 +114,20 @@ AppFrame::AppFrame( wxWindow* parent, wxWindowID id, const wxString& title, cons
 
 	szLine3->Add( 0, 0, 1, wxEXPAND, 5 );
 
-	m_save = new wxButton( szNew->GetStaticBox(), wxID_ANY, _("Save"), wxDefaultPosition, wxDefaultSize, 0|wxBORDER_STATIC );
+	m_save = new wxButton( m_homePage, wxID_ANY, _("Save"), wxDefaultPosition, wxDefaultSize, 0|wxBORDER_STATIC );
 	szLine3->Add( m_save, 0, wxALL, 5 );
 
-	m_connect = new wxButton( szNew->GetStaticBox(), wxID_ANY, _("Connect"), wxDefaultPosition, wxDefaultSize, 0|wxBORDER_STATIC );
+	m_connect = new wxButton( m_homePage, wxID_ANY, _("Connect"), wxDefaultPosition, wxDefaultSize, 0|wxBORDER_STATIC );
 	szLine3->Add( m_connect, 0, wxALL, 5 );
 
 
 	szLine3->Add( 0, 0, 1, wxEXPAND, 5 );
 
 
-	szNew->Add( szLine3, 0, wxEXPAND, 5 );
+	bSizer14->Add( szLine3, 0, wxEXPAND, 5 );
 
 
-	bSizer13->Add( szNew, 0, wxEXPAND|wxRIGHT|wxLEFT, 5 );
+	bSizer13->Add( bSizer14, 1, wxEXPAND, 5 );
 
 	wxBoxSizer* bSizer19;
 	bSizer19 = new wxBoxSizer( wxVERTICAL );
@@ -129,12 +138,6 @@ AppFrame::AppFrame( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	wxBoxSizer* bSizer131;
 	bSizer131 = new wxBoxSizer( wxVERTICAL );
 
-	iListViewSavedSessions = new MyList( szSettings->GetStaticBox(), wxID_ANY, wxDefaultPosition, wxSize( -1,-1 ), wxLC_REPORT|wxBORDER_DEFAULT );
-	bSizer131->Add( iListViewSavedSessions, 1, wxEXPAND|wxALL, 5 );
-
-	m_cfg = new wxFilePickerCtrl( szSettings->GetStaticBox(), wxID_ANY, wxEmptyString, _("Select configuration JSON"), _("*.*"), wxDefaultPosition, wxDefaultSize, wxFLP_DEFAULT_STYLE|wxFLP_FILE_MUST_EXIST );
-	bSizer131->Add( m_cfg, 0, wxALL|wxEXPAND, 5 );
-
 
 	szSettings->Add( bSizer131, 1, wxEXPAND, 5 );
 
@@ -143,13 +146,6 @@ AppFrame::AppFrame( wxWindow* parent, wxWindowID id, const wxString& title, cons
 
 	m_trace = new wxCheckBox( szTrace->GetStaticBox(), wxID_ANY, _("Enable"), wxDefaultPosition, wxDefaultSize, 0 );
 	szTrace->Add( m_trace, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
-
-	m_staticText1 = new wxStaticText( szTrace->GetStaticBox(), wxID_ANY, _("File:"), wxDefaultPosition, wxDefaultSize, 0 );
-	m_staticText1->Wrap( -1 );
-	szTrace->Add( m_staticText1, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
-
-	m_filePicker2 = new wxFilePickerCtrl( szTrace->GetStaticBox(), wxID_ANY, wxEmptyString, _("Select a file"), _("*.*"), wxDefaultPosition, wxDefaultSize, wxFLP_DEFAULT_STYLE );
-	szTrace->Add( m_filePicker2, 1, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
 
 
 	szSettings->Add( szTrace, 0, wxEXPAND|wxALL, 5 );
@@ -188,7 +184,6 @@ AppFrame::AppFrame( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	m_protocol->Connect( wxEVT_COMMAND_CHOICE_SELECTED, wxCommandEventHandler( AppFrame::m_protocolOnChoice ), NULL, this );
 	m_save->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( AppFrame::m_saveOnButtonClick ), NULL, this );
 	m_connect->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( AppFrame::m_connectOnButtonClick ), NULL, this );
-	m_cfg->Connect( wxEVT_COMMAND_FILEPICKER_CHANGED, wxFileDirPickerEventHandler( AppFrame::m_cfgOnFileChanged ), NULL, this );
 	m_trace->Connect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( AppFrame::m_traceOnCheckBox ), NULL, this );
 }
 
@@ -200,7 +195,6 @@ AppFrame::~AppFrame()
 	m_protocol->Disconnect( wxEVT_COMMAND_CHOICE_SELECTED, wxCommandEventHandler( AppFrame::m_protocolOnChoice ), NULL, this );
 	m_save->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( AppFrame::m_saveOnButtonClick ), NULL, this );
 	m_connect->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( AppFrame::m_connectOnButtonClick ), NULL, this );
-	m_cfg->Disconnect( wxEVT_COMMAND_FILEPICKER_CHANGED, wxFileDirPickerEventHandler( AppFrame::m_cfgOnFileChanged ), NULL, this );
 	m_trace->Disconnect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( AppFrame::m_traceOnCheckBox ), NULL, this );
 
 }

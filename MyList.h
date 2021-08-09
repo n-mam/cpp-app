@@ -63,7 +63,6 @@ class MyList : public wxListCtrl
     {
       AppendColumn(col);
     }
-    SetColumnWidth(0, 225);
   }
 
   std::string GetItemTextFromEvent(wxListEvent& event)
