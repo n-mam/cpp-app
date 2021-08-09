@@ -19,13 +19,16 @@ class MyFrame : public AppFrame
     long style = wxDEFAULT_FRAME_STYLE|wxTAB_TRAVERSAL)
   : AppFrame(parent, id, title, pos, size, style)
   {
-    iListViewSavedSessions->Initialize({"Host", "Port", "Protocol", "Username", "Password"});
-    iListViewSavedSessions->SetColumnWidth(0, 165);
+    iListViewSavedSessions->Initialize(
+      {"Host", "Port", "Protocol", "Username", "Password"});
+    iListViewSavedSessions->SetColumnWidth(0, 150);
+    iListViewSavedSessions->SetColumnWidth(1, 50);
+    iListViewSavedSessions->SetColumnWidth(2, 65);
     iListViewSavedSessions->EnableCheckBoxes(true);
     m_splitter->Unsplit(m_panel6);
     m_host->SetFocus();
   }
- 
+
   virtual ~MyFrame() {}
 
   protected:
@@ -76,7 +79,6 @@ class MyFrame : public AppFrame
     m_port->Clear();
     m_user->Clear();
     m_password->Clear();
-    m_protocol->Clear();
 
     return {host, port, user, pass, proto};
   }
@@ -84,6 +86,8 @@ class MyFrame : public AppFrame
   virtual void m_saveOnButtonClick( wxCommandEvent& event )
   {
     auto [host, port, user, pass, proto] = GetSessionDetails();
+
+    if (!host.size()) return;
 
     auto idx = iListViewSavedSessions->InsertItem(
       iListViewSavedSessions->GetItemCount(), host);
@@ -93,10 +97,12 @@ class MyFrame : public AppFrame
     iListViewSavedSessions->SetItem(idx, 3, user);
     iListViewSavedSessions->SetItem(idx, 4, pass);
   }
-  
+
   virtual void m_connectOnButtonClick( wxCommandEvent& event )
   {
     auto [host, port, user, pass, proto] = GetSessionDetails();
+
+    if (!host.size()) return;
 
     wxPanel *page = nullptr;
 
@@ -113,7 +119,7 @@ class MyFrame : public AppFrame
 
     m_book->ShowNewPage(page);
 
-    auto tool = m_toolBar->AddTool(id, proto + "@" + host, wxBitmap(host_xpm), wxNullBitmap, wxITEM_RADIO, wxEmptyString, wxEmptyString, NULL);
+    auto tool = m_toolBar->AddTool(id, proto + "@" + host, wxBitmap(host_xpm), wxNullBitmap, wxITEM_RADIO);
 
     tool->Toggle();
 

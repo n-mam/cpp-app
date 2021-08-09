@@ -33,7 +33,7 @@ AppFrame::AppFrame( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	szTB->Add( m_toolBar, 1, wxEXPAND|wxTOP|wxRIGHT|wxLEFT, 5 );
 
 
-	szTop->Add( szTB, 0, wxEXPAND, 5 );
+	szTop->Add( szTB, 0, wxEXPAND|wxRIGHT|wxLEFT, 5 );
 
 	m_splitter = new wxSplitterWindow( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxSP_LIVE_UPDATE|wxSP_THIN_SASH );
 	m_splitter->Connect( wxEVT_IDLE, wxIdleEventHandler( AppFrame::m_splitterOnIdle ), NULL, this );
@@ -45,7 +45,7 @@ AppFrame::AppFrame( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	m_log = new wxRichTextCtrl( m_panel6, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( -1,-1 ), 0|wxBORDER_DEFAULT|wxHSCROLL|wxVSCROLL|wxWANTS_CHARS );
 	m_log->SetFont( wxFont( wxNORMAL_FONT->GetPointSize(), wxFONTFAMILY_MODERN, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL, false, wxEmptyString ) );
 
-	bSizer11->Add( m_log, 1, wxTOP|wxRIGHT|wxLEFT|wxEXPAND, 5 );
+	bSizer11->Add( m_log, 1, wxEXPAND|wxTOP|wxRIGHT|wxLEFT, 5 );
 
 
 	m_panel6->SetSizer( bSizer11 );
@@ -103,10 +103,10 @@ AppFrame::AppFrame( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	szNew->Add( szProtocol, 0, wxEXPAND|wxALL, 5 );
 
 
-	bSizer14->Add( szNew, 0, wxEXPAND|wxRIGHT|wxLEFT, 5 );
+	bSizer14->Add( szNew, 0, wxEXPAND, 5 );
 
 	iListViewSavedSessions = new MyList( m_homePage, wxID_ANY, wxDefaultPosition, wxSize( 300,-1 ), wxLC_REPORT|wxBORDER_DEFAULT );
-	bSizer14->Add( iListViewSavedSessions, 1, wxALL|wxEXPAND, 5 );
+	bSizer14->Add( iListViewSavedSessions, 1, wxEXPAND|wxTOP|wxBOTTOM, 5 );
 
 	wxBoxSizer* szLine3;
 	szLine3 = new wxBoxSizer( wxHORIZONTAL );
@@ -127,7 +127,7 @@ AppFrame::AppFrame( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	bSizer14->Add( szLine3, 0, wxEXPAND, 5 );
 
 
-	bSizer13->Add( bSizer14, 1, wxEXPAND, 5 );
+	bSizer13->Add( bSizer14, 1, wxEXPAND|wxRIGHT|wxLEFT, 5 );
 
 	wxBoxSizer* bSizer19;
 	bSizer19 = new wxBoxSizer( wxVERTICAL );
@@ -151,10 +151,10 @@ AppFrame::AppFrame( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	szSettings->Add( szTrace, 0, wxEXPAND|wxALL, 5 );
 
 
-	bSizer19->Add( szSettings, 1, wxEXPAND|wxRIGHT|wxLEFT, 5 );
+	bSizer19->Add( szSettings, 1, wxEXPAND|wxLEFT, 5 );
 
 
-	bSizer13->Add( bSizer19, 1, wxEXPAND, 5 );
+	bSizer13->Add( bSizer19, 1, wxEXPAND|wxRIGHT|wxLEFT, 5 );
 
 
 	m_homePage->SetSizer( bSizer13 );
@@ -162,14 +162,14 @@ AppFrame::AppFrame( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	bSizer13->Fit( m_homePage );
 	m_book->AddPage( m_homePage, wxEmptyString, false );
 
-	szBook->Add( m_book, 1, wxEXPAND|wxBOTTOM, 5 );
+	szBook->Add( m_book, 1, wxEXPAND|wxTOP|wxBOTTOM, 5 );
 
 
 	m_panel8->SetSizer( szBook );
 	m_panel8->Layout();
 	szBook->Fit( m_panel8 );
 	m_splitter->SplitHorizontally( m_panel6, m_panel8, 150 );
-	szTop->Add( m_splitter, 1, wxEXPAND, 5 );
+	szTop->Add( m_splitter, 1, wxEXPAND|wxALL, 5 );
 
 
 	this->SetSizer( szTop );
