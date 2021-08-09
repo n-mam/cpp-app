@@ -123,17 +123,39 @@ AppFrame::AppFrame( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	wxBoxSizer* bSizer19;
 	bSizer19 = new wxBoxSizer( wxVERTICAL );
 
-	iListViewSavedSessions = new MyList( m_homePage, wxID_ANY, wxDefaultPosition, wxSize( -1,-1 ), wxLC_REPORT|wxBORDER_DEFAULT );
-	bSizer19->Add( iListViewSavedSessions, 1, wxEXPAND|wxALL, 5 );
+	wxStaticBoxSizer* szSettings;
+	szSettings = new wxStaticBoxSizer( new wxStaticBox( m_homePage, wxID_ANY, _("Settings") ), wxVERTICAL );
+
+	wxBoxSizer* bSizer131;
+	bSizer131 = new wxBoxSizer( wxVERTICAL );
+
+	iListViewSavedSessions = new MyList( szSettings->GetStaticBox(), wxID_ANY, wxDefaultPosition, wxSize( -1,-1 ), wxLC_REPORT|wxBORDER_DEFAULT );
+	bSizer131->Add( iListViewSavedSessions, 1, wxEXPAND|wxALL, 5 );
+
+	m_cfg = new wxFilePickerCtrl( szSettings->GetStaticBox(), wxID_ANY, wxEmptyString, _("Select configuration JSON"), _("*.*"), wxDefaultPosition, wxDefaultSize, wxFLP_DEFAULT_STYLE|wxFLP_FILE_MUST_EXIST );
+	bSizer131->Add( m_cfg, 0, wxALL|wxEXPAND, 5 );
+
+
+	szSettings->Add( bSizer131, 1, wxEXPAND, 5 );
 
 	wxStaticBoxSizer* szTrace;
-	szTrace = new wxStaticBoxSizer( new wxStaticBox( m_homePage, wxID_ANY, _("Trace") ), wxVERTICAL );
+	szTrace = new wxStaticBoxSizer( new wxStaticBox( szSettings->GetStaticBox(), wxID_ANY, _("Trace") ), wxHORIZONTAL );
 
 	m_trace = new wxCheckBox( szTrace->GetStaticBox(), wxID_ANY, _("Enable"), wxDefaultPosition, wxDefaultSize, 0 );
-	szTrace->Add( m_trace, 0, wxALL, 5 );
+	szTrace->Add( m_trace, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
+
+	m_staticText1 = new wxStaticText( szTrace->GetStaticBox(), wxID_ANY, _("File:"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText1->Wrap( -1 );
+	szTrace->Add( m_staticText1, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
+
+	m_filePicker2 = new wxFilePickerCtrl( szTrace->GetStaticBox(), wxID_ANY, wxEmptyString, _("Select a file"), _("*.*"), wxDefaultPosition, wxDefaultSize, wxFLP_DEFAULT_STYLE );
+	szTrace->Add( m_filePicker2, 1, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
 
 
-	bSizer19->Add( szTrace, 1, wxEXPAND|wxRIGHT|wxLEFT, 5 );
+	szSettings->Add( szTrace, 0, wxEXPAND|wxALL, 5 );
+
+
+	bSizer19->Add( szSettings, 1, wxEXPAND|wxRIGHT|wxLEFT, 5 );
 
 
 	bSizer13->Add( bSizer19, 1, wxEXPAND, 5 );
@@ -142,7 +164,7 @@ AppFrame::AppFrame( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	m_homePage->SetSizer( bSizer13 );
 	m_homePage->Layout();
 	bSizer13->Fit( m_homePage );
-	m_book->AddPage( m_homePage, _("a page"), false );
+	m_book->AddPage( m_homePage, wxEmptyString, false );
 
 	szBook->Add( m_book, 1, wxEXPAND|wxBOTTOM, 5 );
 
@@ -166,6 +188,7 @@ AppFrame::AppFrame( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	m_protocol->Connect( wxEVT_COMMAND_CHOICE_SELECTED, wxCommandEventHandler( AppFrame::m_protocolOnChoice ), NULL, this );
 	m_save->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( AppFrame::m_saveOnButtonClick ), NULL, this );
 	m_connect->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( AppFrame::m_connectOnButtonClick ), NULL, this );
+	m_cfg->Connect( wxEVT_COMMAND_FILEPICKER_CHANGED, wxFileDirPickerEventHandler( AppFrame::m_cfgOnFileChanged ), NULL, this );
 	m_trace->Connect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( AppFrame::m_traceOnCheckBox ), NULL, this );
 }
 
@@ -177,6 +200,7 @@ AppFrame::~AppFrame()
 	m_protocol->Disconnect( wxEVT_COMMAND_CHOICE_SELECTED, wxCommandEventHandler( AppFrame::m_protocolOnChoice ), NULL, this );
 	m_save->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( AppFrame::m_saveOnButtonClick ), NULL, this );
 	m_connect->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( AppFrame::m_connectOnButtonClick ), NULL, this );
+	m_cfg->Disconnect( wxEVT_COMMAND_FILEPICKER_CHANGED, wxFileDirPickerEventHandler( AppFrame::m_cfgOnFileChanged ), NULL, this );
 	m_trace->Disconnect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( AppFrame::m_traceOnCheckBox ), NULL, this );
 
 }

@@ -7,7 +7,7 @@
 #define ID_LOG_BASE 2000
 
 class MyFrame : public AppFrame
-{
+{ 
   public:
 
   MyFrame(
@@ -19,7 +19,7 @@ class MyFrame : public AppFrame
     long style = wxDEFAULT_FRAME_STYLE|wxTAB_TRAVERSAL)
   : AppFrame(parent, id, title, pos, size, style)
   {
-    iListViewSavedSessions->Initialize({"Name", "Protocol"});
+    iListViewSavedSessions->Initialize({"Host", "Port", "Protocol", "Username", "Password"});
     m_splitter->Unsplit(m_panel6);
     m_host->SetFocus();
   }

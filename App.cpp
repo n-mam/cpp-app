@@ -11,7 +11,7 @@ class MyApp : public wxApp
   public:
   virtual bool OnInit();
   MyFrame *m_frame;
-};
+}; 
 
 IMPLEMENT_APP(MyApp)
 wxDECLARE_APP(MyApp);
@@ -31,6 +31,8 @@ bool MyApp::OnInit()
   m_frame->m_user->SetHint("username");
   m_frame->m_password->SetHint("password");
   m_frame->m_port->SetHint("port");
+
+  //m_frame->m_cfg->SetHint("Load JSON configuration file");
 
   NPL::CLogger::SetLogCallback(
     [](const std::string& msg)
