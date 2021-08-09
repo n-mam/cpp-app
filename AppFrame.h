@@ -12,24 +12,24 @@
 #include <wx/intl.h>
 class MyList;
 
-#include <wx/richtext/richtextctrl.h>
-#include <wx/gdicmn.h>
-#include <wx/font.h>
-#include <wx/colour.h>
-#include <wx/settings.h>
 #include <wx/string.h>
 #include <wx/bitmap.h>
 #include <wx/image.h>
 #include <wx/icon.h>
+#include <wx/gdicmn.h>
 #include <wx/toolbar.h>
-#include <wx/checkbox.h>
+#include <wx/font.h>
+#include <wx/colour.h>
+#include <wx/settings.h>
 #include <wx/sizer.h>
+#include <wx/richtext/richtextctrl.h>
 #include <wx/panel.h>
 #include <wx/textctrl.h>
 #include <wx/choice.h>
 #include <wx/statbox.h>
 #include <wx/button.h>
 #include <wx/listctrl.h>
+#include <wx/checkbox.h>
 #include <wx/simplebook.h>
 #include <wx/splitter.h>
 #include <wx/statusbr.h>
@@ -48,30 +48,30 @@ class AppFrame : public wxFrame
 	private:
 
 	protected:
-		wxSplitterWindow* m_splitter3;
-		wxPanel* m_panel6;
 		wxToolBarToolBase* m_toolHome;
-		wxCheckBox* m_trace;
+		wxSplitterWindow* m_splitter;
+		wxPanel* m_panel6;
 		wxPanel* m_panel8;
 		wxSimplebook* m_book;
-		wxPanel* m_panel9;
+		wxPanel* m_homePage;
 		wxChoice* m_protocol;
 		wxButton* m_save;
 		wxButton* m_connect;
 		MyList* iListViewSavedSessions;
+		wxCheckBox* m_trace;
 
 		// Virtual event handlers, overide them in your derived class
-		virtual void m_logOnRightDown( wxMouseEvent& event ) { event.Skip(); }
 		virtual void onToolClicked( wxCommandEvent& event ) { event.Skip(); }
-		virtual void m_traceOnCheckBox( wxCommandEvent& event ) { event.Skip(); }
+		virtual void m_logOnRightDown( wxMouseEvent& event ) { event.Skip(); }
 		virtual void m_protocolOnChoice( wxCommandEvent& event ) { event.Skip(); }
 		virtual void m_saveOnButtonClick( wxCommandEvent& event ) { event.Skip(); }
 		virtual void m_connectOnButtonClick( wxCommandEvent& event ) { event.Skip(); }
+		virtual void m_traceOnCheckBox( wxCommandEvent& event ) { event.Skip(); }
 
 
 	public:
-		wxRichTextCtrl* m_log;
 		wxToolBar* m_toolBar;
+		wxRichTextCtrl* m_log;
 		wxTextCtrl* m_host;
 		wxTextCtrl* m_port;
 		wxTextCtrl* m_user;
@@ -82,10 +82,10 @@ class AppFrame : public wxFrame
 
 		~AppFrame();
 
-		void m_splitter3OnIdle( wxIdleEvent& )
+		void m_splitterOnIdle( wxIdleEvent& )
 		{
-			m_splitter3->SetSashPosition( 150 );
-			m_splitter3->Disconnect( wxEVT_IDLE, wxIdleEventHandler( AppFrame::m_splitter3OnIdle ), NULL, this );
+			m_splitter->SetSashPosition( 150 );
+			m_splitter->Disconnect( wxEVT_IDLE, wxIdleEventHandler( AppFrame::m_splitterOnIdle ), NULL, this );
 		}
 
 };

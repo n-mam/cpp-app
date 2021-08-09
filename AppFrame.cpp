@@ -17,51 +17,51 @@ AppFrame::AppFrame( wxWindow* parent, wxWindowID id, const wxString& title, cons
 {
 	this->SetSizeHints( wxDefaultSize, wxDefaultSize );
 	this->SetFont( wxFont( wxNORMAL_FONT->GetPointSize(), wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL, false, wxEmptyString ) );
+	this->SetBackgroundColour( wxSystemSettings::GetColour( wxSYS_COLOUR_MENU ) );
 
 	wxBoxSizer* szTop;
 	szTop = new wxBoxSizer( wxVERTICAL );
 
-	m_splitter3 = new wxSplitterWindow( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxSP_LIVE_UPDATE|wxSP_THIN_SASH );
-	m_splitter3->Connect( wxEVT_IDLE, wxIdleEventHandler( AppFrame::m_splitter3OnIdle ), NULL, this );
+	wxBoxSizer* szTB;
+	szTB = new wxBoxSizer( wxHORIZONTAL );
 
-	m_panel6 = new wxPanel( m_splitter3, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
-	wxBoxSizer* bSizer11;
-	bSizer11 = new wxBoxSizer( wxVERTICAL );
-
-	m_log = new wxRichTextCtrl( m_panel6, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( -1,-1 ), 0|wxBORDER_DEFAULT|wxHSCROLL|wxVSCROLL|wxWANTS_CHARS );
-	bSizer11->Add( m_log, 1, wxTOP|wxRIGHT|wxLEFT|wxEXPAND, 5 );
-
-	wxBoxSizer* bSizer12;
-	bSizer12 = new wxBoxSizer( wxHORIZONTAL );
-
-	m_toolBar = new wxToolBar( m_panel6, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTB_HORZ_LAYOUT|wxTB_HORZ_TEXT|wxTB_NODIVIDER|wxTB_TEXT );
+	m_toolBar = new wxToolBar( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTB_HORZ_LAYOUT|wxTB_HORZ_TEXT|wxTB_NODIVIDER|wxTB_TEXT );
 	m_toolHome = m_toolBar->AddTool( ID_PAGE_BASE, _("Home"), wxBitmap( config_xpm ), wxNullBitmap, wxITEM_RADIO, wxEmptyString, wxEmptyString, NULL );
 
 	m_toolBar->Realize();
 
-	bSizer12->Add( m_toolBar, 1, wxALL, 5 );
-
-	m_trace = new wxCheckBox( m_panel6, wxID_ANY, _("Trace"), wxDefaultPosition, wxDefaultSize, 0 );
-	bSizer12->Add( m_trace, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
+	szTB->Add( m_toolBar, 1, wxEXPAND|wxTOP|wxRIGHT|wxLEFT, 5 );
 
 
-	bSizer11->Add( bSizer12, 0, wxEXPAND|wxRIGHT, 5 );
+	szTop->Add( szTB, 0, wxEXPAND, 5 );
+
+	m_splitter = new wxSplitterWindow( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxSP_LIVE_UPDATE|wxSP_THIN_SASH );
+	m_splitter->Connect( wxEVT_IDLE, wxIdleEventHandler( AppFrame::m_splitterOnIdle ), NULL, this );
+
+	m_panel6 = new wxPanel( m_splitter, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
+	wxBoxSizer* bSizer11;
+	bSizer11 = new wxBoxSizer( wxVERTICAL );
+
+	m_log = new wxRichTextCtrl( m_panel6, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( -1,-1 ), 0|wxBORDER_DEFAULT|wxHSCROLL|wxVSCROLL|wxWANTS_CHARS );
+	m_log->SetFont( wxFont( wxNORMAL_FONT->GetPointSize(), wxFONTFAMILY_MODERN, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL, false, wxEmptyString ) );
+
+	bSizer11->Add( m_log, 1, wxTOP|wxRIGHT|wxLEFT|wxEXPAND, 5 );
 
 
 	m_panel6->SetSizer( bSizer11 );
 	m_panel6->Layout();
 	bSizer11->Fit( m_panel6 );
-	m_panel8 = new wxPanel( m_splitter3, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
-	wxBoxSizer* bSizer17;
-	bSizer17 = new wxBoxSizer( wxVERTICAL );
+	m_panel8 = new wxPanel( m_splitter, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
+	wxBoxSizer* szBook;
+	szBook = new wxBoxSizer( wxVERTICAL );
 
 	m_book = new wxSimplebook( m_panel8, wxID_ANY, wxDefaultPosition, wxDefaultSize, 0 );
-	m_panel9 = new wxPanel( m_book, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
+	m_homePage = new wxPanel( m_book, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
 	wxBoxSizer* bSizer13;
 	bSizer13 = new wxBoxSizer( wxHORIZONTAL );
 
 	wxStaticBoxSizer* szNew;
-	szNew = new wxStaticBoxSizer( new wxStaticBox( m_panel9, wxID_ANY, _("New") ), wxVERTICAL );
+	szNew = new wxStaticBoxSizer( new wxStaticBox( m_homePage, wxID_ANY, _("New") ), wxVERTICAL );
 
 	wxBoxSizer* szLine1;
 	szLine1 = new wxBoxSizer( wxHORIZONTAL );
@@ -120,29 +120,39 @@ AppFrame::AppFrame( wxWindow* parent, wxWindowID id, const wxString& title, cons
 
 	bSizer13->Add( szNew, 0, wxEXPAND|wxRIGHT|wxLEFT, 5 );
 
-	wxStaticBoxSizer* szSaved;
-	szSaved = new wxStaticBoxSizer( new wxStaticBox( m_panel9, wxID_ANY, _("Saved") ), wxVERTICAL );
+	wxBoxSizer* bSizer19;
+	bSizer19 = new wxBoxSizer( wxVERTICAL );
 
-	iListViewSavedSessions = new MyList( szSaved->GetStaticBox(), wxID_ANY, wxDefaultPosition, wxSize( -1,-1 ), wxLC_REPORT|wxBORDER_DEFAULT );
-	szSaved->Add( iListViewSavedSessions, 1, wxEXPAND|wxALL, 5 );
+	iListViewSavedSessions = new MyList( m_homePage, wxID_ANY, wxDefaultPosition, wxSize( -1,-1 ), wxLC_REPORT|wxBORDER_DEFAULT );
+	bSizer19->Add( iListViewSavedSessions, 1, wxEXPAND|wxALL, 5 );
 
+	wxStaticBoxSizer* szTrace;
+	szTrace = new wxStaticBoxSizer( new wxStaticBox( m_homePage, wxID_ANY, _("Trace") ), wxVERTICAL );
 
-	bSizer13->Add( szSaved, 1, wxEXPAND|wxRIGHT|wxLEFT, 5 );
-
-
-	m_panel9->SetSizer( bSizer13 );
-	m_panel9->Layout();
-	bSizer13->Fit( m_panel9 );
-	m_book->AddPage( m_panel9, _("a page"), false );
-
-	bSizer17->Add( m_book, 1, wxEXPAND|wxBOTTOM, 5 );
+	m_trace = new wxCheckBox( szTrace->GetStaticBox(), wxID_ANY, _("Enable"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_trace->SetValue(true);
+	szTrace->Add( m_trace, 0, wxALL, 5 );
 
 
-	m_panel8->SetSizer( bSizer17 );
+	bSizer19->Add( szTrace, 1, wxEXPAND|wxRIGHT|wxLEFT, 5 );
+
+
+	bSizer13->Add( bSizer19, 1, wxEXPAND, 5 );
+
+
+	m_homePage->SetSizer( bSizer13 );
+	m_homePage->Layout();
+	bSizer13->Fit( m_homePage );
+	m_book->AddPage( m_homePage, _("a page"), false );
+
+	szBook->Add( m_book, 1, wxEXPAND|wxBOTTOM, 5 );
+
+
+	m_panel8->SetSizer( szBook );
 	m_panel8->Layout();
-	bSizer17->Fit( m_panel8 );
-	m_splitter3->SplitHorizontally( m_panel6, m_panel8, 150 );
-	szTop->Add( m_splitter3, 1, wxEXPAND, 5 );
+	szBook->Fit( m_panel8 );
+	m_splitter->SplitHorizontally( m_panel6, m_panel8, 150 );
+	szTop->Add( m_splitter, 1, wxEXPAND, 5 );
 
 
 	this->SetSizer( szTop );
@@ -152,23 +162,23 @@ AppFrame::AppFrame( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	this->Centre( wxBOTH );
 
 	// Connect Events
-	m_log->Connect( wxEVT_RIGHT_DOWN, wxMouseEventHandler( AppFrame::m_logOnRightDown ), NULL, this );
 	this->Connect( m_toolHome->GetId(), wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler( AppFrame::onToolClicked ) );
-	m_trace->Connect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( AppFrame::m_traceOnCheckBox ), NULL, this );
+	m_log->Connect( wxEVT_RIGHT_DOWN, wxMouseEventHandler( AppFrame::m_logOnRightDown ), NULL, this );
 	m_protocol->Connect( wxEVT_COMMAND_CHOICE_SELECTED, wxCommandEventHandler( AppFrame::m_protocolOnChoice ), NULL, this );
 	m_save->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( AppFrame::m_saveOnButtonClick ), NULL, this );
 	m_connect->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( AppFrame::m_connectOnButtonClick ), NULL, this );
+	m_trace->Connect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( AppFrame::m_traceOnCheckBox ), NULL, this );
 }
 
 AppFrame::~AppFrame()
 {
 	// Disconnect Events
-	m_log->Disconnect( wxEVT_RIGHT_DOWN, wxMouseEventHandler( AppFrame::m_logOnRightDown ), NULL, this );
 	this->Disconnect( m_toolHome->GetId(), wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler( AppFrame::onToolClicked ) );
-	m_trace->Disconnect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( AppFrame::m_traceOnCheckBox ), NULL, this );
+	m_log->Disconnect( wxEVT_RIGHT_DOWN, wxMouseEventHandler( AppFrame::m_logOnRightDown ), NULL, this );
 	m_protocol->Disconnect( wxEVT_COMMAND_CHOICE_SELECTED, wxCommandEventHandler( AppFrame::m_protocolOnChoice ), NULL, this );
 	m_save->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( AppFrame::m_saveOnButtonClick ), NULL, this );
 	m_connect->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( AppFrame::m_connectOnButtonClick ), NULL, this );
+	m_trace->Disconnect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( AppFrame::m_traceOnCheckBox ), NULL, this );
 
 }
 

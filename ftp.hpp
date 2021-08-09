@@ -40,7 +40,7 @@ class MyFTP : public FTPPanel
     wxWindow* parent,
     wxWindowID id = wxID_ANY,
     const wxPoint& pos = wxDefaultPosition,
-    const wxSize& size = wxSize( 500,300 ),
+    const wxSize& size = wxDefaultSize,
     long style = wxTAB_TRAVERSAL)
   : FTPPanel(parent, id, pos, size, style)
   {

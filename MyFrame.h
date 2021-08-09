@@ -15,17 +15,33 @@ class MyFrame : public AppFrame
     wxWindowID id = wxID_ANY,
     const wxString& title = _("app"),
     const wxPoint& pos = wxDefaultPosition,
-    const wxSize& size = wxSize( 700,550 ),
+    const wxSize& size = wxSize( 700,600 ),
     long style = wxDEFAULT_FRAME_STYLE|wxTAB_TRAVERSAL)
   : AppFrame(parent, id, title, pos, size, style)
   {
-  } 
+    m_splitter->Unsplit(m_panel6);
+    m_host->SetFocus();
+  }
  
   virtual ~MyFrame() {}
 
   protected:
 
   std::vector<std::pair<int, wxPanel *>> iSessionPanels;
+ 
+  void onToolClicked( wxCommandEvent& event )
+  {
+    m_book->SetSelection(event.GetId() % ID_PAGE_BASE);
+  }
+
+  void m_traceOnCheckBox( wxCommandEvent& event )
+  {
+    if (event.IsChecked()) {
+      m_splitter->SplitHorizontally(m_panel6, m_panel8, 150);
+    } else {
+      m_splitter->Unsplit(m_panel6);
+    }
+  }
 
   virtual void m_saveOnButtonClick( wxCommandEvent& event )
   {
@@ -43,7 +59,9 @@ class MyFrame : public AppFrame
 
     if (!host.size() || !user.size() || !pass.size() || !port.size() || !proto.size())
     {
-      wxMessageBox( wxT("Please specify all values"), wxT("Error"), wxICON_INFORMATION);
+      wxMessageBox(
+       "Please specify all the values", 
+        "Error", wxOK, this);
       return;
     }
 
@@ -75,14 +93,8 @@ class MyFrame : public AppFrame
       auto ftppage = dynamic_cast<MyFTP *>(page);
       ftppage->InitiateConnect(host, port, user, pass);
     }
-    
 
     event.Skip();
-  }
-
-  void onToolClicked( wxCommandEvent& event )
-  {
-    m_book->SetSelection(event.GetId() % ID_PAGE_BASE);
   }
 
   void m_logOnRightDown(wxMouseEvent& event)
