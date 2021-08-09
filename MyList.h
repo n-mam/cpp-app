@@ -50,15 +50,20 @@ class MyList : public wxListCtrl
     m_imageList->Add(wxIcon(file_xpm));
     m_imageList->Add(wxIcon(folder_xpm));
     SetImageList(m_imageList, wxIMAGE_LIST_SMALL);
-    AppendColumn("Name");
-    AppendColumn("Size");
-    AppendColumn("TS");
-    SetColumnWidth(0, 225);
   }
 
   virtual ~MyList()
   {
     if (m_imageList) delete m_imageList;
+  }
+
+  void Initialize(const std::vector<std::string>& columns)
+  {
+    for (auto& col : columns)
+    {
+      AppendColumn(col);
+    }
+    SetColumnWidth(0, 225);
   }
 
   std::string GetItemTextFromEvent(wxListEvent& event)

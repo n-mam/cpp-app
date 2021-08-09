@@ -19,6 +19,7 @@ class MyFrame : public AppFrame
     long style = wxDEFAULT_FRAME_STYLE|wxTAB_TRAVERSAL)
   : AppFrame(parent, id, title, pos, size, style)
   {
+    iListViewSavedSessions->Initialize({"Name", "Protocol"});
     m_splitter->Unsplit(m_panel6);
     m_host->SetFocus();
   }

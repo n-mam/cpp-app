@@ -44,6 +44,8 @@ class MyFTP : public FTPPanel
     long style = wxTAB_TRAVERSAL)
   : FTPPanel(parent, id, pos, size, style)
   {
+    iListViewLocal->Initialize({"Name", "Size", "TS"});
+    iListViewRemote->Initialize({"Name", "Size", "TS"});
     UpdateLocalListView(
       wxStandardPaths::Get().GetUserDir(
         wxStandardPaths::Dir::Dir_Desktop).ToStdString());

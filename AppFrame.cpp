@@ -130,7 +130,6 @@ AppFrame::AppFrame( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	szTrace = new wxStaticBoxSizer( new wxStaticBox( m_homePage, wxID_ANY, _("Trace") ), wxVERTICAL );
 
 	m_trace = new wxCheckBox( szTrace->GetStaticBox(), wxID_ANY, _("Enable"), wxDefaultPosition, wxDefaultSize, 0 );
-	m_trace->SetValue(true);
 	szTrace->Add( m_trace, 0, wxALL, 5 );
 
 
