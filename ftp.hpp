@@ -43,7 +43,7 @@ class MyFTP : public FTPPanel
     const wxSize& size = wxDefaultSize,
     long style = wxTAB_TRAVERSAL)
   : FTPPanel(parent, id, pos, size, style)
-  {  
+  {
     iListViewLocal->Initialize({"Name", "Size", "TS"});
     iListViewRemote->Initialize({"Name", "Size", "TS"});
     iListViewLocal->SetColumnWidth(0, 225);

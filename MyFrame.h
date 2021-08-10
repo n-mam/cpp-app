@@ -2,10 +2,12 @@
 #include "MyList.h"
 #include "ftp.hpp"
 
+#include <fstream>
+
 #include "images/host.xpm"
 
 #define ID_LOG_BASE 2000
-
+ 
 class MyFrame : public AppFrame
 {
   public:
@@ -25,6 +27,7 @@ class MyFrame : public AppFrame
     iListViewSavedSessions->SetColumnWidth(1, 50);
     iListViewSavedSessions->SetColumnWidth(2, 65);
     iListViewSavedSessions->EnableCheckBoxes(true);
+    LoadConfiguration("C:/Users/Divya Surana/Desktop/cfg.txt");
     m_splitter->Unsplit(m_panel6);
     m_host->SetFocus();
   }
@@ -35,11 +38,11 @@ class MyFrame : public AppFrame
 
   struct TSessionDetails
   {
-    std::string host;
-    std::string port;
-    std::string user;
-    std::string pass;
-    std::string proto;
+    wxString host;
+    wxString port;
+    wxString user;
+    wxString pass;
+    wxString prot;
   };
 
   std::vector<std::pair<int, wxPanel *>> iSessionPanels;
@@ -60,14 +63,14 @@ class MyFrame : public AppFrame
 
   TSessionDetails GetSessionDetails(void)
   {
-    auto host = m_host->GetValue().ToStdString();
-    auto port = m_port->GetValue().ToStdString();
-    auto user = m_user->GetValue().ToStdString();
-    auto pass = m_password->GetValue().ToStdString();
-    auto proto = m_protocol->GetString(
-      m_protocol->GetSelection()).ToStdString();
+    auto host = m_host->GetValue();
+    auto port = m_port->GetValue();
+    auto user = m_user->GetValue();
+    auto pass = m_password->GetValue();
+    auto prot = m_protocol->GetString(
+      m_protocol->GetSelection());
 
-    if (!host.size() || !user.size() || !pass.size() || !port.size() || !proto.size())
+    if (!host.size() || !user.size() || !pass.size() || !port.size() || !prot.size())
     {
       wxMessageBox(
        "Please specify all the values", 
@@ -80,57 +83,78 @@ class MyFrame : public AppFrame
     m_user->Clear();
     m_password->Clear();
 
-    return {host, port, user, pass, proto};
+    return {host, port, user, pass, prot};
   }
 
   virtual void m_saveOnButtonClick( wxCommandEvent& event )
   {
-    auto [host, port, user, pass, proto] = GetSessionDetails();
+    auto session = GetSessionDetails();
+    if (!session.host.size()) return;
+    ShowSavedSession(session);
+  }
 
-    if (!host.size()) return;
+  void ShowSavedSession(TSessionDetails session)
+  {
+    auto [host, port, user, pass, prot] = session;
 
     auto idx = iListViewSavedSessions->InsertItem(
       iListViewSavedSessions->GetItemCount(), host);
 
     iListViewSavedSessions->SetItem(idx, 1, port);
-    iListViewSavedSessions->SetItem(idx, 2, proto);
+    iListViewSavedSessions->SetItem(idx, 2, prot);
     iListViewSavedSessions->SetItem(idx, 3, user);
     iListViewSavedSessions->SetItem(idx, 4, pass);
   }
 
   virtual void m_connectOnButtonClick( wxCommandEvent& event )
   {
-    auto [host, port, user, pass, proto] = GetSessionDetails();
+    std::vector<TSessionDetails> list;
 
-    if (!host.size()) return;
+    auto sess = GetSessionDetails();
 
-    wxPanel *page = nullptr;
-
-    if (proto == "FTP") 
+    if (sess.host.size())
     {
-      page = new MyFTP(m_book);
+      list.push_back(sess);
     }
- 
-    if (!page) return;
 
-    auto id = ID_PAGE_BASE + 1 + iSessionPanels.size();
 
-    iSessionPanels.push_back({id, page});
 
-    m_book->ShowNewPage(page);
+    if (!list.size()) return;
 
-    auto tool = m_toolBar->AddTool(id, proto + "@" + host, wxBitmap(host_xpm), wxNullBitmap, wxITEM_RADIO);
-
-    tool->Toggle();
-
-    m_toolBar->Realize();
-
-    this->Connect(tool->GetId(), wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler(MyFrame::onToolClicked));
-
-    if (proto == "FTP") 
+    for (auto& session : list)
     {
-      auto ftppage = dynamic_cast<MyFTP *>(page);
-      ftppage->InitiateConnect(host, port, user, pass);
+      wxPanel *page = nullptr;
+
+      if (session.prot == "FTP") 
+      {
+        page = new MyFTP(m_book);
+      }
+ 
+      if (!page) return;
+
+      auto id = ID_PAGE_BASE + 1 + iSessionPanels.size();
+
+      iSessionPanels.push_back({id, page});
+
+      m_book->ShowNewPage(page);
+
+      auto tool = m_toolBar->AddTool(id, session.prot + "@" + session.host, wxBitmap(host_xpm), wxNullBitmap, wxITEM_RADIO);
+
+      tool->Toggle();
+
+      m_toolBar->Realize();
+
+      this->Connect(tool->GetId(), wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler(MyFrame::onToolClicked));
+
+      if (session.prot == "FTP") 
+      {
+        auto ftppage = dynamic_cast<MyFTP *>(page);
+        ftppage->InitiateConnect(
+          session.host.ToStdString(),
+          session.port.ToStdString(),
+          session.user.ToStdString(),
+          session.pass.ToStdString());
+      }
     }
   }
 
@@ -170,4 +194,73 @@ class MyFrame : public AppFrame
     }
   }
 
+  void LoadConfiguration(std::string const& filepath)
+  {
+    std::ifstream ifs(filepath, std::ios::binary|std::ios::ate);
+
+    if(!ifs) return;
+
+    auto end = ifs.tellg();
+    ifs.seekg(0, std::ios::beg);
+
+    auto size = std::size_t(end - ifs.tellg());
+
+    if(size == 0) return;
+
+    std::string buffer;
+    buffer.resize(size, '\0');
+
+    if(!ifs.read((char*)buffer.data(), buffer.size()))
+      return;
+
+    std::string line;
+    std::istringstream ss(buffer);
+    TSessionDetails session;
+
+    while (std::getline(ss, line, '\n'))
+    {
+      line.pop_back();
+
+      size_t index = line.find(":");
+
+      if (index != std::string::npos)
+      {
+        wxString key, val;
+
+        key = line.substr(0, index);
+        val = line.substr(index + 1);
+
+        key.Trim(true);
+        key.Trim(false);
+        val.Trim(true);
+        val.Trim(false);
+
+        if (key.CmpNoCase("Host") == 0) {
+          session.host = val;
+        } else if (key.CmpNoCase("Port") == 0) {
+          session.port = val;
+        } else if (key.CmpNoCase("User") == 0) {
+          session.user = val;
+        } else if (key.CmpNoCase("Pass") == 0) {
+          session.pass = val;
+        } else if (key.CmpNoCase("Prot") == 0) {
+          session.prot = val;
+        }
+      }
+
+      if (session.host.size() && 
+          session.user.size() && 
+          session.pass.size() && 
+          session.port.size() && 
+          session.prot.size())
+      {
+        ShowSavedSession(session);
+        session.host.Clear();
+        session.user.Clear();
+        session.pass.Clear();
+        session.port.Clear();
+        session.prot.Clear();
+      }
+    }    
+  }
 };

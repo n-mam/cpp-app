@@ -45,7 +45,7 @@ bool MyApp::OnInit()
         else
         {
           auto trace = (wxGetApp().m_frame)->m_log;
-          
+
           trace->BeginTextColour(wxColour(0, 0, 0));
 
           if (log.find("Command  :") == 0) {
