@@ -939,6 +939,7 @@
                                                                         <property name="window_extra_style"></property>
                                                                         <property name="window_name"></property>
                                                                         <property name="window_style">wxBORDER_DEFAULT</property>
+                                                                        <event name="OnListItemActivated">iListViewSavedSessionsOnListItemActivated</event>
                                                                     </object>
                                                                 </object>
                                                                 <object class="sizeritem" expanded="0">

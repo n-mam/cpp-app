@@ -106,9 +106,21 @@ class MyFrame : public AppFrame
     iListViewSavedSessions->SetItem(idx, 4, pass);
   }
 
+  virtual void iListViewSavedSessionsOnListItemActivated( wxListEvent& event )
+  { 
+    auto host = iListViewSavedSessions->GetItemTextFromEvent(event, 0);
+    auto port = iListViewSavedSessions->GetItemTextFromEvent(event, 1);
+    auto prot = iListViewSavedSessions->GetItemTextFromEvent(event, 2);
+    auto user = iListViewSavedSessions->GetItemTextFromEvent(event, 3);
+    auto pass = iListViewSavedSessions->GetItemTextFromEvent(event, 4);
+    LaunchSession({host, port, user, pass, prot});
+  }
+
   virtual void m_connectOnButtonClick( wxCommandEvent& event )
   {
     std::vector<TSessionDetails> list;
+
+    // quick connect session
 
     auto sess = GetSessionDetails();
 
@@ -117,44 +129,49 @@ class MyFrame : public AppFrame
       list.push_back(sess);
     }
 
-
+    // checked sessions from the saved sessions
 
     if (!list.size()) return;
 
     for (auto& session : list)
     {
-      wxPanel *page = nullptr;
+      LaunchSession(session);
+    }
+  }
 
-      if (session.prot == "FTP") 
-      {
-        page = new MyFTP(m_book);
-      }
+  void LaunchSession(const TSessionDetails& session)
+  {
+    wxPanel *page = nullptr;
+
+    if (session.prot == "FTP") 
+    {
+      page = new MyFTP(m_book);
+    }
  
-      if (!page) return;
+    if (!page) return;
 
-      auto id = ID_PAGE_BASE + 1 + iSessionPanels.size();
+    auto id = ID_PAGE_BASE + 1 + iSessionPanels.size();
 
-      iSessionPanels.push_back({id, page});
+    iSessionPanels.push_back({id, page});
 
-      m_book->ShowNewPage(page);
+    m_book->ShowNewPage(page);
 
-      auto tool = m_toolBar->AddTool(id, session.prot + "@" + session.host, wxBitmap(host_xpm), wxNullBitmap, wxITEM_RADIO);
+    auto tool = m_toolBar->AddTool(id, session.prot + "@" + session.host, wxBitmap(host_xpm), wxNullBitmap, wxITEM_RADIO);
 
-      tool->Toggle();
+    tool->Toggle();
 
-      m_toolBar->Realize();
+    m_toolBar->Realize();
 
-      this->Connect(tool->GetId(), wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler(MyFrame::onToolClicked));
+    this->Connect(tool->GetId(), wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler(MyFrame::onToolClicked));
 
-      if (session.prot == "FTP") 
-      {
-        auto ftppage = dynamic_cast<MyFTP *>(page);
+    if (session.prot == "FTP") 
+    {
+      auto ftppage = dynamic_cast<MyFTP *>(page);
         ftppage->InitiateConnect(
           session.host.ToStdString(),
           session.port.ToStdString(),
           session.user.ToStdString(),
           session.pass.ToStdString());
-      }
     }
   }
 
@@ -219,7 +236,8 @@ class MyFrame : public AppFrame
 
     while (std::getline(ss, line, '\n'))
     {
-      line.pop_back();
+      if (line.back() == '\n') 
+        line.pop_back();
 
       size_t index = line.find(":");
 

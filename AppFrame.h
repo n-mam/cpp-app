@@ -64,6 +64,7 @@ class AppFrame : public wxFrame
 		virtual void onToolClicked( wxCommandEvent& event ) { event.Skip(); }
 		virtual void m_logOnRightDown( wxMouseEvent& event ) { event.Skip(); }
 		virtual void m_protocolOnChoice( wxCommandEvent& event ) { event.Skip(); }
+		virtual void iListViewSavedSessionsOnListItemActivated( wxListEvent& event ) { event.Skip(); }
 		virtual void m_saveOnButtonClick( wxCommandEvent& event ) { event.Skip(); }
 		virtual void m_connectOnButtonClick( wxCommandEvent& event ) { event.Skip(); }
 		virtual void m_traceOnCheckBox( wxCommandEvent& event ) { event.Skip(); }

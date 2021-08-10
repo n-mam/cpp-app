@@ -65,11 +65,11 @@ class MyList : public wxListCtrl
     }
   }
 
-  std::string GetItemTextFromEvent(wxListEvent& event)
+  std::string GetItemTextFromEvent(wxListEvent& event, int col = 0)
   {
     wxListItem info;
 
-    info.m_col = 0;
+    info.m_col = col;
     info.m_mask = wxLIST_MASK_TEXT;
     info.m_itemId = event.m_itemIndex;
     GetItem(info);
