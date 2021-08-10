@@ -121,7 +121,6 @@ class MyFrame : public AppFrame
     std::vector<TSessionDetails> list;
 
     // quick connect session
-
     auto sess = GetSessionDetails();
 
     if (sess.host.size())
@@ -146,6 +145,10 @@ class MyFrame : public AppFrame
     if (session.prot == "FTP") 
     {
       page = new MyFTP(m_book);
+    }
+    else if (session.prot == "SSH")
+    {
+      //page = new MySSH(m_book);
     }
  
     if (!page) return;
@@ -190,7 +193,6 @@ class MyFrame : public AppFrame
     PopupMenu(logMenu);
   }
 
-  //common
   void OnLogContextMenu(wxMouseEvent& e)
   {
     auto id = e.GetId();
@@ -213,25 +215,29 @@ class MyFrame : public AppFrame
 
   void LoadConfiguration(std::string const& filepath)
   {
-    std::ifstream ifs(filepath, std::ios::binary|std::ios::ate);
+    std::ifstream is(filepath, std::ifstream::binary);
 
-    if(!ifs) return;
+    if (!is) return;
 
-    auto end = ifs.tellg();
-    ifs.seekg(0, std::ios::beg);
+    is.seekg(0, is.end);
+    int length = is.tellg();
+    is.seekg(0, is.beg);
 
-    auto size = std::size_t(end - ifs.tellg());
+    char *buffer = new char [length];
 
-    if(size == 0) return;
+    is.read(buffer, length);
 
-    std::string buffer;
-    buffer.resize(size, '\0');
+    is.close();
 
-    if(!ifs.read((char*)buffer.data(), buffer.size()))
-      return;
+    ParseConfiguration(buffer);
 
+    delete[] buffer;
+  }
+
+  void ParseConfiguration(char * buf)
+  {
     std::string line;
-    std::istringstream ss(buffer);
+    std::istringstream ss(buf);
     TSessionDetails session;
 
     while (std::getline(ss, line, '\n'))
@@ -279,6 +285,6 @@ class MyFrame : public AppFrame
         session.port.Clear();
         session.prot.Clear();
       }
-    }    
+    }
   }
 };

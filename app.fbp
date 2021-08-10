@@ -311,7 +311,7 @@
                                             <property name="resize">Resizable</property>
                                             <property name="show">1</property>
                                             <property name="size">-1,-1</property>
-                                            <property name="style"></property>
+                                            <property name="style">wxTE_READONLY</property>
                                             <property name="subclass">; ; forward_declare</property>
                                             <property name="toolbar_pane">0</property>
                                             <property name="tooltip"></property>
@@ -1347,7 +1347,7 @@
                         <property name="pos"></property>
                         <property name="resize">Resizable</property>
                         <property name="sashgravity">0</property>
-                        <property name="sashpos">320</property>
+                        <property name="sashpos">330</property>
                         <property name="sashsize">-1</property>
                         <property name="show">1</property>
                         <property name="size"></property>
