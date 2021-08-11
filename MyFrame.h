@@ -84,7 +84,7 @@ class MyFrame : public AppFrame
   void m_traceOnCheckBox( wxCommandEvent& event )
   {
     if (event.IsChecked()) {
-      m_splitter->SplitHorizontally(m_panel6, m_panel8, 150);
+      m_splitter->SplitHorizontally(m_panel6, m_panel8, 140);
     } else {
       m_splitter->Unsplit(m_panel6);
     }

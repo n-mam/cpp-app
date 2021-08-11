@@ -146,7 +146,7 @@
                 </object>
                 <object class="sizeritem" expanded="1">
                     <property name="border">5</property>
-                    <property name="flag">wxEXPAND|wxALL</property>
+                    <property name="flag">wxEXPAND|wxBOTTOM|wxRIGHT|wxLEFT</property>
                     <property name="proportion">1</property>
                     <object class="wxSplitterWindow" expanded="1">
                         <property name="BottomDockable">1</property>
@@ -387,7 +387,7 @@
                                     <property name="permission">none</property>
                                     <object class="sizeritem" expanded="1">
                                         <property name="border">5</property>
-                                        <property name="flag">wxEXPAND|wxTOP|wxBOTTOM</property>
+                                        <property name="flag">wxEXPAND|wxBOTTOM</property>
                                         <property name="proportion">1</property>
                                         <object class="wxSimplebook" expanded="1">
                                             <property name="BottomDockable">1</property>
@@ -675,7 +675,7 @@
                                                                                         <property name="caption"></property>
                                                                                         <property name="caption_visible">1</property>
                                                                                         <property name="center_pane">0</property>
-                                                                                        <property name="choices">&quot;FTP&quot; &quot;SSH&quot; &quot;WSS&quot;</property>
+                                                                                        <property name="choices">&quot;FTP&quot; &quot;SSH&quot;</property>
                                                                                         <property name="close_button">1</property>
                                                                                         <property name="context_help"></property>
                                                                                         <property name="context_menu">1</property>

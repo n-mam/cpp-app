@@ -68,61 +68,28 @@ class MyFTP : public FTPPanel
     iListViewLocal->Initialize(
       {"Name", "Size", "TS"},
       [this] (long item, long column) {
-        std::string text;
-        if (column == 0)
-          text = m_llist[item].e_name;
-        else if (column == 1)
-          text = m_llist[item].e_size;
-        else if (column == 2)
-          text = m_llist[item].e_ts;
-        return text;
+        return OnListGetItemText(m_llist, item, column);
       },
       [this](long item, long column) 
       {
-        int idx = -1;
-        if (column == 0)
-        {
-          auto type = m_llist[item].e_type;
-
-          if (type == EType::EFile)
-            idx = 0;
-          else if (type == EType::EFolder)
-            idx = 1;
-        }
-        return idx;
+        return OnListGetItemImage(m_llist, item, column);
       }
     );
 
     iListViewRemote->Initialize(
       {"Name", "Size", "TS"},
       [this] (long item, long column) {
-        std::string text;
-        if (column == 0)
-          text = m_rlist[item].e_name;
-        else if (column == 1)
-          text = m_rlist[item].e_size;
-        else if (column == 2)
-          text = m_rlist[item].e_ts;
-        return text;
+        return OnListGetItemText(m_rlist, item, column);
       },
       [this](long item, long column) 
       {
-        int idx = -1;
-        if (column == 0)
-        {
-          auto type = m_rlist[item].e_type;
-
-          if (type == EType::EFile)
-            idx = 0;
-          else if (type == EType::EFolder)
-            idx = 1;
-        }
-        return idx;
+        return OnListGetItemImage(m_rlist, item, column);
       }
     );
-    
+
     iListViewLocal->SetColumnWidth(0, 225);
     iListViewRemote->SetColumnWidth(0, 225);
+
     UpdateLocalListView(
       wxStandardPaths::Get().GetUserDir(
         wxStandardPaths::Dir::Dir_Desktop).ToStdString());
@@ -352,6 +319,33 @@ class MyFTP : public FTPPanel
   }
 
   // common
+  virtual std::string OnListGetItemText(TListFTPElementVector& list, long item, long column)
+  {
+    std::string text;
+    if (column == 0)
+      text = list[item].e_name;
+    else if (column == 1)
+      text = list[item].e_size;
+     else if (column == 2)
+      text = list[item].e_ts;
+    return text;
+  }
+
+  virtual int OnListGetItemImage(TListFTPElementVector& list, long item, long column)
+  {
+    int idx = -1;
+    if (column == 0)
+    {
+      auto type = list[item].e_type;
+
+      if (type == EType::EFile)
+        idx = 0;
+      else if (type == EType::EFolder)
+        idx = 1;
+    }
+    return idx;
+  }
+
   void OnListViewContextMenu(wxMouseEvent& e)
   {
     auto id = e.GetId();
@@ -625,6 +619,5 @@ class MyFTP : public FTPPanel
             }
         });
       });
-
   }
 };

@@ -75,7 +75,7 @@ AppFrame::AppFrame( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	m_port = new wxTextCtrl( szNew->GetStaticBox(), wxID_ANY, _("21"), wxDefaultPosition, wxSize( 45,-1 ), 0|wxBORDER_DEFAULT );
 	szLine1->Add( m_port, 0, wxALL, 5 );
 
-	wxString m_protocolChoices[] = { _("FTP"), _("SSH"), _("WSS") };
+	wxString m_protocolChoices[] = { _("FTP"), _("SSH") };
 	int m_protocolNChoices = sizeof( m_protocolChoices ) / sizeof( wxString );
 	m_protocol = new wxChoice( szNew->GetStaticBox(), wxID_ANY, wxDefaultPosition, wxDefaultSize, m_protocolNChoices, m_protocolChoices, 0|wxBORDER_STATIC );
 	m_protocol->SetSelection( 0 );
@@ -162,14 +162,14 @@ AppFrame::AppFrame( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	bSizer13->Fit( m_homePage );
 	m_book->AddPage( m_homePage, wxEmptyString, false );
 
-	szBook->Add( m_book, 1, wxEXPAND|wxTOP|wxBOTTOM, 5 );
+	szBook->Add( m_book, 1, wxEXPAND|wxBOTTOM, 5 );
 
 
 	m_panel8->SetSizer( szBook );
 	m_panel8->Layout();
 	szBook->Fit( m_panel8 );
 	m_splitter->SplitHorizontally( m_panel6, m_panel8, 150 );
-	szTop->Add( m_splitter, 1, wxEXPAND|wxALL, 5 );
+	szTop->Add( m_splitter, 1, wxEXPAND|wxBOTTOM|wxRIGHT|wxLEFT, 5 );
 
 
 	this->SetSizer( szTop );
