@@ -87,7 +87,7 @@ class MyFTP : public FTPPanel
 
   virtual void iListViewLocalOnListItemActivated(wxListEvent& event)
   {
-    auto item = iListViewLocal->GetItemTextFromEvent(event);
+    auto item = iListViewLocal->GetColumnTextFromEvent(event);
 
     std::string dir = "";
 
@@ -204,7 +204,7 @@ class MyFTP : public FTPPanel
 
   virtual void iListViewRemoteOnListItemActivated(wxListEvent& event)
   {
-    auto item = iListViewRemote->GetItemTextFromEvent(event);
+    auto item = iListViewRemote->GetColumnTextFromEvent(event);
 
     std::string dir = "";
 

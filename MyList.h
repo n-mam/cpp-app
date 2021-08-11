@@ -65,7 +65,7 @@ class MyList : public wxListCtrl
     }
   }
 
-  std::string GetItemTextFromEvent(wxListEvent& event, int col = 0)
+  std::string GetColumnTextFromEvent(wxListEvent& event, int col = 0)
   {
     wxListItem info;
 

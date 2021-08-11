@@ -108,11 +108,11 @@ class MyFrame : public AppFrame
 
   virtual void iListViewSavedSessionsOnListItemActivated( wxListEvent& event )
   { 
-    auto host = iListViewSavedSessions->GetItemTextFromEvent(event, 0);
-    auto port = iListViewSavedSessions->GetItemTextFromEvent(event, 1);
-    auto prot = iListViewSavedSessions->GetItemTextFromEvent(event, 2);
-    auto user = iListViewSavedSessions->GetItemTextFromEvent(event, 3);
-    auto pass = iListViewSavedSessions->GetItemTextFromEvent(event, 4);
+    auto host = iListViewSavedSessions->GetColumnTextFromEvent(event, 0);
+    auto port = iListViewSavedSessions->GetColumnTextFromEvent(event, 1);
+    auto prot = iListViewSavedSessions->GetColumnTextFromEvent(event, 2);
+    auto user = iListViewSavedSessions->GetColumnTextFromEvent(event, 3);
+    auto pass = iListViewSavedSessions->GetColumnTextFromEvent(event, 4);
     LaunchSession({host, port, user, pass, prot});
   }
 
