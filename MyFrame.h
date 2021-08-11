@@ -233,7 +233,7 @@ class MyFrame : public AppFrame
 
   void LoadConfiguration(std::string const& filepath)
   {
-    std::ifstream is(filepath, std::ifstream::binary);
+    std::ifstream is(filepath);
 
     if (!is) return;
 
@@ -258,11 +258,8 @@ class MyFrame : public AppFrame
     std::istringstream ss(buf);
     TListSessionElement session;
 
-    while (std::getline(ss, line, '\n'))
+    while (std::getline(ss, line))
     {
-      if (line.back() == '\n') 
-        line.pop_back();
-
       size_t index = line.find(":");
 
       if (index != std::string::npos)

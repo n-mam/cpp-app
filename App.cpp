@@ -21,17 +21,6 @@ bool MyApp::OnInit()
   if (!wxApp::OnInit())
     return false;
 
-  wxInitAllImageHandlers();
-
-  m_frame = new MyFrame(NULL);
-
-  m_frame->SetIcon(wxICON(aaaaaaaa));
-
-  m_frame->m_host->SetHint("host");
-  m_frame->m_user->SetHint("username");
-  m_frame->m_pass->SetHint("password");
-  m_frame->m_port->SetHint("port");
-
   NPL::CLogger::SetLogCallback(
     [](const std::string& msg)
     {
@@ -59,7 +48,19 @@ bool MyApp::OnInit()
           trace->ScrollIntoView(trace->GetCaretPosition(), WXK_PAGEDOWN);
         }
       });
-    });
+    }
+  );
+
+  wxInitAllImageHandlers();
+
+  m_frame = new MyFrame(NULL);
+
+  m_frame->SetIcon(wxICON(aaaaaaaa));
+
+  m_frame->m_host->SetHint("host");
+  m_frame->m_user->SetHint("username");
+  m_frame->m_pass->SetHint("password");
+  m_frame->m_port->SetHint("port");
 
   m_frame->Show(true);
 
