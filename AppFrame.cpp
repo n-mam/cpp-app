@@ -246,6 +246,7 @@ FTPPanel::FTPPanel( wxWindow* parent, wxWindowID id, const wxPoint& pos, const w
 	this->Layout();
 
 	// Connect Events
+	this->Connect( wxEVT_SIZE, wxSizeEventHandler( FTPPanel::FTPPanelOnSize ) );
 	iComboBoxLocal->Connect( wxEVT_COMMAND_COMBOBOX_SELECTED, wxCommandEventHandler( FTPPanel::iComboBoxLocalOnCombobox ), NULL, this );
 	iComboBoxLocal->Connect( wxEVT_COMMAND_TEXT_ENTER, wxCommandEventHandler( FTPPanel::iComboBoxLocalOnTextEnter ), NULL, this );
 	iListViewLocal->Connect( wxEVT_COMMAND_LIST_ITEM_ACTIVATED, wxListEventHandler( FTPPanel::iListViewLocalOnListItemActivated ), NULL, this );
@@ -261,6 +262,7 @@ FTPPanel::FTPPanel( wxWindow* parent, wxWindowID id, const wxPoint& pos, const w
 FTPPanel::~FTPPanel()
 {
 	// Disconnect Events
+	this->Disconnect( wxEVT_SIZE, wxSizeEventHandler( FTPPanel::FTPPanelOnSize ) );
 	iComboBoxLocal->Disconnect( wxEVT_COMMAND_COMBOBOX_SELECTED, wxCommandEventHandler( FTPPanel::iComboBoxLocalOnCombobox ), NULL, this );
 	iComboBoxLocal->Disconnect( wxEVT_COMMAND_TEXT_ENTER, wxCommandEventHandler( FTPPanel::iComboBoxLocalOnTextEnter ), NULL, this );
 	iListViewLocal->Disconnect( wxEVT_COMMAND_LIST_ITEM_ACTIVATED, wxListEventHandler( FTPPanel::iListViewLocalOnListItemActivated ), NULL, this );

@@ -4,8 +4,6 @@
 
 #include <fstream>
 
-#include "images/host.xpm"
-
 #define ID_LOG_BASE 2000
 
 struct TListSessionElement
@@ -52,7 +50,7 @@ class MyFrame : public AppFrame
       {
         if (column == 0)
         { 
-          return 0;
+          return 2;
         }
         return -1;
       }
@@ -67,7 +65,7 @@ class MyFrame : public AppFrame
     m_splitter->Unsplit(m_panel6);
     m_host->SetFocus();
   }
- 
+
   virtual ~MyFrame() {}
 
   TListSessionElementVector m_slist;

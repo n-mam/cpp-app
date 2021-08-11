@@ -618,6 +618,15 @@ class MyFTP : public FTPPanel
               }
             }
         });
-      });
+      }
+    );
   }
+
+  virtual void FTPPanelOnSize( wxSizeEvent& event )
+  {
+    auto size = event.GetSize();
+    m_splitter->SetSashPosition(size.GetWidth()/2 );
+    event.Skip();
+  }
+
 };

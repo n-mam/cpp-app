@@ -8,6 +8,7 @@
 
 #include <images/file.xpm>
 #include <images/folder.xpm>
+#include <images/host.xpm>
 
 #include <tuple>
 #include <vector>
@@ -31,6 +32,7 @@ class MyList : public wxListCtrl
     m_imageList = new wxImageList(24, 24, true, 1);
     m_imageList->Add(wxIcon(file_xpm));
     m_imageList->Add(wxIcon(folder_xpm));
+    m_imageList->Add(wxIcon(host_xpm));
     SetImageList(m_imageList, wxIMAGE_LIST_SMALL);
   }
 

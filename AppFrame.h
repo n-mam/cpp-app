@@ -104,6 +104,7 @@ class FTPPanel : public wxPanel
 		wxPanel* m_right;
 
 		// Virtual event handlers, overide them in your derived class
+		virtual void FTPPanelOnSize( wxSizeEvent& event ) { event.Skip(); }
 		virtual void iComboBoxLocalOnCombobox( wxCommandEvent& event ) { event.Skip(); }
 		virtual void iComboBoxLocalOnTextEnter( wxCommandEvent& event ) { event.Skip(); }
 		virtual void iListViewLocalOnListItemActivated( wxListEvent& event ) { event.Skip(); }
