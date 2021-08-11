@@ -90,8 +90,8 @@ AppFrame::AppFrame( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	m_user = new wxTextCtrl( szNew->GetStaticBox(), wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( 150,-1 ), 0|wxBORDER_DEFAULT );
 	szLine2->Add( m_user, 1, wxALL, 5 );
 
-	m_password = new wxTextCtrl( szNew->GetStaticBox(), wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( 150,-1 ), wxTE_PASSWORD|wxBORDER_DEFAULT );
-	szLine2->Add( m_password, 1, wxALL, 5 );
+	m_pass = new wxTextCtrl( szNew->GetStaticBox(), wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( 150,-1 ), wxTE_PASSWORD|wxBORDER_DEFAULT );
+	szLine2->Add( m_pass, 1, wxALL, 5 );
 
 
 	szNew->Add( szLine2, 0, wxEXPAND, 5 );
@@ -105,7 +105,7 @@ AppFrame::AppFrame( wxWindow* parent, wxWindowID id, const wxString& title, cons
 
 	bSizer14->Add( szNew, 0, wxEXPAND, 5 );
 
-	iListViewSavedSessions = new MyList( m_homePage, wxID_ANY, wxDefaultPosition, wxSize( 300,-1 ), wxLC_REPORT|wxBORDER_DEFAULT );
+	iListViewSavedSessions = new MyList( m_homePage, wxID_ANY, wxDefaultPosition, wxSize( 300,-1 ), wxLC_REPORT|wxLC_VIRTUAL|wxBORDER_DEFAULT );
 	bSizer14->Add( iListViewSavedSessions, 1, wxEXPAND|wxTOP|wxBOTTOM, 5 );
 
 	wxBoxSizer* szLine3;

@@ -29,7 +29,7 @@ bool MyApp::OnInit()
 
   m_frame->m_host->SetHint("host");
   m_frame->m_user->SetHint("username");
-  m_frame->m_password->SetHint("password");
+  m_frame->m_pass->SetHint("password");
   m_frame->m_port->SetHint("port");
 
   NPL::CLogger::SetLogCallback(

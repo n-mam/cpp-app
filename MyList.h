@@ -13,30 +13,12 @@
 #include <vector>
 #include <filesystem>
 
-enum class EType : uint8_t
-{
-  ENone,
-  EFile,
-  EFolder,
-  ESymlinkFile,
-  ESymlinkFolder
-};
-
-struct TListElement
-{
-  std::string e_name;
-  std::string e_size;
-  std::string e_ts;
-  EType e_type;
-};
-
-using TListElementVector = std::vector<TListElement>;
+using TOnGetItemImageCbk = std::function<int (long, long)>;
+using TOnGetItemTextCbk = std::function<std::string (long, long)>;
 
 class MyList : public wxListCtrl
 {
   public:
-
-  TListElementVector m_list;
 
   MyList(
     wxWindow *parent,
@@ -57,12 +39,15 @@ class MyList : public wxListCtrl
     if (m_imageList) delete m_imageList;
   }
 
-  void Initialize(const std::vector<std::string>& columns)
+  void Initialize(const std::vector<std::string>& columns, TOnGetItemTextCbk tCbk, TOnGetItemImageCbk iCbk)
   {
     for (auto& col : columns)
     {
       AppendColumn(col);
     }
+
+    iOnGetItemTextCbk = tCbk;
+    iOnGetItemImageCbk = iCbk;
   }
 
   std::string GetColumnTextFromEvent(wxListEvent& event, int col = 0)
@@ -77,21 +62,21 @@ class MyList : public wxListCtrl
     return info.m_text.ToStdString();
   }
 
-  TListElementVector GetSelectedItems(void)
+  std::vector<long> GetSelectedItems(void)
   {
     long item = -1;
-    TListElementVector selected;
+    std::vector<long> selected;
 
     for (;;)
     {
       item = GetNextItem(
-               item,
-               wxLIST_NEXT_ALL,
-               wxLIST_STATE_SELECTED);
+          item,
+          wxLIST_NEXT_ALL,
+          wxLIST_STATE_SELECTED);
 
       if (item == -1) break;
 
-      selected.push_back(m_list[item]);
+      selected.push_back(item);
     }
 
     return selected;
@@ -101,45 +86,24 @@ class MyList : public wxListCtrl
   {
     SetItemCount(0);
     DeleteAllItems();
-    m_list.clear();
-    m_list.push_back({
-      "..", "", "", EType::EFolder
-    });
   }
 
   private:
 
   wxImageList *m_imageList;
 
+  TOnGetItemTextCbk iOnGetItemTextCbk;
+
+  TOnGetItemImageCbk iOnGetItemImageCbk;
+
   virtual wxString OnGetItemText(long item, long column) const wxOVERRIDE
   {
-    std::string text;
-
-    if (column == 0)
-      text = m_list[item].e_name;
-    else if (column == 1)
-      text = m_list[item].e_size;
-    else if (column == 2)
-      text = m_list[item].e_ts;
-
-    return text;
+    return iOnGetItemTextCbk(item, column);
   }
 
   virtual int OnGetItemColumnImage(long item, long column) const wxOVERRIDE
   {
-    int idx = -1;
-
-    if (column == 0)
-    {
-      auto type = m_list[item].e_type;
-
-      if (type == EType::EFile)
-        idx = 0;
-      else if (type == EType::EFolder)
-        idx = 1;
-    }
-
-    return idx;
+    return iOnGetItemImageCbk(item, column);
   }
 };
 

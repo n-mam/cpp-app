@@ -76,7 +76,7 @@ class AppFrame : public wxFrame
 		wxTextCtrl* m_host;
 		wxTextCtrl* m_port;
 		wxTextCtrl* m_user;
-		wxTextCtrl* m_password;
+		wxTextCtrl* m_pass;
 		wxStatusBar* m_status;
 
 		AppFrame( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = _("cpp-app"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 901,738 ), long style = wxDEFAULT_FRAME_STYLE|wxTAB_TRAVERSAL );

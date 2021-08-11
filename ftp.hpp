@@ -17,7 +17,25 @@ enum class ETransfer : uint8_t
   EDownload
 };
 
-using TListElementCbk = std::function<void (TListElement&&)>;
+enum class EType : uint8_t
+{
+  ENone,
+  EFile,
+  EFolder,
+  ESymlinkFile,
+  ESymlinkFolder
+};
+
+struct TListFTPElement
+{
+  std::string e_name;
+  std::string e_size;
+  std::string e_ts;
+  EType e_type;
+};
+
+using TListFTPElementVector = std::vector<TListFTPElement>;
+using TListFTPElementCbk = std::function<void (TListFTPElement&&)>;
 using TDirectoryListCbk = std::function<void (const std::string&, const std::string&)>;
 
 uint64_t g_total = 0, g_complete = 0;
@@ -36,6 +54,9 @@ class MyFTP : public FTPPanel
   std::string iCurrentDirectoryLocal;
   std::string iCurrentDirectoryRemote;
 
+  TListFTPElementVector m_llist;
+  TListFTPElementVector m_rlist;
+
   MyFTP(
     wxWindow* parent,
     wxWindowID id = wxID_ANY,
@@ -44,8 +65,62 @@ class MyFTP : public FTPPanel
     long style = wxTAB_TRAVERSAL)
   : FTPPanel(parent, id, pos, size, style)
   {
-    iListViewLocal->Initialize({"Name", "Size", "TS"});
-    iListViewRemote->Initialize({"Name", "Size", "TS"});
+    iListViewLocal->Initialize(
+      {"Name", "Size", "TS"},
+      [this] (long item, long column) {
+        std::string text;
+        if (column == 0)
+          text = m_llist[item].e_name;
+        else if (column == 1)
+          text = m_llist[item].e_size;
+        else if (column == 2)
+          text = m_llist[item].e_ts;
+        return text;
+      },
+      [this](long item, long column) 
+      {
+        int idx = -1;
+        if (column == 0)
+        {
+          auto type = m_llist[item].e_type;
+
+          if (type == EType::EFile)
+            idx = 0;
+          else if (type == EType::EFolder)
+            idx = 1;
+        }
+        return idx;
+      }
+    );
+
+    iListViewRemote->Initialize(
+      {"Name", "Size", "TS"},
+      [this] (long item, long column) {
+        std::string text;
+        if (column == 0)
+          text = m_rlist[item].e_name;
+        else if (column == 1)
+          text = m_rlist[item].e_size;
+        else if (column == 2)
+          text = m_rlist[item].e_ts;
+        return text;
+      },
+      [this](long item, long column) 
+      {
+        int idx = -1;
+        if (column == 0)
+        {
+          auto type = m_rlist[item].e_type;
+
+          if (type == EType::EFile)
+            idx = 0;
+          else if (type == EType::EFolder)
+            idx = 1;
+        }
+        return idx;
+      }
+    );
+    
     iListViewLocal->SetColumnWidth(0, 225);
     iListViewRemote->SetColumnWidth(0, 225);
     UpdateLocalListView(
@@ -120,8 +195,12 @@ class MyFTP : public FTPPanel
 
   virtual void UpdateLocalListView(const std::string& dir)
   {
-    TListElementVector files;
+    TListFTPElementVector files;
 
+    m_llist.clear();
+    m_llist.push_back({
+      "..", "", "", EType::EFolder
+    });
     iListViewLocal->ReInitialize();
 
     try
@@ -141,7 +220,7 @@ class MyFTP : public FTPPanel
         }
         else if (std::filesystem::is_directory(e, ec))
         {
-          iListViewLocal->m_list.push_back({
+          m_llist.push_back({
             e.path().filename().string(),
             "",
             "10:25:47",
@@ -168,7 +247,7 @@ class MyFTP : public FTPPanel
     }
     catch(const std::exception& e)
     {
-      iListViewLocal->m_list.push_back({e.what(), "", "", EType::ENone});
+      m_llist.push_back({e.what(), "", "", EType::ENone});
     }
 
     iCurrentDirectoryLocal = dir;
@@ -177,9 +256,9 @@ class MyFTP : public FTPPanel
 
     iComboBoxLocal->SetValue(iCurrentDirectoryLocal);
 
-    iListViewLocal->m_list.insert(iListViewLocal->m_list.end(), files.begin(), files.end());
+    m_llist.insert(m_llist.end(), files.begin(), files.end());
 
-    iListViewLocal->SetItemCount(iListViewLocal->m_list.size());
+    iListViewLocal->SetItemCount(m_llist.size());
   }
 
   // Remote
@@ -230,18 +309,22 @@ class MyFTP : public FTPPanel
 
   virtual void UpdateRemoteListView(const std::string& dir, const std::string& list)
   {
-    TListElementVector files;
+    TListFTPElementVector files;
 
+    m_rlist.clear();
+    m_rlist.push_back({
+      "..", "", "", EType::EFolder
+    });
     iListViewRemote->ReInitialize();
 
-    ParseDirectoryListUnix(list, [&](TListElement&& element){
+    ParseDirectoryListUnix(list, [&](TListFTPElement&& element){
       if (element.e_type == EType::EFile)
       {
         files.push_back(element);
       }
       else if (element.e_type == EType::EFolder)
       {
-        iListViewRemote->m_list.push_back(element);
+        m_rlist.push_back(element);
       }
     });
 
@@ -251,9 +334,9 @@ class MyFTP : public FTPPanel
 
     iComboBoxRemote->SetValue(iCurrentDirectoryRemote);
 
-    iListViewRemote->m_list.insert(iListViewRemote->m_list.end(), files.begin(), files.end());
+    m_rlist.insert(m_rlist.end(), files.begin(), files.end());
 
-    iListViewRemote->SetItemCount(iListViewRemote->m_list.size());
+    iListViewRemote->SetItemCount(m_rlist.size());
   }
 
   virtual void iListViewLocalOnListItemSelected( wxListEvent& event ) 
@@ -281,7 +364,7 @@ class MyFTP : public FTPPanel
 
         for (auto& item : items)
         {
-          LOG << item.e_name + " : " + std::to_string(static_cast<uint8_t>(item.e_type));
+          LOG << m_llist[item].e_name + " : " + std::to_string(static_cast<uint8_t>(m_llist[item].e_type));
         }
 
         break;
@@ -303,7 +386,7 @@ class MyFTP : public FTPPanel
         for (auto& item : items)
         {
           std::error_code ec;
-          std::filesystem::remove_all(iCurrentDirectoryLocal + "/" + item.e_name, ec);
+          std::filesystem::remove_all(iCurrentDirectoryLocal + "/" + m_llist[item].e_name, ec);
 
           if (ec)
           {
@@ -332,16 +415,16 @@ class MyFTP : public FTPPanel
 
         for (auto& item : items)
         {
-          auto local = iCurrentDirectoryLocal + "/" + item.e_name;
-          auto remote = iCurrentDirectoryRemote + "/" + item.e_name;
+          auto local = iCurrentDirectoryLocal + "/" + m_rlist[item].e_name;
+          auto remote = iCurrentDirectoryRemote + "/" + m_rlist[item].e_name;
 
-          if (item.e_type == EType::EFolder)
+          if (m_rlist[item].e_type == EType::EFolder)
           {
             RemoveDuplicates(remote, '/');
             std::filesystem::create_directory(local);
             TransferFolder(local, remote, ETransfer::EDownload);
           }
-          else if (item.e_type == EType::EFile)
+          else if (m_rlist[item].e_type == EType::EFile)
           {
             iFTPTransfer->Download(
               [](const char *b, size_t n) {
@@ -436,7 +519,7 @@ class MyFTP : public FTPPanel
     );
   }
 
-  void ParseDirectoryListUnix(const std::string& list, TListElementCbk cbk)
+  void ParseDirectoryListUnix(const std::string& list, TListFTPElementCbk cbk)
   {
     std::string line;
     std::istringstream ss(list);
@@ -502,7 +585,7 @@ class MyFTP : public FTPPanel
       {
         // list for path
         ParseDirectoryListUnix(list,
-          [this, local, path, direction](TListElement&& e)
+          [this, local, path, direction](TListFTPElement&& e)
           {
             if (e.e_type == EType::EFolder)
             {
