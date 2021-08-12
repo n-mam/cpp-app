@@ -33,7 +33,8 @@ download wxwidgets 3.1* and build it :
 
 ./configure  
 make  
-make install  
+sudo make install  
+sudo ldconfig  
 
 ##### Build cpp-app  
 export OPENSSL_ROOT_DIR=~/vcpkg/installed/x64-linux/  

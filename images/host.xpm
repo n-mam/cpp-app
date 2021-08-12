@@ -1,5 +1,5 @@
 /* XPM */
-static char * host_xpm[] = {
+static const char * host_xpm[] = {
 "24 24 25 1",
 " 	c None",
 ".	c #080F12",
