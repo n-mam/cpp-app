@@ -228,13 +228,13 @@ class MyFTP : public FTPPanel
     iListViewLocal->SetItemCount(m_llist.size());
   }
 
-  // Remote
-  virtual void iListViewRemoteOnListItemRightClick(wxListEvent& event)
+  virtual void iListViewLocalOnListItemSelected(wxListEvent& event) 
   {
-    auto count = iListViewRemote->GetSelectedItemCount();
-    ShowListViewContextMenu(false, count);
+    std::string text = std::to_string(iListViewLocal->GetSelectedItemCount()) + " items selected";
+    //m_status->SetStatusText(text);
   }
 
+  // Remote
   virtual void iComboBoxRemoteOnCombobox(wxCommandEvent& event) { event.Skip(); }
 
   virtual void iComboBoxRemoteOnTextEnter(wxCommandEvent& event)
@@ -274,6 +274,12 @@ class MyFTP : public FTPPanel
     event.Skip();
   }
 
+  virtual void iListViewRemoteOnListItemRightClick(wxListEvent& event)
+  {
+    auto count = iListViewRemote->GetSelectedItemCount();
+    ShowListViewContextMenu(false, count);
+  }
+
   virtual void UpdateRemoteListView(const std::string& dir, const std::string& list)
   {
     TListFTPElementVector files;
@@ -306,13 +312,7 @@ class MyFTP : public FTPPanel
     iListViewRemote->SetItemCount(m_rlist.size());
   }
 
-  virtual void iListViewLocalOnListItemSelected( wxListEvent& event ) 
-  {
-    std::string text = std::to_string(iListViewLocal->GetSelectedItemCount()) + " items selected";
-    //m_status->SetStatusText(text);
-  }
-
-  virtual void iListViewRemoteOnListItemSelected( wxListEvent& event )
+  virtual void iListViewRemoteOnListItemSelected(wxListEvent& event)
   {
     std::string text = std::to_string(iListViewRemote->GetSelectedItemCount()) + " items selected";
     //m_status->SetStatusText(text);
@@ -348,9 +348,7 @@ class MyFTP : public FTPPanel
 
   void OnListViewContextMenu(wxMouseEvent& e)
   {
-    auto id = e.GetId();
-
-    switch(id)
+    switch (e.GetId())
     {
       case ID_LOCAL_BASE: //upload
       {
@@ -416,7 +414,7 @@ class MyFTP : public FTPPanel
           {
             RemoveDuplicates(remote, '/');
             std::filesystem::create_directory(local);
-            TransferFolder(local, remote, ETransfer::EDownload);
+            DownloadFolder(local, remote);
           }
           else if (m_rlist[item].e_type == EType::EFile)
           {
@@ -570,54 +568,50 @@ class MyFTP : public FTPPanel
     }
   }
 
-  void TransferFolder(const std::string& local, const std::string& remote, ETransfer direction)
+  void DownloadFolder(const std::string& local, const std::string& remote)
   {
     g_total = g_complete = 0;
 
-    GetDirectoryList(remote,
-      [this, local, direction](const std::string& path, const std::string& list) 
+    GetDirectoryList(
+      remote,
+      [this, local] (const std::string& path, const std::string& list) 
       {
         // list for path
-        ParseDirectoryListUnix(list,
-          [this, local, path, direction](TListFTPElement&& e)
+        ParseDirectoryListUnix(
+          list,
+          [this, local, path] (TListFTPElement&& e)
           {
             if (e.e_type == EType::EFolder)
             {
               std::filesystem::create_directory(local + "/" + e.e_name);
-              TransferFolder(local + "/" + e.e_name, path + "/" + e.e_name, direction);
+              DownloadFolder(local + "/" + e.e_name, path + "/" + e.e_name);
             }
             else
             {
-              if (direction == ETransfer::EDownload)
-              {
-                std::string text = "status Total Files : " + 
-                                   std::to_string(++g_total) + 
-                                   ", Finished : " + std::to_string(g_complete);
-                LOG << text;
+              std::string text = "status Total Files : " + 
+                                 std::to_string(++g_total) + 
+                                 ", Finished : " + std::to_string(g_complete);
+              LOG << text;
 
-                iFTPTransfer->Download(
-                  [](const char *b, size_t n) {
-                    if (!b)
-                    {
-                      std::string text = "status Total Files : " + 
-                                         std::to_string(g_total) + 
-                                         ", Finished : " + 
-                                         std::to_string(++g_complete);
-                      LOG << text;                     
-                    }
-                    return true;
-                  },
-                  path + "/" + e.e_name,
-                  local + "/" + e.e_name,
-                  NPL::DCProt::Protected
-                );
-              }
-              else if (direction == ETransfer::EUpload)
-              {
-
-              }
+              iFTPTransfer->Download(
+                [](const char *b, size_t n) {
+                  if (!b)
+                  {
+                    std::string text = "status Total Files : " + 
+                                       std::to_string(g_total) + 
+                                       ", Finished : " + 
+                                       std::to_string(++g_complete);
+                    LOG << text;                     
+                  }
+                  return true;
+                },
+                path + "/" + e.e_name,
+                local + "/" + e.e_name,
+                NPL::DCProt::Protected
+              );
             }
-        });
+          }
+        );
       }
     );
   }
@@ -628,5 +622,4 @@ class MyFTP : public FTPPanel
     m_splitter->SetSashPosition(size.GetWidth()/2 );
     event.Skip();
   }
-
 };
