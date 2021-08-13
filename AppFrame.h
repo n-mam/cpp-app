@@ -135,11 +135,5 @@ class FTPPanel : public wxPanel
 		FTPPanel( wxWindow* parent, wxWindowID id = wxID_ANY, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 500,300 ), long style = wxTAB_TRAVERSAL, const wxString& name = wxEmptyString );
 		~FTPPanel();
 
-		void m_splitterOnIdle( wxIdleEvent& )
-		{
-			m_splitter->SetSashPosition( 330 );
-			m_splitter->Disconnect( wxEVT_IDLE, wxIdleEventHandler( FTPPanel::m_splitterOnIdle ), NULL, this );
-		}
-
 };
 

@@ -69,10 +69,10 @@ AppFrame::AppFrame( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	wxBoxSizer* szLine1;
 	szLine1 = new wxBoxSizer( wxHORIZONTAL );
 
-	m_host = new wxTextCtrl( szNew->GetStaticBox(), wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( 180,-1 ), 0|wxBORDER_DEFAULT );
+	m_host = new wxTextCtrl( szNew->GetStaticBox(), wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( -1,-1 ), 0|wxBORDER_DEFAULT );
 	szLine1->Add( m_host, 1, wxALL, 5 );
 
-	m_port = new wxTextCtrl( szNew->GetStaticBox(), wxID_ANY, _("21"), wxDefaultPosition, wxSize( 45,-1 ), 0|wxBORDER_DEFAULT );
+	m_port = new wxTextCtrl( szNew->GetStaticBox(), wxID_ANY, _("21"), wxDefaultPosition, wxSize( 55,-1 ), 0|wxBORDER_DEFAULT );
 	szLine1->Add( m_port, 0, wxALL, 5 );
 
 	wxString m_protocolChoices[] = { _("FTP"), _("SSH") };
@@ -152,7 +152,7 @@ AppFrame::AppFrame( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	szNew->Add( szProtocol, 0, wxEXPAND|wxALL, 5 );
 
 
-	bSizer14->Add( szNew, 1, wxEXPAND|wxALL, 5 );
+	bSizer14->Add( szNew, 1, wxEXPAND|wxBOTTOM|wxRIGHT, 5 );
 
 
 	bSizer14->Add( 0, 0, 1, wxEXPAND, 5 );
@@ -164,19 +164,19 @@ AppFrame::AppFrame( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	szLine3->Add( 0, 0, 1, wxEXPAND, 5 );
 
 	m_save = new wxButton( m_homePage, wxID_ANY, _("Save"), wxDefaultPosition, wxDefaultSize, 0|wxBORDER_STATIC );
-	szLine3->Add( m_save, 0, wxALL, 5 );
+	szLine3->Add( m_save, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
 
 	m_connect = new wxButton( m_homePage, wxID_ANY, _("Connect"), wxDefaultPosition, wxDefaultSize, 0|wxBORDER_STATIC );
-	szLine3->Add( m_connect, 0, wxALL, 5 );
+	szLine3->Add( m_connect, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
 
 
 	szLine3->Add( 0, 0, 1, wxEXPAND, 5 );
 
 
-	bSizer14->Add( szLine3, 1, wxEXPAND|wxALL, 5 );
+	bSizer14->Add( szLine3, 1, wxEXPAND|wxTOP|wxBOTTOM|wxRIGHT, 5 );
 
 
-	bSizer13->Add( bSizer14, 1, wxEXPAND|wxRIGHT, 5 );
+	bSizer13->Add( bSizer14, 1, wxEXPAND|wxRIGHT|wxLEFT, 5 );
 
 	wxBoxSizer* bSizer19;
 	bSizer19 = new wxBoxSizer( wxVERTICAL );
@@ -187,11 +187,8 @@ AppFrame::AppFrame( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	wxStaticBoxSizer* szSettings;
 	szSettings = new wxStaticBoxSizer( new wxStaticBox( m_homePage, wxID_ANY, _("Settings") ), wxVERTICAL );
 
-	wxBoxSizer* bSizer131;
-	bSizer131 = new wxBoxSizer( wxVERTICAL );
 
-
-	szSettings->Add( bSizer131, 1, wxEXPAND, 5 );
+	szSettings->Add( 0, 0, 1, wxEXPAND, 5 );
 
 	wxStaticBoxSizer* szTrace;
 	szTrace = new wxStaticBoxSizer( new wxStaticBox( szSettings->GetStaticBox(), wxID_ANY, _("Trace") ), wxHORIZONTAL );
@@ -215,7 +212,7 @@ AppFrame::AppFrame( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	bSizer13->Fit( m_homePage );
 	m_book->AddPage( m_homePage, wxEmptyString, false );
 
-	szBook->Add( m_book, 1, wxEXPAND|wxBOTTOM, 5 );
+	szBook->Add( m_book, 1, wxEXPAND|wxTOP|wxBOTTOM, 5 );
 
 
 	m_panel8->SetSizer( szBook );
@@ -267,7 +264,6 @@ FTPPanel::FTPPanel( wxWindow* parent, wxWindowID id, const wxPoint& pos, const w
 
 	m_splitter = new wxSplitterWindow( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxSP_3D|wxSP_LIVE_UPDATE|wxBORDER_NONE|wxCLIP_CHILDREN );
 	m_splitter->SetSashGravity( 0 );
-	m_splitter->Connect( wxEVT_IDLE, wxIdleEventHandler( FTPPanel::m_splitterOnIdle ), NULL, this );
 
 	m_left = new wxPanel( m_splitter, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
 	wxBoxSizer* bSizerLeft;
@@ -297,7 +293,7 @@ FTPPanel::FTPPanel( wxWindow* parent, wxWindowID id, const wxPoint& pos, const w
 	m_right->SetSizer( bSizerRight );
 	m_right->Layout();
 	bSizerRight->Fit( m_right );
-	m_splitter->SplitVertically( m_left, m_right, 330 );
+	m_splitter->SplitVertically( m_left, m_right, -1 );
 	szFTP->Add( m_splitter, 1, wxEXPAND|wxTOP|wxRIGHT|wxLEFT, 5 );
 
 
