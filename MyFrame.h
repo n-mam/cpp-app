@@ -18,7 +18,7 @@ class MyFrame : public AppFrame
     wxWindowID id = wxID_ANY,
     const wxString& title = _("app"),
     const wxPoint& pos = wxDefaultPosition,
-    const wxSize& size = wxSize( 735,560 ),
+    const wxSize& size = wxSize( 735,600 ),
     long style = wxDEFAULT_FRAME_STYLE|wxTAB_TRAVERSAL)
   : AppFrame(parent, id, title, pos, size, style)
   {

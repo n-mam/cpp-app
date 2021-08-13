@@ -94,7 +94,7 @@ class AppFrame : public wxFrame
 
 		void m_splitterOnIdle( wxIdleEvent& )
 		{
-			m_splitter->SetSashPosition( 150 );
+			m_splitter->SetSashPosition( 130 );
 			m_splitter->Disconnect( wxEVT_IDLE, wxIdleEventHandler( AppFrame::m_splitterOnIdle ), NULL, this );
 		}
 

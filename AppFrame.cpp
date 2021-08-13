@@ -35,7 +35,7 @@ AppFrame::AppFrame( wxWindow* parent, wxWindowID id, const wxString& title, cons
 
 	szTop->Add( szTB, 0, wxEXPAND|wxRIGHT|wxLEFT, 5 );
 
-	m_splitter = new wxSplitterWindow( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxSP_LIVE_UPDATE|wxSP_THIN_SASH );
+	m_splitter = new wxSplitterWindow( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxSP_LIVE_UPDATE|wxSP_NOBORDER|wxSP_THIN_SASH );
 	m_splitter->Connect( wxEVT_IDLE, wxIdleEventHandler( AppFrame::m_splitterOnIdle ), NULL, this );
 
 	m_panel6 = new wxPanel( m_splitter, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
@@ -82,7 +82,7 @@ AppFrame::AppFrame( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	szLine1->Add( m_protocol, 0, wxALL, 5 );
 
 
-	szNew->Add( szLine1, 0, wxEXPAND, 5 );
+	szNew->Add( szLine1, 0, wxEXPAND|wxTOP, 5 );
 
 	wxBoxSizer* szLine2;
 	szLine2 = new wxBoxSizer( wxHORIZONTAL );
@@ -94,7 +94,7 @@ AppFrame::AppFrame( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	szLine2->Add( m_pass, 1, wxALL, 5 );
 
 
-	szNew->Add( szLine2, 0, wxEXPAND, 5 );
+	szNew->Add( szLine2, 0, wxEXPAND|wxTOP, 5 );
 
 	wxStaticBoxSizer* szProtocol;
 	szProtocol = new wxStaticBoxSizer( new wxStaticBox( szNew->GetStaticBox(), wxID_ANY, _("FTPS") ), wxVERTICAL );
@@ -123,7 +123,7 @@ AppFrame::AppFrame( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	szCC->Add( m_panelCCProt, 1, wxEXPAND | wxALL, 5 );
 
 
-	szProtocol->Add( szCC, 1, wxALL|wxEXPAND, 5 );
+	szProtocol->Add( szCC, 0, wxALL|wxEXPAND, 5 );
 
 	wxStaticBoxSizer* szDC;
 	szDC = new wxStaticBoxSizer( new wxStaticBox( szProtocol->GetStaticBox(), wxID_ANY, _("Data") ), wxHORIZONTAL );
@@ -146,13 +146,16 @@ AppFrame::AppFrame( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	szDC->Add( m_panelDCProt, 1, wxEXPAND | wxALL, 5 );
 
 
-	szProtocol->Add( szDC, 1, wxEXPAND|wxALL, 5 );
+	szProtocol->Add( szDC, 0, wxEXPAND|wxALL, 5 );
 
 
 	szNew->Add( szProtocol, 0, wxEXPAND|wxALL, 5 );
 
 
-	bSizer14->Add( szNew, 0, wxEXPAND, 5 );
+	bSizer14->Add( szNew, 1, wxEXPAND|wxALL, 5 );
+
+
+	bSizer14->Add( 0, 0, 1, wxEXPAND, 5 );
 
 	wxBoxSizer* szLine3;
 	szLine3 = new wxBoxSizer( wxHORIZONTAL );
@@ -170,10 +173,10 @@ AppFrame::AppFrame( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	szLine3->Add( 0, 0, 1, wxEXPAND, 5 );
 
 
-	bSizer14->Add( szLine3, 0, wxEXPAND, 5 );
+	bSizer14->Add( szLine3, 1, wxEXPAND|wxALL, 5 );
 
 
-	bSizer13->Add( bSizer14, 1, wxEXPAND|wxTOP|wxRIGHT|wxLEFT, 5 );
+	bSizer13->Add( bSizer14, 1, wxEXPAND|wxRIGHT, 5 );
 
 	wxBoxSizer* bSizer19;
 	bSizer19 = new wxBoxSizer( wxVERTICAL );
@@ -201,10 +204,10 @@ AppFrame::AppFrame( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	szSettings->Add( szTrace, 0, wxEXPAND|wxALL, 5 );
 
 
-	bSizer19->Add( szSettings, 1, wxEXPAND|wxLEFT, 5 );
+	bSizer19->Add( szSettings, 1, wxEXPAND|wxALL, 5 );
 
 
-	bSizer13->Add( bSizer19, 1, wxEXPAND|wxTOP|wxRIGHT|wxLEFT, 5 );
+	bSizer13->Add( bSizer19, 1, wxEXPAND|wxTOP|wxBOTTOM, 5 );
 
 
 	m_homePage->SetSizer( bSizer13 );
@@ -218,7 +221,7 @@ AppFrame::AppFrame( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	m_panel8->SetSizer( szBook );
 	m_panel8->Layout();
 	szBook->Fit( m_panel8 );
-	m_splitter->SplitHorizontally( m_panel6, m_panel8, 150 );
+	m_splitter->SplitHorizontally( m_panel6, m_panel8, 130 );
 	szTop->Add( m_splitter, 1, wxEXPAND|wxBOTTOM|wxRIGHT|wxLEFT, 5 );
 
 
