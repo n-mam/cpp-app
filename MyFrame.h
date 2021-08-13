@@ -76,9 +76,10 @@ class MyFrame : public AppFrame
     ss << "User : " << session.m_user << "\n";
     ss << "Pass : " << session.m_pass << "\n";
     auto szFlags = std::to_string(
-      static_cast<int>(session.m_ccTls) | static_cast<int>(session.m_dcTls));
+      static_cast<int>(session.m_ccTls) | (1 << static_cast<int>(session.m_dcTls))
+    );
     ss << "TLS : "  << szFlags << "\n";
-    ss << "Prot : " << session.m_prot << "\n";
+    ss << "Prot : " << session.m_prot << "\n\n";
 
     WriteConfiguration("C:/Users/Divya Surana/Desktop/cfg.txt", ss.str());
 
@@ -265,7 +266,7 @@ class MyFrame : public AppFrame
   {
     std::ofstream os;
 
-    os.open(filepath);
+    os.open(filepath, std::ios_base::app);
 
     os.seekp(0, os.end);
 
