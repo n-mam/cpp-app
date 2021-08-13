@@ -1,7 +1,7 @@
 #include <osl.hpp>
 
 #include <wx/stdpaths.h>
-#include <wx/msgdlg.h> 
+#include <wx/msgdlg.h>
 
 #include <images/up.xpm>
 #include <images/down.xpm>
@@ -87,7 +87,9 @@ class MyFTP : public FTPPanel, public TSession
 
     UpdateLocalListView(
       wxStandardPaths::Get().GetUserDir(
-        wxStandardPaths::Dir::Dir_Desktop).ToStdString());
+        wxStandardPaths::Dir::Dir_Desktop
+      ).ToStdString()
+    );
   }
 
   virtual ~MyFTP()

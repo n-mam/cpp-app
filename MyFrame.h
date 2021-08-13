@@ -48,7 +48,11 @@ class MyFrame : public AppFrame
     iListViewSavedSessions->SetColumnWidth(2, 50);
     //https://trac.wxwidgets.org/ticket/18393
     //iListViewSavedSessions->EnableCheckBoxes(true);
-    LoadConfiguration("C:/Users/Divya Surana/Desktop/cfg.txt");
+    LoadConfiguration(
+      wxStandardPaths::Get().GetUserDir(
+        wxStandardPaths::Dir::Dir_Desktop
+      ).ToStdString() + "/cfg.txt"
+    );
     iListViewSavedSessions->SetItemCount(m_slist.size());
     m_panelDCProt->Enable(false);
     //m_splitter->Unsplit(m_panel6);
@@ -79,7 +83,12 @@ class MyFrame : public AppFrame
     ss << "TLS : "  << szFlags << "\n";
     ss << "Prot : " << session.m_prot << "\n\n";
 
-    WriteConfiguration("C:/Users/Divya Surana/Desktop/cfg.txt", ss.str());
+    WriteConfiguration(
+      wxStandardPaths::Get().GetUserDir(
+        wxStandardPaths::Dir::Dir_Desktop
+      ).ToStdString() + "/cfg.txt",
+      ss.str()
+    );
 
     iListViewSavedSessions->ReInitialize();
     m_slist.push_back(session);
