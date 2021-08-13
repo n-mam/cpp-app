@@ -75,8 +75,8 @@ class AppFrame : public wxFrame
 		virtual void OnRadioCCProt( wxCommandEvent& event ) { event.Skip(); }
 		virtual void m_saveOnButtonClick( wxCommandEvent& event ) { event.Skip(); }
 		virtual void m_connectOnButtonClick( wxCommandEvent& event ) { event.Skip(); }
-		virtual void iListViewSavedSessionsOnListItemActivated( wxListEvent& event ) { event.Skip(); }
-		virtual void m_traceOnCheckBox( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnSavedSessionsListItemActivated( wxListEvent& event ) { event.Skip(); }
+		virtual void OnTraceCheckBox( wxCommandEvent& event ) { event.Skip(); }
 
 
 	public:

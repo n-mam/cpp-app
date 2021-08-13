@@ -107,7 +107,8 @@ class MyFTP : public FTPPanel, public TSession
       "/",
       [this](const std::string& path, const std::string& list){
         UpdateRemoteListView(path, list);
-      });
+      }
+    );
   }
 
   protected:

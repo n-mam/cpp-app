@@ -237,8 +237,8 @@ AppFrame::AppFrame( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	m_radioCCProtImplicit->Connect( wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler( AppFrame::OnRadioCCProt ), NULL, this );
 	m_save->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( AppFrame::m_saveOnButtonClick ), NULL, this );
 	m_connect->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( AppFrame::m_connectOnButtonClick ), NULL, this );
-	iListViewSavedSessions->Connect( wxEVT_COMMAND_LIST_ITEM_ACTIVATED, wxListEventHandler( AppFrame::iListViewSavedSessionsOnListItemActivated ), NULL, this );
-	m_trace->Connect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( AppFrame::m_traceOnCheckBox ), NULL, this );
+	iListViewSavedSessions->Connect( wxEVT_COMMAND_LIST_ITEM_ACTIVATED, wxListEventHandler( AppFrame::OnSavedSessionsListItemActivated ), NULL, this );
+	m_trace->Connect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( AppFrame::OnTraceCheckBox ), NULL, this );
 }
 
 AppFrame::~AppFrame()
@@ -252,8 +252,8 @@ AppFrame::~AppFrame()
 	m_radioCCProtImplicit->Disconnect( wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler( AppFrame::OnRadioCCProt ), NULL, this );
 	m_save->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( AppFrame::m_saveOnButtonClick ), NULL, this );
 	m_connect->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( AppFrame::m_connectOnButtonClick ), NULL, this );
-	iListViewSavedSessions->Disconnect( wxEVT_COMMAND_LIST_ITEM_ACTIVATED, wxListEventHandler( AppFrame::iListViewSavedSessionsOnListItemActivated ), NULL, this );
-	m_trace->Disconnect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( AppFrame::m_traceOnCheckBox ), NULL, this );
+	iListViewSavedSessions->Disconnect( wxEVT_COMMAND_LIST_ITEM_ACTIVATED, wxListEventHandler( AppFrame::OnSavedSessionsListItemActivated ), NULL, this );
+	m_trace->Disconnect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( AppFrame::OnTraceCheckBox ), NULL, this );
 
 }
 

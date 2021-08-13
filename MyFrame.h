@@ -41,9 +41,7 @@ class MyFrame : public AppFrame
       [this](long item, long column)
       {
         if (column == 0)
-        { 
           return 2;
-        }
         return -1;
       }
     );
@@ -65,17 +63,36 @@ class MyFrame : public AppFrame
 
   protected:
 
-  void onToolClicked(wxCommandEvent& event)
+  virtual void m_saveOnButtonClick(wxCommandEvent& event)
   {
-    m_book->SetSelection(event.GetId() % ID_PAGE_BASE);
+    auto session = GetSessionDetails();
+    
+    if (!session.m_host.size()) return;
+
+    iListViewSavedSessions->ReInitialize();
+    m_slist.push_back(session);
+    iListViewSavedSessions->SetItemCount(m_slist.size());
   }
- 
-  void m_traceOnCheckBox(wxCommandEvent& event)
+
+  virtual void m_connectOnButtonClick(wxCommandEvent& event)
   {
-    if (event.IsChecked()) {
-      m_splitter->SplitHorizontally(m_panel6, m_panel8, 140);
-    } else {
-      m_splitter->Unsplit(m_panel6);
+    std::vector<TSession> list;
+
+    // quick connect session
+    auto session = GetSessionDetails();
+
+    if (session.m_host.size())
+    {
+      list.push_back(session);
+    }
+
+    // checked sessions from the saved sessions
+
+    if (!list.size()) return;
+
+    for (auto& s : list)
+    {
+      LaunchSession(s);
     }
   }
 
@@ -98,7 +115,7 @@ class MyFrame : public AppFrame
     {
       wxMessageBox(
        "Please specify all the values", 
-        "Error", wxOK, this);
+       "Error", wxOK, this);
       return {};
     }
 
@@ -136,63 +153,22 @@ class MyFrame : public AppFrame
     return session;
   }
 
-  virtual void m_saveOnButtonClick(wxCommandEvent& event)
-  {
-    auto session = GetSessionDetails();
-    if (!session.m_host.size()) return;
-    iListViewSavedSessions->ReInitialize();
-    m_slist.push_back(session);
-    iListViewSavedSessions->SetItemCount(m_slist.size());
-  }
-
-  virtual void m_connectOnButtonClick(wxCommandEvent& event)
-  {
-    std::vector<TSession> list;
-
-    // quick connect session
-    auto session = GetSessionDetails();
-
-    if (session.m_host.size())
-    {
-      list.push_back(session);
-    }
-
-    // checked sessions from the saved sessions
-
-    if (!list.size()) return;
-
-    for (auto& s : list)
-    {
-      LaunchSession(s);
-    }
-  }
-
-  virtual void iListViewSavedSessionsOnListItemActivated(wxListEvent& event)
-  {
-    LaunchSession(m_slist[event.GetIndex()]);
-  }
-
   void LaunchSession(const TSession& session)
   {
     wxPanel *page = nullptr;
+
+    auto id = ID_PAGE_BASE + m_book->GetPageCount();
 
     if (session.m_prot == "FTP")
     {
       page = new MyFTP(m_book);
     }
-    else if (session.m_prot == "SSH")
-    {
-      
-    }
  
     if (!page) return;
 
-    m_book->ShowNewPage(page);
+    auto tool = m_toolBar->AddRadioTool(id, session.m_prot + "@" + session.m_host, wxBitmap(host_xpm));
 
-    auto tool = m_toolBar->AddRadioTool(
-      ID_PAGE_BASE + m_book->GetPageCount(), 
-      session.m_prot + "@" + session.m_host, 
-      wxBitmap(host_xpm));
+    m_book->ShowNewPage(page);
 
     tool->Toggle();
 
@@ -205,6 +181,11 @@ class MyFrame : public AppFrame
     *s = session;
 
     s->StartSession();
+  }
+
+  virtual void OnSavedSessionsListItemActivated(wxListEvent& event)
+  {
+    LaunchSession(m_slist[event.GetIndex()]);
   }
 
   void OnLogRightDown(wxMouseEvent& event)
@@ -250,6 +231,20 @@ class MyFrame : public AppFrame
       m_panelDCProt->Enable(true);
     }
     event.Skip();
+  }
+
+  void onToolClicked(wxCommandEvent& event)
+  {
+    m_book->SetSelection(event.GetId() % ID_PAGE_BASE);
+  }
+ 
+  void OnTraceCheckBox(wxCommandEvent& event)
+  {
+    if (event.IsChecked()) {
+      m_splitter->SplitHorizontally(m_panel6, m_panel8, 140);
+    } else {
+      m_splitter->Unsplit(m_panel6);
+    }
   }
 
   void LoadConfiguration(std::string const& filepath)
