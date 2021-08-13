@@ -66,8 +66,21 @@ class MyFrame : public AppFrame
   virtual void m_saveOnButtonClick(wxCommandEvent& event)
   {
     auto session = GetSessionDetails();
-    
+
     if (!session.m_host.size()) return;
+
+    std::stringstream ss;
+
+    ss << "Host : " << session.m_host << "\n";
+    ss << "Port : " << session.m_port << "\n";
+    ss << "User : " << session.m_user << "\n";
+    ss << "Pass : " << session.m_pass << "\n";
+    auto szFlags = std::to_string(
+      static_cast<int>(session.m_ccTls) | static_cast<int>(session.m_dcTls));
+    ss << "TLS : "  << szFlags << "\n";
+    ss << "Prot : " << session.m_prot << "\n";
+
+    WriteConfiguration("C:/Users/Divya Surana/Desktop/cfg.txt", ss.str());
 
     iListViewSavedSessions->ReInitialize();
     m_slist.push_back(session);
@@ -87,6 +100,7 @@ class MyFrame : public AppFrame
     }
 
     // checked sessions from the saved sessions
+    //https://trac.wxwidgets.org/ticket/18393
 
     if (!list.size()) return;
 
@@ -245,6 +259,19 @@ class MyFrame : public AppFrame
     } else {
       m_splitter->Unsplit(m_panel6);
     }
+  }
+
+  void WriteConfiguration(std::string const& filepath, const std::string& buffer)
+  {
+    std::ofstream os;
+
+    os.open(filepath);
+
+    os.seekp(0, os.end);
+
+    os.write(buffer.c_str(), buffer.size());
+
+    os.close();
   }
 
   void LoadConfiguration(std::string const& filepath)
