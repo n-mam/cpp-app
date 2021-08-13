@@ -4,9 +4,7 @@ cmake_minimum_required(VERSION 3.0)
 
 # SET wxWidgets_ROOT_DIR=d:\wxWidgets-3.1.2
 # SET OPENSSL_ROOT_DIR=D:/vcpkg.1/installed/x64-windows
-# SET RapidJSON_DIR=D:\vcpkg.1\installed\x64-windows\share\rapidjson
 # export OPENSSL_ROOT_DIR=/home/nmam/vcpkg/installed/x64-linux
-# export RapidJSON_DIR=/home/nmam/vcpkg/installed/x64-linux/share/rapidjson
 
 project(cpp-app)
 
@@ -15,7 +13,6 @@ if (UNIX)
 endif(UNIX)
 
 find_package(OpenSSL REQUIRED)
-find_package(RapidJSON CONFIG REQUIRED)
 find_package(wxWidgets COMPONENTS core base richtext adv html xml REQUIRED)
 
 include(${wxWidgets_USE_FILE})

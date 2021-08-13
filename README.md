@@ -13,8 +13,7 @@ namke -f makefile.vc BUILD=Release TARGET_CPU=AMD64
 
 ##### Build cpp-app  
 SET wxWidgets_ROOT_DIR=d:\wxWidgets-3.1.2  
-SET OPENSSL_ROOT_DIR=d:\vcpkg.1\installed\x64-windows  
-SET RapidJSON_DIR=D:\vcpkg.1\installed\x64-windows\share\rapidjson  
+SET OPENSSL_ROOT_DIR=d:\vcpkg.1\installed\x64-windows   
 
 md build  
 cd build  
@@ -38,7 +37,6 @@ sudo ldconfig
 
 ##### Build cpp-app  
 export OPENSSL_ROOT_DIR=~/vcpkg/installed/x64-linux/  
-export RapidJSON_DIR=/home/nmam/vcpkg/installed/x64-linux/share/rapidjson  
 
 mkdir build  
 cd build  

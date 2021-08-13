@@ -282,7 +282,7 @@
                                             <property name="center_pane">0</property>
                                             <property name="close_button">1</property>
                                             <property name="context_help"></property>
-                                            <property name="context_menu">1</property>
+                                            <property name="context_menu">0</property>
                                             <property name="default_pane">0</property>
                                             <property name="dock">Dock</property>
                                             <property name="dock_fixed">0</property>
@@ -321,7 +321,7 @@
                                             <property name="validator_variable"></property>
                                             <property name="window_extra_style"></property>
                                             <property name="window_name"></property>
-                                            <property name="window_style">wxBORDER_DEFAULT|wxHSCROLL|wxVSCROLL|wxWANTS_CHARS</property>
+                                            <property name="window_style">wxBORDER_DEFAULT|wxHSCROLL|wxVSCROLL</property>
                                             <event name="OnRightDown">OnLogRightDown</event>
                                         </object>
                                     </object>

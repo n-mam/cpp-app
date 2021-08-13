@@ -23,7 +23,7 @@ class MyFrame : public AppFrame
   : AppFrame(parent, id, title, pos, size, style)
   {
     iListViewSavedSessions->Initialize(
-      {"Host", "Protocol", "Port", "Username", "Password"},
+      {"Host", "Protocol", "Port", "Username"},
       [this] (long item, long column) {
         std::string text;
         if (column == 0)
@@ -34,8 +34,6 @@ class MyFrame : public AppFrame
           text = m_slist[item].m_port;
         else if (column == 3)
           text = m_slist[item].m_user;
-        else if (column == 4)
-          text = m_slist[item].m_pass;
         return text;
       },
       [this](long item, long column)
