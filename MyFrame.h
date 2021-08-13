@@ -1,4 +1,5 @@
 #include "AppFrame.h"
+#include "TSession.h"
 #include "MyList.h"
 #include "ftp.hpp"
 
@@ -6,16 +7,7 @@
 
 #define ID_LOG_BASE 2000
 
-struct TListSessionElement
-{
-  wxString e_host;
-  wxString e_prot;
-  wxString e_port;
-  wxString e_user;
-  wxString e_pass;
-};
-
-using TListSessionElementVector = std::vector<TListSessionElement>;
+using TListSessionVector = std::vector<TSession>;
 
 class MyFrame : public AppFrame
 {
@@ -35,15 +27,15 @@ class MyFrame : public AppFrame
       [this] (long item, long column) {
         std::string text;
         if (column == 0)
-          text = m_slist[item].e_host;
+          text = m_slist[item].m_host;
         else if (column == 1)
-          text = m_slist[item].e_prot;
+          text = m_slist[item].m_prot;
         else if (column == 2)
-          text = m_slist[item].e_port;
+          text = m_slist[item].m_port;
         else if (column == 3)
-          text = m_slist[item].e_user;
+          text = m_slist[item].m_user;
         else if (column == 4)
-          text = m_slist[item].e_pass;
+          text = m_slist[item].m_pass;
         return text;
       },
       [this](long item, long column)
@@ -62,24 +54,23 @@ class MyFrame : public AppFrame
     //iListViewSavedSessions->EnableCheckBoxes(true);
     LoadConfiguration("C:/Users/Divya Surana/Desktop/cfg.txt");
     iListViewSavedSessions->SetItemCount(m_slist.size());
-    m_splitter->Unsplit(m_panel6);
-    m_host->SetFocus();
+    m_panelDCProt->Enable(false);
+    //m_splitter->Unsplit(m_panel6);
+    m_host->SetFocus(); 
   }
 
   virtual ~MyFrame() {}
 
-  TListSessionElementVector m_slist;
+  TListSessionVector m_slist;
 
   protected:
 
-  std::vector<std::pair<int, wxPanel *>> iSessionPanels;
-
-  void onToolClicked( wxCommandEvent& event )
+  void onToolClicked(wxCommandEvent& event)
   {
     m_book->SetSelection(event.GetId() % ID_PAGE_BASE);
   }
  
-  void m_traceOnCheckBox( wxCommandEvent& event )
+  void m_traceOnCheckBox(wxCommandEvent& event)
   {
     if (event.IsChecked()) {
       m_splitter->SplitHorizontally(m_panel6, m_panel8, 140);
@@ -88,16 +79,22 @@ class MyFrame : public AppFrame
     }
   }
 
-  TListSessionElement GetSessionDetails(void)
+  TSession GetSessionDetails(void)
   {
-    auto host = m_host->GetValue();
-    auto port = m_port->GetValue();
-    auto user = m_user->GetValue();
-    auto pass = m_pass->GetValue();
-    auto prot = m_protocol->GetString(
+    TSession session;
+
+    session.m_host = m_host->GetValue();
+    session.m_port = m_port->GetValue();
+    session.m_user = m_user->GetValue();
+    session.m_pass = m_pass->GetValue();
+    session.m_prot = m_protocol->GetString(
       m_protocol->GetSelection());
 
-    if (!host.size() || !user.size() || !pass.size() || !port.size() || !prot.size())
+    if (!session.m_host.size() ||
+        !session.m_port.size() || 
+        !session.m_user.size() || 
+        !session.m_pass.size() || 
+        !session.m_prot.size())
     {
       wxMessageBox(
        "Please specify all the values", 
@@ -105,77 +102,97 @@ class MyFrame : public AppFrame
       return {};
     }
 
+    session.m_ccTls = NPL::TLS::No;
+    session.m_dcTls = NPL::TLS::No;
+
+    if (session.m_prot == "FTP")
+    {
+      if (m_radioCCProtExplicit->GetValue())
+      {
+        session.m_ccTls = NPL::TLS::Yes;
+      }
+      else if (m_radioCCProtImplicit->GetValue())
+      {
+        session.m_ccTls = NPL::TLS::Implicit;
+      }
+
+      if (session.m_ccTls != NPL::TLS::No)
+      {
+        if (m_radioDCProtProtected->GetValue())
+        {
+          session.m_dcTls = NPL::TLS::Yes;
+        }
+      }
+    }
+    else if (session.m_prot == "SSH")
+    {
+    }
+
     m_host->Clear();
     m_port->Clear();
     m_user->Clear();
     m_pass->Clear();
 
-    return {host, prot, port, user, pass};
+    return session;
   }
 
-  virtual void m_saveOnButtonClick( wxCommandEvent& event )
+  virtual void m_saveOnButtonClick(wxCommandEvent& event)
   {
     auto session = GetSessionDetails();
-    if (!session.e_host.size()) return;
+    if (!session.m_host.size()) return;
     iListViewSavedSessions->ReInitialize();
     m_slist.push_back(session);
     iListViewSavedSessions->SetItemCount(m_slist.size());
   }
 
-  virtual void iListViewSavedSessionsOnListItemActivated(wxListEvent& event)
-  { 
-    auto host = iListViewSavedSessions->GetColumnTextFromEvent(event, 0);
-    auto prot = iListViewSavedSessions->GetColumnTextFromEvent(event, 1);
-    auto port = iListViewSavedSessions->GetColumnTextFromEvent(event, 2);
-    auto user = iListViewSavedSessions->GetColumnTextFromEvent(event, 3);
-    auto pass = iListViewSavedSessions->GetColumnTextFromEvent(event, 4);
-    LaunchSession({host, prot, port, user, pass});
-  }
-
   virtual void m_connectOnButtonClick(wxCommandEvent& event)
   {
-    std::vector<TListSessionElement> list;
+    std::vector<TSession> list;
 
     // quick connect session
-    auto sess = GetSessionDetails();
+    auto session = GetSessionDetails();
 
-    if (sess.e_host.size())
+    if (session.m_host.size())
     {
-      list.push_back(sess);
+      list.push_back(session);
     }
 
     // checked sessions from the saved sessions
 
     if (!list.size()) return;
 
-    for (auto& session : list)
+    for (auto& s : list)
     {
-      LaunchSession(session);
+      LaunchSession(s);
     }
   }
 
-  void LaunchSession(const TListSessionElement& session)
+  virtual void iListViewSavedSessionsOnListItemActivated(wxListEvent& event)
+  {
+    LaunchSession(m_slist[event.GetIndex()]);
+  }
+
+  void LaunchSession(const TSession& session)
   {
     wxPanel *page = nullptr;
 
-    if (session.e_prot == "FTP") 
+    if (session.m_prot == "FTP")
     {
       page = new MyFTP(m_book);
     }
-    else if (session.e_prot == "SSH")
+    else if (session.m_prot == "SSH")
     {
-      //page = new MySSH(m_book);
+      
     }
  
     if (!page) return;
 
-    auto id = ID_PAGE_BASE + 1 + iSessionPanels.size();
-
-    iSessionPanels.push_back({id, page});
-
     m_book->ShowNewPage(page);
 
-    auto tool = m_toolBar->AddTool(id, session.e_prot + "@" + session.e_host, wxBitmap(host_xpm), wxNullBitmap, wxITEM_RADIO);
+    auto tool = m_toolBar->AddRadioTool(
+      ID_PAGE_BASE + m_book->GetPageCount(), 
+      session.m_prot + "@" + session.m_host, 
+      wxBitmap(host_xpm));
 
     tool->Toggle();
 
@@ -183,18 +200,14 @@ class MyFrame : public AppFrame
 
     this->Connect(tool->GetId(), wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler(MyFrame::onToolClicked));
 
-    if (session.e_prot == "FTP") 
-    {
-      auto ftppage = dynamic_cast<MyFTP *>(page);
-        ftppage->InitiateConnect(
-          session.e_host.ToStdString(),
-          session.e_port.ToStdString(),
-          session.e_user.ToStdString(),
-          session.e_pass.ToStdString());
-    }
+    auto s = dynamic_cast<TSession *>(page);
+
+    *s = session;
+
+    s->StartSession();
   }
 
-  void m_logOnRightDown(wxMouseEvent& event)
+  void OnLogRightDown(wxMouseEvent& event)
   {
     wxMenu *logMenu = new wxMenu();
 
@@ -229,6 +242,16 @@ class MyFrame : public AppFrame
     }
   }
 
+  void OnRadioCCProt(wxCommandEvent& event)
+  {
+    if (m_radioCCProtNone->GetValue()) {
+      m_panelDCProt->Enable(false);
+    } else {
+      m_panelDCProt->Enable(true);
+    }
+    event.Skip();
+  }
+
   void LoadConfiguration(std::string const& filepath)
   {
     std::ifstream is(filepath);
@@ -252,9 +275,12 @@ class MyFrame : public AppFrame
 
   void ParseConfiguration(char * buf)
   {
+    TSession session;
     std::string line;
     std::istringstream ss(buf);
-    TListSessionElement session;
+
+    session.m_ccTls = NPL::TLS::No;
+    session.m_dcTls = NPL::TLS::No;
 
     while (std::getline(ss, line))
     {
@@ -271,32 +297,46 @@ class MyFrame : public AppFrame
         key.Trim(false);
         val.Trim(true);
         val.Trim(false);
-
+ 
         if (key.CmpNoCase("Host") == 0) {
-          session.e_host = val;
+          session.m_host = val;
         } else if (key.CmpNoCase("Port") == 0) {
-          session.e_port = val;
+          session.m_port = val;
         } else if (key.CmpNoCase("User") == 0) {
-          session.e_user = val;
+          session.m_user = val;
         } else if (key.CmpNoCase("Pass") == 0) {
-          session.e_pass = val;
+          session.m_pass = val;
         } else if (key.CmpNoCase("Prot") == 0) {
-          session.e_prot = val;
+          session.m_prot = val;
+        } else if (key.CmpNoCase("TLS") == 0) {
+          auto flags = wxAtoi(val);
+          if (!flags) {
+            session.m_ccTls = session.m_dcTls = NPL::TLS::No;
+          } else {
+            if (flags & 0x01) {
+              session.m_ccTls = NPL::TLS::Yes;
+            }
+            if (flags & 0x02) {
+              session.m_dcTls = NPL::TLS::Yes; 
+            }
+          }
         }
       }
 
-      if (session.e_host.size() && 
-          session.e_user.size() && 
-          session.e_pass.size() && 
-          session.e_port.size() && 
-          session.e_prot.size())
+      if (session.m_host.size() && 
+          session.m_user.size() && 
+          session.m_pass.size() && 
+          session.m_port.size() && 
+          session.m_prot.size())
       {
         m_slist.push_back(session);
-        session.e_host.Clear();
-        session.e_user.Clear();
-        session.e_pass.Clear();
-        session.e_port.Clear();
-        session.e_prot.Clear();
+        session.m_host.Clear();
+        session.m_user.Clear();
+        session.m_pass.Clear();
+        session.m_port.Clear();
+        session.m_prot.Clear();
+        session.m_ccTls = NPL::TLS::No;
+        session.m_dcTls = NPL::TLS::No;
       }
     }
   }

@@ -26,9 +26,10 @@ class MyList;
 #include <wx/panel.h>
 #include <wx/textctrl.h>
 #include <wx/choice.h>
+#include <wx/radiobut.h>
 #include <wx/statbox.h>
-#include <wx/listctrl.h>
 #include <wx/button.h>
+#include <wx/listctrl.h>
 #include <wx/checkbox.h>
 #include <wx/simplebook.h>
 #include <wx/splitter.h>
@@ -55,18 +56,26 @@ class AppFrame : public wxFrame
 		wxSimplebook* m_book;
 		wxPanel* m_homePage;
 		wxChoice* m_protocol;
-		MyList* iListViewSavedSessions;
+		wxPanel* m_panelCCProt;
+		wxRadioButton* m_radioCCProtNone;
+		wxRadioButton* m_radioCCProtExplicit;
+		wxRadioButton* m_radioCCProtImplicit;
+		wxPanel* m_panelDCProt;
+		wxRadioButton* m_radioDCProtClear;
+		wxRadioButton* m_radioDCProtProtected;
 		wxButton* m_save;
 		wxButton* m_connect;
+		MyList* iListViewSavedSessions;
 		wxCheckBox* m_trace;
 
 		// Virtual event handlers, overide them in your derived class
 		virtual void onToolClicked( wxCommandEvent& event ) { event.Skip(); }
-		virtual void m_logOnRightDown( wxMouseEvent& event ) { event.Skip(); }
+		virtual void OnLogRightDown( wxMouseEvent& event ) { event.Skip(); }
 		virtual void m_protocolOnChoice( wxCommandEvent& event ) { event.Skip(); }
-		virtual void iListViewSavedSessionsOnListItemActivated( wxListEvent& event ) { event.Skip(); }
+		virtual void OnRadioCCProt( wxCommandEvent& event ) { event.Skip(); }
 		virtual void m_saveOnButtonClick( wxCommandEvent& event ) { event.Skip(); }
 		virtual void m_connectOnButtonClick( wxCommandEvent& event ) { event.Skip(); }
+		virtual void iListViewSavedSessionsOnListItemActivated( wxListEvent& event ) { event.Skip(); }
 		virtual void m_traceOnCheckBox( wxCommandEvent& event ) { event.Skip(); }
 
 

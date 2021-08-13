@@ -97,16 +97,62 @@ AppFrame::AppFrame( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	szNew->Add( szLine2, 0, wxEXPAND, 5 );
 
 	wxStaticBoxSizer* szProtocol;
-	szProtocol = new wxStaticBoxSizer( new wxStaticBox( szNew->GetStaticBox(), wxID_ANY, _("FTP") ), wxVERTICAL );
+	szProtocol = new wxStaticBoxSizer( new wxStaticBox( szNew->GetStaticBox(), wxID_ANY, _("FTPS") ), wxVERTICAL );
+
+	wxStaticBoxSizer* szCC;
+	szCC = new wxStaticBoxSizer( new wxStaticBox( szProtocol->GetStaticBox(), wxID_ANY, _("Control") ), wxHORIZONTAL );
+
+	m_panelCCProt = new wxPanel( szCC->GetStaticBox(), wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
+	wxBoxSizer* bSizer191;
+	bSizer191 = new wxBoxSizer( wxHORIZONTAL );
+
+	m_radioCCProtNone = new wxRadioButton( m_panelCCProt, wxID_ANY, _("None"), wxDefaultPosition, wxDefaultSize, wxRB_GROUP );
+	m_radioCCProtNone->SetValue( true );
+	bSizer191->Add( m_radioCCProtNone, 0, wxALL, 5 );
+
+	m_radioCCProtExplicit = new wxRadioButton( m_panelCCProt, wxID_ANY, _("Explicit"), wxDefaultPosition, wxDefaultSize, 0 );
+	bSizer191->Add( m_radioCCProtExplicit, 0, wxALL, 5 );
+
+	m_radioCCProtImplicit = new wxRadioButton( m_panelCCProt, wxID_ANY, _("Implicit"), wxDefaultPosition, wxDefaultSize, 0 );
+	bSizer191->Add( m_radioCCProtImplicit, 0, wxALL, 5 );
+
+
+	m_panelCCProt->SetSizer( bSizer191 );
+	m_panelCCProt->Layout();
+	bSizer191->Fit( m_panelCCProt );
+	szCC->Add( m_panelCCProt, 1, wxEXPAND | wxALL, 5 );
+
+
+	szProtocol->Add( szCC, 1, wxALL|wxEXPAND, 5 );
+
+	wxStaticBoxSizer* szDC;
+	szDC = new wxStaticBoxSizer( new wxStaticBox( szProtocol->GetStaticBox(), wxID_ANY, _("Data") ), wxHORIZONTAL );
+
+	m_panelDCProt = new wxPanel( szDC->GetStaticBox(), wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
+	wxBoxSizer* bSizer17;
+	bSizer17 = new wxBoxSizer( wxHORIZONTAL );
+
+	m_radioDCProtClear = new wxRadioButton( m_panelDCProt, wxID_ANY, _("Clear"), wxDefaultPosition, wxDefaultSize, wxRB_GROUP );
+	bSizer17->Add( m_radioDCProtClear, 0, wxALL, 5 );
+
+	m_radioDCProtProtected = new wxRadioButton( m_panelDCProt, wxID_ANY, _("Protected"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_radioDCProtProtected->SetValue( true );
+	bSizer17->Add( m_radioDCProtProtected, 0, wxALL, 5 );
+
+
+	m_panelDCProt->SetSizer( bSizer17 );
+	m_panelDCProt->Layout();
+	bSizer17->Fit( m_panelDCProt );
+	szDC->Add( m_panelDCProt, 1, wxEXPAND | wxALL, 5 );
+
+
+	szProtocol->Add( szDC, 1, wxEXPAND|wxALL, 5 );
 
 
 	szNew->Add( szProtocol, 0, wxEXPAND|wxALL, 5 );
 
 
 	bSizer14->Add( szNew, 0, wxEXPAND, 5 );
-
-	iListViewSavedSessions = new MyList( m_homePage, wxID_ANY, wxDefaultPosition, wxSize( 300,-1 ), wxLC_REPORT|wxLC_VIRTUAL|wxBORDER_DEFAULT );
-	bSizer14->Add( iListViewSavedSessions, 1, wxEXPAND|wxTOP|wxBOTTOM, 5 );
 
 	wxBoxSizer* szLine3;
 	szLine3 = new wxBoxSizer( wxHORIZONTAL );
@@ -127,10 +173,13 @@ AppFrame::AppFrame( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	bSizer14->Add( szLine3, 0, wxEXPAND, 5 );
 
 
-	bSizer13->Add( bSizer14, 1, wxEXPAND|wxRIGHT|wxLEFT, 5 );
+	bSizer13->Add( bSizer14, 1, wxEXPAND|wxTOP|wxRIGHT|wxLEFT, 5 );
 
 	wxBoxSizer* bSizer19;
 	bSizer19 = new wxBoxSizer( wxVERTICAL );
+
+	iListViewSavedSessions = new MyList( m_homePage, wxID_ANY, wxDefaultPosition, wxSize( 300,-1 ), wxLC_REPORT|wxLC_VIRTUAL|wxBORDER_DEFAULT );
+	bSizer19->Add( iListViewSavedSessions, 1, wxEXPAND|wxALL, 5 );
 
 	wxStaticBoxSizer* szSettings;
 	szSettings = new wxStaticBoxSizer( new wxStaticBox( m_homePage, wxID_ANY, _("Settings") ), wxVERTICAL );
@@ -145,6 +194,7 @@ AppFrame::AppFrame( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	szTrace = new wxStaticBoxSizer( new wxStaticBox( szSettings->GetStaticBox(), wxID_ANY, _("Trace") ), wxHORIZONTAL );
 
 	m_trace = new wxCheckBox( szTrace->GetStaticBox(), wxID_ANY, _("Enable"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_trace->SetValue(true);
 	szTrace->Add( m_trace, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 
 
@@ -154,7 +204,7 @@ AppFrame::AppFrame( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	bSizer19->Add( szSettings, 1, wxEXPAND|wxLEFT, 5 );
 
 
-	bSizer13->Add( bSizer19, 1, wxEXPAND|wxRIGHT|wxLEFT, 5 );
+	bSizer13->Add( bSizer19, 1, wxEXPAND|wxTOP|wxRIGHT|wxLEFT, 5 );
 
 
 	m_homePage->SetSizer( bSizer13 );
@@ -180,11 +230,14 @@ AppFrame::AppFrame( wxWindow* parent, wxWindowID id, const wxString& title, cons
 
 	// Connect Events
 	this->Connect( m_toolHome->GetId(), wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler( AppFrame::onToolClicked ) );
-	m_log->Connect( wxEVT_RIGHT_DOWN, wxMouseEventHandler( AppFrame::m_logOnRightDown ), NULL, this );
+	m_log->Connect( wxEVT_RIGHT_DOWN, wxMouseEventHandler( AppFrame::OnLogRightDown ), NULL, this );
 	m_protocol->Connect( wxEVT_COMMAND_CHOICE_SELECTED, wxCommandEventHandler( AppFrame::m_protocolOnChoice ), NULL, this );
-	iListViewSavedSessions->Connect( wxEVT_COMMAND_LIST_ITEM_ACTIVATED, wxListEventHandler( AppFrame::iListViewSavedSessionsOnListItemActivated ), NULL, this );
+	m_radioCCProtNone->Connect( wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler( AppFrame::OnRadioCCProt ), NULL, this );
+	m_radioCCProtExplicit->Connect( wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler( AppFrame::OnRadioCCProt ), NULL, this );
+	m_radioCCProtImplicit->Connect( wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler( AppFrame::OnRadioCCProt ), NULL, this );
 	m_save->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( AppFrame::m_saveOnButtonClick ), NULL, this );
 	m_connect->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( AppFrame::m_connectOnButtonClick ), NULL, this );
+	iListViewSavedSessions->Connect( wxEVT_COMMAND_LIST_ITEM_ACTIVATED, wxListEventHandler( AppFrame::iListViewSavedSessionsOnListItemActivated ), NULL, this );
 	m_trace->Connect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( AppFrame::m_traceOnCheckBox ), NULL, this );
 }
 
@@ -192,11 +245,14 @@ AppFrame::~AppFrame()
 {
 	// Disconnect Events
 	this->Disconnect( m_toolHome->GetId(), wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler( AppFrame::onToolClicked ) );
-	m_log->Disconnect( wxEVT_RIGHT_DOWN, wxMouseEventHandler( AppFrame::m_logOnRightDown ), NULL, this );
+	m_log->Disconnect( wxEVT_RIGHT_DOWN, wxMouseEventHandler( AppFrame::OnLogRightDown ), NULL, this );
 	m_protocol->Disconnect( wxEVT_COMMAND_CHOICE_SELECTED, wxCommandEventHandler( AppFrame::m_protocolOnChoice ), NULL, this );
-	iListViewSavedSessions->Disconnect( wxEVT_COMMAND_LIST_ITEM_ACTIVATED, wxListEventHandler( AppFrame::iListViewSavedSessionsOnListItemActivated ), NULL, this );
+	m_radioCCProtNone->Disconnect( wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler( AppFrame::OnRadioCCProt ), NULL, this );
+	m_radioCCProtExplicit->Disconnect( wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler( AppFrame::OnRadioCCProt ), NULL, this );
+	m_radioCCProtImplicit->Disconnect( wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler( AppFrame::OnRadioCCProt ), NULL, this );
 	m_save->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( AppFrame::m_saveOnButtonClick ), NULL, this );
 	m_connect->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( AppFrame::m_connectOnButtonClick ), NULL, this );
+	iListViewSavedSessions->Disconnect( wxEVT_COMMAND_LIST_ITEM_ACTIVATED, wxListEventHandler( AppFrame::iListViewSavedSessionsOnListItemActivated ), NULL, this );
 	m_trace->Disconnect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( AppFrame::m_traceOnCheckBox ), NULL, this );
 
 }

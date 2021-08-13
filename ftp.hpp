@@ -40,14 +40,9 @@ using TDirectoryListCbk = std::function<void (const std::string&, const std::str
 
 uint64_t g_total = 0, g_complete = 0;
 
-class MyFTP : public FTPPanel
-{
+class MyFTP : public FTPPanel, public TSession
+{ 
   public:
-
-  std::string iHost;
-  std::string iUser;
-  std::string iPass;
-  std::string iPort;
 
   NPL::SPCProtocolFTP iFTP;
   NPL::SPCProtocolFTP iFTPTransfer;
@@ -95,18 +90,16 @@ class MyFTP : public FTPPanel
         wxStandardPaths::Dir::Dir_Desktop).ToStdString());
   }
 
-  virtual ~MyFTP() {}
-
-  virtual void InitiateConnect(std::string host, std::string port, std::string user, std::string pass)
+  virtual ~MyFTP()
   {
-    iHost = host;
-    iPort = port;
-    iUser = user;
-    iPass = pass;
+    StopSession();
+  }
+ 
+  virtual void StartSession(void)
+  {
+    iFTP = NPL::make_ftp(m_host.ToStdString(), wxAtoi(m_port), m_ccTls);
 
-    iFTP = NPL::make_ftp(iHost, wxAtoi(iPort), NPL::TLS::Yes);
-
-    iFTP->SetCredentials(iUser, iPass);
+    iFTP->SetCredentials(m_user.ToStdString(), m_pass.ToStdString());
 
     iFTP->StartClient();
 
@@ -400,8 +393,8 @@ class MyFTP : public FTPPanel
 
         if (!iFTPTransfer)
         {
-          iFTPTransfer = NPL::make_ftp(iHost, wxAtoi(iPort), NPL::TLS::Yes);
-          iFTPTransfer->SetCredentials(iUser, iPass);
+          iFTPTransfer = NPL::make_ftp(m_host.ToStdString(), wxAtoi(m_port), m_ccTls);
+          iFTPTransfer->SetCredentials(m_user.ToStdString(), m_pass.ToStdString());
           iFTPTransfer->StartClient();
         }
 
@@ -425,7 +418,7 @@ class MyFTP : public FTPPanel
               },
               remote,
               local,
-              NPL::DCProt::Protected
+              m_dcTls
             );
           }
         }
@@ -507,7 +500,7 @@ class MyFTP : public FTPPanel
         return true;
       },
       dir,
-      NPL::DCProt::Protected
+      m_dcTls
     );
   }
 
@@ -607,7 +600,7 @@ class MyFTP : public FTPPanel
                 },
                 path + "/" + e.e_name,
                 local + "/" + e.e_name,
-                NPL::DCProt::Protected
+                m_dcTls
               );
             }
           }
