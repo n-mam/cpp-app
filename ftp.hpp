@@ -470,6 +470,26 @@ class MyFTP : public FTPPanel, public TSession
 
         if (answer == wxNO) break;
 
+        for (auto& item : items)
+        {
+          auto name = iCurrentDirectoryRemote + "/" + m_rlist[item].e_name;
+
+          if (m_rlist[item].e_type == EType::EFolder) 
+          {
+            iFTP->RemoveDir(name, nullptr);
+          }
+          else if (m_rlist[item].e_type == EType::EFile)
+          {
+            iFTP->RemoveFile(name, nullptr);
+          }
+        }
+
+        GetDirectoryList(
+          iCurrentDirectoryRemote,
+          [this](const std::string& path, const std::string& list){
+            UpdateRemoteListView(path, list);
+          });
+
         break;
       }
     }
@@ -591,7 +611,7 @@ class MyFTP : public FTPPanel, public TSession
       if (cbk) cbk({name, size, ts, type});
     }
   }
-  
+
   // content of remote into local
   void DownloadFolder(const std::string& local, const std::string& remote)
   {
@@ -640,7 +660,7 @@ class MyFTP : public FTPPanel, public TSession
       }
     );
   }
-  
+
   // context of local into remote
   void UploadFolder(const std::string& local, const std::string& remote)
   {
