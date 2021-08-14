@@ -208,7 +208,7 @@ class MyFrame : public AppFrame
     LaunchSession(m_slist[event.GetIndex()]);
   }
 
-  void OnLogRightDown(wxMouseEvent& event)
+  void OnTraceRightDown(wxMouseEvent& event)
   {
     wxMenu *logMenu = new wxMenu();
 
@@ -236,8 +236,8 @@ class MyFrame : public AppFrame
       }
       case ID_LOG_BASE + 1: //clear
       {
-        m_log->Clear();
-        m_log->Update();
+        m_trace->Clear();
+        m_trace->Update();
         break;
       }
     }
@@ -258,7 +258,7 @@ class MyFrame : public AppFrame
     m_book->SetSelection(event.GetId() % ID_PAGE_BASE);
   }
  
-  void OnTraceCheckBox(wxCommandEvent& event)
+  void OnTraceEnableCheckBox(wxCommandEvent& event)
   {
     if (event.IsChecked()) {
       m_splitter->SplitHorizontally(m_panel6, m_panel8, 140);

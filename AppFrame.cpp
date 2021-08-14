@@ -42,10 +42,10 @@ AppFrame::AppFrame( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	wxBoxSizer* bSizer11;
 	bSizer11 = new wxBoxSizer( wxVERTICAL );
 
-	m_log = new wxRichTextCtrl( m_panel6, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( -1,-1 ), wxTE_READONLY|wxBORDER_DEFAULT|wxHSCROLL|wxVSCROLL );
-	m_log->SetFont( wxFont( wxNORMAL_FONT->GetPointSize(), wxFONTFAMILY_MODERN, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL, false, wxEmptyString ) );
+	m_trace = new wxTextCtrl( m_panel6, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_MULTILINE|wxTE_READONLY|wxTE_RICH|wxTE_RICH2 );
+	m_trace->SetFont( wxFont( wxNORMAL_FONT->GetPointSize(), wxFONTFAMILY_MODERN, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL, false, wxEmptyString ) );
 
-	bSizer11->Add( m_log, 1, wxEXPAND|wxTOP|wxRIGHT|wxLEFT, 5 );
+	bSizer11->Add( m_trace, 1, wxTOP|wxRIGHT|wxLEFT|wxEXPAND, 5 );
 
 
 	m_panel6->SetSizer( bSizer11 );
@@ -193,9 +193,9 @@ AppFrame::AppFrame( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	wxStaticBoxSizer* szTrace;
 	szTrace = new wxStaticBoxSizer( new wxStaticBox( szSettings->GetStaticBox(), wxID_ANY, _("Trace") ), wxHORIZONTAL );
 
-	m_trace = new wxCheckBox( szTrace->GetStaticBox(), wxID_ANY, _("Enable"), wxDefaultPosition, wxDefaultSize, 0 );
-	m_trace->SetValue(true);
-	szTrace->Add( m_trace, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
+	m_traceCheck = new wxCheckBox( szTrace->GetStaticBox(), wxID_ANY, _("Enable"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_traceCheck->SetValue(true);
+	szTrace->Add( m_traceCheck, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 
 
 	szSettings->Add( szTrace, 0, wxEXPAND|wxALL, 5 );
@@ -230,7 +230,7 @@ AppFrame::AppFrame( wxWindow* parent, wxWindowID id, const wxString& title, cons
 
 	// Connect Events
 	this->Connect( m_toolHome->GetId(), wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler( AppFrame::onToolClicked ) );
-	m_log->Connect( wxEVT_RIGHT_DOWN, wxMouseEventHandler( AppFrame::OnLogRightDown ), NULL, this );
+	m_trace->Connect( wxEVT_RIGHT_DOWN, wxMouseEventHandler( AppFrame::OnTraceRightDown ), NULL, this );
 	m_protocol->Connect( wxEVT_COMMAND_CHOICE_SELECTED, wxCommandEventHandler( AppFrame::m_protocolOnChoice ), NULL, this );
 	m_radioCCProtNone->Connect( wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler( AppFrame::OnRadioCCProt ), NULL, this );
 	m_radioCCProtExplicit->Connect( wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler( AppFrame::OnRadioCCProt ), NULL, this );
@@ -238,14 +238,14 @@ AppFrame::AppFrame( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	m_save->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( AppFrame::m_saveOnButtonClick ), NULL, this );
 	m_connect->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( AppFrame::m_connectOnButtonClick ), NULL, this );
 	iListViewSavedSessions->Connect( wxEVT_COMMAND_LIST_ITEM_ACTIVATED, wxListEventHandler( AppFrame::OnSavedSessionsListItemActivated ), NULL, this );
-	m_trace->Connect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( AppFrame::OnTraceCheckBox ), NULL, this );
+	m_traceCheck->Connect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( AppFrame::OnTraceEnableCheckBox ), NULL, this );
 }
 
 AppFrame::~AppFrame()
 {
 	// Disconnect Events
 	this->Disconnect( m_toolHome->GetId(), wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler( AppFrame::onToolClicked ) );
-	m_log->Disconnect( wxEVT_RIGHT_DOWN, wxMouseEventHandler( AppFrame::OnLogRightDown ), NULL, this );
+	m_trace->Disconnect( wxEVT_RIGHT_DOWN, wxMouseEventHandler( AppFrame::OnTraceRightDown ), NULL, this );
 	m_protocol->Disconnect( wxEVT_COMMAND_CHOICE_SELECTED, wxCommandEventHandler( AppFrame::m_protocolOnChoice ), NULL, this );
 	m_radioCCProtNone->Disconnect( wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler( AppFrame::OnRadioCCProt ), NULL, this );
 	m_radioCCProtExplicit->Disconnect( wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler( AppFrame::OnRadioCCProt ), NULL, this );
@@ -253,7 +253,7 @@ AppFrame::~AppFrame()
 	m_save->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( AppFrame::m_saveOnButtonClick ), NULL, this );
 	m_connect->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( AppFrame::m_connectOnButtonClick ), NULL, this );
 	iListViewSavedSessions->Disconnect( wxEVT_COMMAND_LIST_ITEM_ACTIVATED, wxListEventHandler( AppFrame::OnSavedSessionsListItemActivated ), NULL, this );
-	m_trace->Disconnect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( AppFrame::OnTraceCheckBox ), NULL, this );
+	m_traceCheck->Disconnect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( AppFrame::OnTraceEnableCheckBox ), NULL, this );
 
 }
 

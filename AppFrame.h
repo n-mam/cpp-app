@@ -22,9 +22,8 @@ class MyList;
 #include <wx/colour.h>
 #include <wx/settings.h>
 #include <wx/sizer.h>
-#include <wx/richtext/richtextctrl.h>
-#include <wx/panel.h>
 #include <wx/textctrl.h>
+#include <wx/panel.h>
 #include <wx/choice.h>
 #include <wx/radiobut.h>
 #include <wx/statbox.h>
@@ -66,22 +65,22 @@ class AppFrame : public wxFrame
 		wxButton* m_save;
 		wxButton* m_connect;
 		MyList* iListViewSavedSessions;
-		wxCheckBox* m_trace;
+		wxCheckBox* m_traceCheck;
 
 		// Virtual event handlers, overide them in your derived class
 		virtual void onToolClicked( wxCommandEvent& event ) { event.Skip(); }
-		virtual void OnLogRightDown( wxMouseEvent& event ) { event.Skip(); }
+		virtual void OnTraceRightDown( wxMouseEvent& event ) { event.Skip(); }
 		virtual void m_protocolOnChoice( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnRadioCCProt( wxCommandEvent& event ) { event.Skip(); }
 		virtual void m_saveOnButtonClick( wxCommandEvent& event ) { event.Skip(); }
 		virtual void m_connectOnButtonClick( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnSavedSessionsListItemActivated( wxListEvent& event ) { event.Skip(); }
-		virtual void OnTraceCheckBox( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnTraceEnableCheckBox( wxCommandEvent& event ) { event.Skip(); }
 
 
 	public:
 		wxToolBar* m_toolBar;
-		wxRichTextCtrl* m_log;
+		wxTextCtrl* m_trace;
 		wxTextCtrl* m_host;
 		wxTextCtrl* m_port;
 		wxTextCtrl* m_user;

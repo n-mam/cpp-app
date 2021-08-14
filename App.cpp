@@ -33,19 +33,17 @@ bool MyApp::OnInit()
         }
         else
         {
-          auto trace = (wxGetApp().m_frame)->m_log;
-
-          trace->BeginTextColour(wxColour(0, 0, 0));
+          auto trace = (wxGetApp().m_frame)->m_trace;
 
           if (log.find("Command  :") == 0) {
-            trace->BeginTextColour(wxColour(0, 58, 200));
+            trace->SetDefaultStyle(wxTextAttr(wxColour(0, 58, 200)));
           } else if (log.find("Response :") == 0) {
-            trace->BeginTextColour(wxColour(0, 150, 0));
+            trace->SetDefaultStyle(wxTextAttr(wxColour(0, 150, 0)));
           }
 
-          trace->WriteText(" " + log);
-          trace->EndTextColour();
-          trace->ScrollIntoView(trace->GetCaretPosition(), WXK_PAGEDOWN);
+          trace->AppendText(" " + log);
+
+          trace->SetDefaultStyle(wxTextAttr());
         }
       });
     }
