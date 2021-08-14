@@ -41,7 +41,7 @@ using TDirectoryListCbk = std::function<void (const std::string&, const std::str
 uint64_t g_total = 0, g_complete = 0;
 
 class MyFTP : public FTPPanel, public TSession
-{ 
+{
   public:
 
   NPL::SPCProtocolFTP iFTP;
@@ -264,7 +264,7 @@ class MyFTP : public FTPPanel, public TSession
     GetDirectoryList(
       dir,
       [this](const std::string& dir, const std::string& list){
-          UpdateRemoteListView(dir, list);
+        UpdateRemoteListView(dir, list);
       });
 
     event.Skip();
@@ -315,9 +315,9 @@ class MyFTP : public FTPPanel, public TSession
   }
 
   // common
-  virtual std::string OnListGetItemText(TListFTPElementVector& list, long item, long column)
+  virtual wxString OnListGetItemText(TListFTPElementVector& list, long item, long column)
   {
-    std::string text;
+    wxString text;
     if (column == 0)
       text = list[item].e_name;
     else if (column == 1)
@@ -346,22 +346,50 @@ class MyFTP : public FTPPanel, public TSession
   {
     switch (e.GetId())
     {
-      case ID_LOCAL_BASE: //upload
+      case ID_LOCAL_BASE: // upload
       {
         auto items = iListViewLocal->GetSelectedItems();
 
+        if (!items.size()) break;
+
+        if (!iFTPTransfer)
+        {
+          iFTPTransfer = NPL::make_ftp(m_host.ToStdString(), wxAtoi(m_port), m_ccTls);
+          iFTPTransfer->SetCredentials(m_user.ToStdString(), m_pass.ToStdString());
+          iFTPTransfer->StartClient();
+        }
+
         for (auto& item : items)
         {
-          LOG << m_llist[item].e_name + " : " + std::to_string(static_cast<uint8_t>(m_llist[item].e_type));
+          auto local = iCurrentDirectoryLocal + "/" + m_llist[item].e_name;
+          auto remote = iCurrentDirectoryRemote + "/" + m_llist[item].e_name;
+
+          RemoveDuplicates(remote, '/');
+
+          if (m_llist[item].e_type == EType::EFolder)
+          {
+            iFTPTransfer->CreateDir(remote, nullptr);
+            UploadFolder(local, remote);
+          }
+          else
+          {
+            iFTPTransfer->Upload(
+              [](const char *b, size_t n) {
+                return true;
+              },
+              remote,
+              local,
+              m_dcTls);
+          }
         }
 
         break;
       }
-      case ID_LOCAL_BASE + 1: //rename
+      case ID_LOCAL_BASE + 1: // rename
       {
         break;
       }
-      case ID_LOCAL_BASE + 2: //delete
+      case ID_LOCAL_BASE + 2: // delete
       {
         auto items = iListViewLocal->GetSelectedItems();
 
@@ -388,7 +416,7 @@ class MyFTP : public FTPPanel, public TSession
 
         break;
       }
-      case ID_REMOTE_BASE: //download
+      case ID_REMOTE_BASE: // download
       {
         auto items = iListViewRemote->GetSelectedItems();
 
@@ -406,9 +434,10 @@ class MyFTP : public FTPPanel, public TSession
           auto local = iCurrentDirectoryLocal + "/" + m_rlist[item].e_name;
           auto remote = iCurrentDirectoryRemote + "/" + m_rlist[item].e_name;
 
+          RemoveDuplicates(remote, '/');
+
           if (m_rlist[item].e_type == EType::EFolder)
           {
-            RemoveDuplicates(remote, '/');
             std::filesystem::create_directory(local);
             DownloadFolder(local, remote);
           }
@@ -421,11 +450,10 @@ class MyFTP : public FTPPanel, public TSession
               },
               remote,
               local,
-              m_dcTls
-            );
+              m_dcTls);
           }
         }
-
+ 
         break;
       }
       case ID_REMOTE_BASE + 1: //rename
@@ -543,7 +571,7 @@ class MyFTP : public FTPPanel, public TSession
       }
 
       //for (auto& e: tokens) std::cout << e << std::endl;
-      
+
       auto name = tokens[8];
       auto size = tokens[4];
       auto attrib = tokens[0];
@@ -563,7 +591,8 @@ class MyFTP : public FTPPanel, public TSession
       if (cbk) cbk({name, size, ts, type});
     }
   }
-
+  
+  // content of remote into local
   void DownloadFolder(const std::string& local, const std::string& remote)
   {
     g_total = g_complete = 0;
@@ -610,6 +639,45 @@ class MyFTP : public FTPPanel, public TSession
         );
       }
     );
+  }
+  
+  // context of local into remote
+  void UploadFolder(const std::string& local, const std::string& remote)
+  {
+    try
+    {
+      for (auto& e : std::filesystem::directory_iterator(local))
+      {
+        std::error_code ec;
+
+        if (std::filesystem::is_regular_file(e, ec))
+        {
+          iFTPTransfer->Upload(
+            [](const char *b, size_t n) {
+              return true;
+            },
+            remote + "/" + e.path().filename().string(),
+            local + "/" + e.path().filename().string(),
+            m_dcTls);
+        }
+        else if (std::filesystem::is_directory(e, ec))
+        {
+          iFTPTransfer->CreateDir(remote + "/" + e.path().filename().string(), nullptr);
+          UploadFolder(
+            local + "/" + e.path().filename().string(),
+            remote + "/" + e.path().filename().string()
+          );
+        }
+        else
+        {
+          LOG << "UploadFolder neither file nor folder";
+        }
+      }
+    }
+    catch(const std::exception& e)
+    {
+      LOG << "UploadFolder exception : "s + e.what();
+    }
   }
 
   virtual void FTPPanelOnSize( wxSizeEvent& event )

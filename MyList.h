@@ -15,7 +15,7 @@
 #include <filesystem>
 
 using TOnGetItemImageCbk = std::function<int (long, long)>;
-using TOnGetItemTextCbk = std::function<std::string (long, long)>;
+using TOnGetItemTextCbk = std::function<wxString (long, long)>;
 
 class MyList : public wxListCtrl
 {

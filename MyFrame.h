@@ -25,7 +25,7 @@ class MyFrame : public AppFrame
     iListViewSavedSessions->Initialize(
       {"Host", "Protocol", "Port", "Username"},
       [this] (long item, long column) {
-        std::string text;
+        wxString text;
         if (column == 0)
           text = m_slist[item].m_host;
         else if (column == 1)
