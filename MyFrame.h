@@ -77,10 +77,9 @@ class MyFrame : public AppFrame
     ss << "Port : " << session.m_port << "\n";
     ss << "User : " << session.m_user << "\n";
     ss << "Pass : " << session.m_pass << "\n";
-    auto szFlags = std::to_string(
-      static_cast<int>(session.m_ccTls) | (1 << static_cast<int>(session.m_dcTls))
-    );
-    ss << "TLS : "  << szFlags << "\n";
+    auto flags = static_cast<int>(session.m_ccTls) |
+                 (static_cast<int>(session.m_dcTls) << 2);
+    ss << "TLS  : "  << std::to_string(flags) << "\n";
     ss << "Prot : " << session.m_prot << "\n\n";
 
     WriteConfiguration(
@@ -168,7 +167,6 @@ class MyFrame : public AppFrame
     }
 
     m_host->Clear();
-    m_port->Clear();
     m_user->Clear();
     m_pass->Clear();
 
@@ -327,7 +325,7 @@ class MyFrame : public AppFrame
         key.Trim(false);
         val.Trim(true);
         val.Trim(false);
- 
+
         if (key.CmpNoCase("Host") == 0) {
           session.m_host = val;
         } else if (key.CmpNoCase("Port") == 0) {
@@ -343,11 +341,13 @@ class MyFrame : public AppFrame
           if (!flags) {
             session.m_ccTls = session.m_dcTls = NPL::TLS::No;
           } else {
-            if (flags & 0x01) {
+            if (flags & 0x01) { //cc
               session.m_ccTls = NPL::TLS::Yes;
+            } else if (flags & 0x02) {
+              session.m_ccTls = NPL::TLS::Implicit;
             }
-            if (flags & 0x02) {
-              session.m_dcTls = NPL::TLS::Yes; 
+            if (flags & 0x04) { //dc
+              session.m_dcTls = NPL::TLS::Yes;
             }
           }
         }
