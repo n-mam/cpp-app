@@ -11,8 +11,9 @@
 #define ID_LOCAL_BASE 4000
 #define ID_REMOTE_BASE 5000
 
-enum class ETransfer : uint8_t
+enum class EOperation : uint8_t
 {
+  EDelete,
   EUpload,
   EDownload
 };
@@ -286,16 +287,19 @@ class MyFTP : public FTPPanel, public TSession
     });
     iListViewRemote->ReInitialize();
 
-    ParseDirectoryListUnix(list, [&](TListFTPElement&& element){
-      if (element.e_type == EType::EFile)
-      {
-        files.push_back(element);
+    ParseDirectoryListUnix(
+      list,
+      [&](TListFTPElement&& element){
+        if (element.e_type == EType::EFile)
+        {
+          files.push_back(element);
+        }
+        else if (element.e_type == EType::EFolder)
+        {
+          m_rlist.push_back(element);
+        }
       }
-      else if (element.e_type == EType::EFolder)
-      {
-        m_rlist.push_back(element);
-      }
-    });
+    );
 
     iCurrentDirectoryRemote = dir;
 
@@ -348,7 +352,7 @@ class MyFTP : public FTPPanel, public TSession
     {
       case ID_LOCAL_BASE: // upload
       {
-        InitiateTransfer(iListViewLocal, m_llist, ETransfer::EUpload);
+        InitiateTransfer(iListViewLocal, m_llist, EOperation::EUpload);
         break;
       }
       case ID_LOCAL_BASE + 1: // rename
@@ -360,7 +364,7 @@ class MyFTP : public FTPPanel, public TSession
         auto items = iListViewLocal->GetSelectedItems();
 
         auto answer = wxMessageBox(
-          "Do you want to delete the selected files ?", 
+          "Do you want to delete the selected items ?", 
           "Local Delete", wxYES_NO, this);
 
         if (answer == wxNO) break;
@@ -384,7 +388,7 @@ class MyFTP : public FTPPanel, public TSession
       }
       case ID_REMOTE_BASE: // download
       {
-        InitiateTransfer(iListViewRemote, m_rlist, ETransfer::EDownload);
+        InitiateTransfer(iListViewRemote, m_rlist, EOperation::EDownload);
         break;
       }
       case ID_REMOTE_BASE + 1: //rename
@@ -393,27 +397,13 @@ class MyFTP : public FTPPanel, public TSession
       }
       case ID_REMOTE_BASE + 2: //delete
       {
-        auto items = iListViewRemote->GetSelectedItems();
-
         auto answer = wxMessageBox(
           "Do you want to delete the selected files ?", 
           "Remote Delete", wxYES_NO, this);
 
         if (answer == wxNO) break;
 
-        for (auto& item : items)
-        {
-          auto name = iCurrentDirectoryRemote + "/" + m_rlist[item].e_name;
-
-          if (m_rlist[item].e_type == EType::EFolder) 
-          {
-            iFTP->RemoveDir(name, nullptr);
-          }
-          else if (m_rlist[item].e_type == EType::EFile)
-          {
-            iFTP->RemoveFile(name, nullptr);
-          }
-        }
+        InitiateTransfer(iListViewRemote, m_rlist, EOperation::EDelete);
 
         GetDirectoryList(
           iCurrentDirectoryRemote,
@@ -426,7 +416,7 @@ class MyFTP : public FTPPanel, public TSession
     }
   }
 
-  void InitiateTransfer(MyList *lv, TListFTPElementVector& list, ETransfer direction)
+  void InitiateTransfer(MyList *lv, TListFTPElementVector& list, EOperation op)
   {
     auto items = lv->GetSelectedItems();
 
@@ -448,29 +438,34 @@ class MyFTP : public FTPPanel, public TSession
 
       if (list[item].e_type == EType::EFolder)
       {
-        if (direction == ETransfer::EDownload) {
+        if (op == EOperation::EDownload) {
           std::filesystem::create_directory(local);
           DownloadFolder(local, remote);
         }
-        else if (direction == ETransfer::EUpload) {
+        else if (op == EOperation::EUpload) {
           iFTPTransfer->CreateDir(remote, nullptr);
           UploadFolder(local, remote);
+        } else if (op == EOperation::EDelete) {
+          iFTPTransfer->RemoveDir(remote, nullptr);
         }
       }
       else if (list[item].e_type == EType::EFile)
       {
-        if (direction == ETransfer::EDownload) {
+        if (op == EOperation::EDownload) {
           iFTPTransfer->Download(
             [](const char *b, size_t n) {
               // if (!b) LOG << "Download complete";
               return true;
             }, remote, local, m_dcTls);
         }
-        else if (direction == ETransfer::EUpload) {
+        else if (op == EOperation::EUpload) {
           iFTPTransfer->Upload(
             [](const char *b, size_t n) {
               return true;
             }, remote, local, m_dcTls);
+        }
+        else if (op == EOperation::EDelete) {
+          iFTPTransfer->RemoveFile(remote, nullptr);
         }
       }
     }
