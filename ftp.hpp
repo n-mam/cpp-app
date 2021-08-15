@@ -96,7 +96,7 @@ class MyFTP : public FTPPanel, public TSession
   {
     StopSession();
   }
- 
+
   virtual void StartSession(void)
   {
     iFTP = NPL::make_ftp(m_host.ToStdString(), wxAtoi(m_port), m_ccTls);
@@ -348,41 +348,7 @@ class MyFTP : public FTPPanel, public TSession
     {
       case ID_LOCAL_BASE: // upload
       {
-        auto items = iListViewLocal->GetSelectedItems();
-
-        if (!items.size()) break;
-
-        if (!iFTPTransfer)
-        {
-          iFTPTransfer = NPL::make_ftp(m_host.ToStdString(), wxAtoi(m_port), m_ccTls);
-          iFTPTransfer->SetCredentials(m_user.ToStdString(), m_pass.ToStdString());
-          iFTPTransfer->StartClient();
-        }
-
-        for (auto& item : items)
-        {
-          auto local = iCurrentDirectoryLocal + "/" + m_llist[item].e_name;
-          auto remote = iCurrentDirectoryRemote + "/" + m_llist[item].e_name;
-
-          RemoveDuplicates(remote, '/');
-
-          if (m_llist[item].e_type == EType::EFolder)
-          {
-            iFTPTransfer->CreateDir(remote, nullptr);
-            UploadFolder(local, remote);
-          }
-          else
-          {
-            iFTPTransfer->Upload(
-              [](const char *b, size_t n) {
-                return true;
-              },
-              remote,
-              local,
-              m_dcTls);
-          }
-        }
-
+        InitiateTransfer(iListViewLocal, m_llist, ETransfer::EUpload);
         break;
       }
       case ID_LOCAL_BASE + 1: // rename
@@ -418,42 +384,7 @@ class MyFTP : public FTPPanel, public TSession
       }
       case ID_REMOTE_BASE: // download
       {
-        auto items = iListViewRemote->GetSelectedItems();
-
-        if (!items.size()) break;
-
-        if (!iFTPTransfer)
-        {
-          iFTPTransfer = NPL::make_ftp(m_host.ToStdString(), wxAtoi(m_port), m_ccTls);
-          iFTPTransfer->SetCredentials(m_user.ToStdString(), m_pass.ToStdString());
-          iFTPTransfer->StartClient();
-        }
-
-        for (auto& item : items)
-        {
-          auto local = iCurrentDirectoryLocal + "/" + m_rlist[item].e_name;
-          auto remote = iCurrentDirectoryRemote + "/" + m_rlist[item].e_name;
-
-          RemoveDuplicates(remote, '/');
-
-          if (m_rlist[item].e_type == EType::EFolder)
-          {
-            std::filesystem::create_directory(local);
-            DownloadFolder(local, remote);
-          }
-          else if (m_rlist[item].e_type == EType::EFile)
-          {
-            iFTPTransfer->Download(
-              [](const char *b, size_t n) {
-                // if (!b) LOG << "Download complete";
-                return true;
-              },
-              remote,
-              local,
-              m_dcTls);
-          }
-        }
- 
+        InitiateTransfer(iListViewRemote, m_rlist, ETransfer::EDownload);
         break;
       }
       case ID_REMOTE_BASE + 1: //rename
@@ -491,6 +422,56 @@ class MyFTP : public FTPPanel, public TSession
           });
 
         break;
+      }
+    }
+  }
+
+  void InitiateTransfer(MyList *lv, TListFTPElementVector& list, ETransfer direction)
+  {
+    auto items = lv->GetSelectedItems();
+
+    if (!items.size()) return;
+
+    if (!iFTPTransfer)
+    {
+      iFTPTransfer = NPL::make_ftp(m_host.ToStdString(), wxAtoi(m_port), m_ccTls);
+      iFTPTransfer->SetCredentials(m_user.ToStdString(), m_pass.ToStdString());
+      iFTPTransfer->StartClient();
+    }
+
+    for (auto& item : items)
+    {
+      auto local = iCurrentDirectoryLocal + "/" + list[item].e_name;
+      auto remote = iCurrentDirectoryRemote + "/" + list[item].e_name;
+
+      RemoveDuplicates(remote, '/');
+
+      if (list[item].e_type == EType::EFolder)
+      {
+        if (direction == ETransfer::EDownload) {
+          std::filesystem::create_directory(local);
+          DownloadFolder(local, remote);
+        }
+        else if (direction == ETransfer::EUpload) {
+          iFTPTransfer->CreateDir(remote, nullptr);
+          UploadFolder(local, remote);
+        }
+      }
+      else if (list[item].e_type == EType::EFile)
+      {
+        if (direction == ETransfer::EDownload) {
+          iFTPTransfer->Download(
+            [](const char *b, size_t n) {
+              // if (!b) LOG << "Download complete";
+              return true;
+            }, remote, local, m_dcTls);
+        }
+        else if (direction == ETransfer::EUpload) {
+          iFTPTransfer->Upload(
+            [](const char *b, size_t n) {
+              return true;
+            }, remote, local, m_dcTls);
+        }
       }
     }
   }
