@@ -52,6 +52,8 @@ class MyFTP : public FTPPanel, public TSession
   TListFTPElementVector m_llist;
   TListFTPElementVector m_rlist;
 
+  std::map<std::string, int> children;
+
   MyFTP(
     wxWindow* parent,
     wxWindowID id = wxID_ANY,
@@ -484,16 +486,14 @@ class MyFTP : public FTPPanel, public TSession
 
   void InitiateOperation(MyList *lv, TListFTPElementVector& list, EOperation op)
   {
-    auto items = lv->GetSelectedItemIndexes();
-
-    if (!items.size()) return;
-
     if (!iFTPTransfer)
     {
       iFTPTransfer = NPL::make_ftp(m_host.ToStdString(), wxAtoi(m_port), m_ccTls);
       iFTPTransfer->SetCredentials(m_user.ToStdString(), m_pass.ToStdString());
       iFTPTransfer->StartClient();
     }
+
+    auto items = lv->GetSelectedItemIndexes();
 
     for (auto& item : items)
     {
@@ -504,7 +504,8 @@ class MyFTP : public FTPPanel, public TSession
 
       if (list[item].e_type == EType::EFolder)
       {
-        if (op == EOperation::EDownload) {
+        if (op == EOperation::EDownload) 
+        {
           WalkRemoteFolder(remote,
             [this](const std::string& folder, const TListFTPElementVector& elements) {
               // root   : /123/1
@@ -525,36 +526,72 @@ class MyFTP : public FTPPanel, public TSession
             }
           );
         }
-        else if (op == EOperation::EUpload) {
+        else if (op == EOperation::EUpload) 
+        {
           iFTPTransfer->CreateDir(remote, nullptr);
           WalkLocalFolder(local, remote);
-        } else if (op == EOperation::EDelete) {
+        }
+        else if (op == EOperation::EDelete)
+        {
           WalkRemoteFolder(remote,
-            [this, remote](const std::string& path, const TListFTPElementVector& elements) {
-              for (auto& e : elements) {
-                if (e.e_type == EType::EFile) {
+            [this]
+            (const std::string& path, const TListFTPElementVector& elements) mutable {
+              int count = 0;
+              for (auto& e : elements)
+              {
+                if (e.e_type == EType::EFile)
+                {
                   iFTPTransfer->RemoveFile(path + "/" + e.e_name, nullptr);
                 }
+                else 
+                {
+                  count++;
+                }
               }
-            });
+
+              children[path] = count;
+
+              std::string p = path;
+
+              while (count == 0) 
+              {
+                LOG << "WRF : RMDIR " + p;
+                iFTPTransfer->RemoveDir(p, nullptr);
+
+                auto parent = std::filesystem::path(p).parent_path().string();
+
+                try
+                {
+                  count = children.at(parent);
+                }
+                catch(...)
+                {
+                  break; 
+                }
+
+                children[parent] = --count;
+                p = parent;
+              }
+            }
+          );
         }
       }
       else if (list[item].e_type == EType::EFile)
       {
-        if (op == EOperation::EDownload) {
+        if (op == EOperation::EDownload) 
+        {
           iFTPTransfer->Download(
-            [](const char *b, size_t n) {
-              // if (!b) LOG << "Download complete";
-              return true;
-            }, remote, local, m_dcTls);
+            [](const char *b, size_t n) { return true; },
+            remote, local, m_dcTls);
         }
-        else if (op == EOperation::EUpload) {
+        else if (op == EOperation::EUpload)
+        {
           iFTPTransfer->Upload(
-            [](const char *b, size_t n) {
-              return true;
-            }, remote, local, m_dcTls);
+            [](const char *b, size_t n) { return true; },
+            remote, local, m_dcTls);
         }
-        else if (op == EOperation::EDelete) {
+        else if (op == EOperation::EDelete)
+        {
           iFTPTransfer->RemoveFile(remote, nullptr);
         }
       }
