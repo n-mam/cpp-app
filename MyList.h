@@ -64,21 +64,21 @@ class MyList : public wxListCtrl
     return info.m_text.ToStdString();
   }
 
-  std::vector<long> GetSelectedItems(void)
+  std::vector<long> GetSelectedItemIndexes(void)
   {
-    long item = -1;
+    long idx = -1;
     std::vector<long> selected;
 
     for (;;)
     {
-      item = GetNextItem(
-          item,
+      idx = GetNextItem(
+          idx,
           wxLIST_NEXT_ALL,
           wxLIST_STATE_SELECTED);
 
-      if (item == -1) break;
+      if (idx == -1) break;
 
-      selected.push_back(item);
+      selected.push_back(idx);
     }
 
     return selected;

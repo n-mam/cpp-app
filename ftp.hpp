@@ -381,6 +381,9 @@ class MyFTP : public FTPPanel, public TSession
     itemDelete->SetBitmap(wxBitmap(delete_xpm));
     lvMenu->Append(itemDelete), id++;
 
+    wxMenuItem *itemWalk = new wxMenuItem(lvMenu, id, wxString(_("Walk")) , wxEmptyString, wxITEM_NORMAL);
+    lvMenu->Append(itemWalk), id++;
+
     lvMenu->Connect(wxEVT_COMMAND_MENU_SELECTED, (wxObjectEventFunction) &MyFTP::OnListViewContextMenu, NULL, this);
 
     PopupMenu(lvMenu);
@@ -392,7 +395,7 @@ class MyFTP : public FTPPanel, public TSession
     {
       case ID_LOCAL_BASE: // upload
       {
-        InitiateTransfer(iListViewLocal, m_llist, EOperation::EUpload);
+        InitiateOperation(iListViewLocal, m_llist, EOperation::EUpload);
         break;
       }
       case ID_LOCAL_BASE + 1: // rename
@@ -401,25 +404,22 @@ class MyFTP : public FTPPanel, public TSession
       }
       case ID_LOCAL_BASE + 2: // delete
       {
-        auto items = iListViewLocal->GetSelectedItems();
-
         auto answer = wxMessageBox(
           "Do you want to delete the selected items ?", 
           "Local Delete", wxYES_NO, this);
 
         if (answer == wxNO) break;
 
+        auto items = iListViewLocal->GetSelectedItemIndexes();
+
         for (auto& item : items)
         {
           std::error_code ec;
           std::filesystem::remove_all(iCurrentLocalDirectory + "/" + m_llist[item].e_name, ec);
 
-          if (ec)
-          {
+          if (ec) {
             LOG << ec.message();
-          }
-          else
-          {
+          } else {
             UpdateLocalListView(iCurrentLocalDirectory);
           }
         }
@@ -428,7 +428,7 @@ class MyFTP : public FTPPanel, public TSession
       }
       case ID_REMOTE_BASE: // download
       {
-        InitiateTransfer(iListViewRemote, m_rlist, EOperation::EDownload);
+        InitiateOperation(iListViewRemote, m_rlist, EOperation::EDownload);
         break;
       }
       case ID_REMOTE_BASE + 1: //rename
@@ -443,7 +443,7 @@ class MyFTP : public FTPPanel, public TSession
 
         if (answer == wxNO) break;
 
-        InitiateTransfer(iListViewRemote, m_rlist, EOperation::EDelete);
+        InitiateOperation(iListViewRemote, m_rlist, EOperation::EDelete);
 
         GetDirectoryList(
           iCurrentRemoteDirectory,
@@ -453,12 +453,38 @@ class MyFTP : public FTPPanel, public TSession
 
         break;
       }
+      case ID_REMOTE_BASE + 3: // walk
+      {
+        auto items = iListViewRemote->GetSelectedItemIndexes();
+
+        for (auto& item : items)
+        {
+          if (m_rlist[item].e_type == EType::EFolder)
+          {
+            WalkRemoteFolder(m_rlist[item].e_name,
+              [](const std::string& folder, const TListFTPElementVector& elements) {
+                LOG << "Listing : " + folder;
+                for (auto& e : elements) {
+                  if (e.e_type == EType::EFile)
+                    LOG << "File : " + e.e_name;
+                  if (e.e_type == EType::EFolder)
+                    LOG << "Folder : " + e.e_name;
+                }
+              }
+            );
+          }
+          else
+          {
+            LOG << "File : " + m_rlist[item].e_name;
+          }
+        }
+      }
     }
   }
 
-  void InitiateTransfer(MyList *lv, TListFTPElementVector& list, EOperation op)
+  void InitiateOperation(MyList *lv, TListFTPElementVector& list, EOperation op)
   {
-    auto items = lv->GetSelectedItems();
+    auto items = lv->GetSelectedItemIndexes();
 
     if (!items.size()) return;
 
@@ -483,8 +509,7 @@ class MyFTP : public FTPPanel, public TSession
             [this](const std::string& folder, const TListFTPElementVector& elements) {
               // root   : /123/1
               // folder : /123/1 /123/1/11  /123/1/11/111
-              std::string subpath = folder;
-              Replace(subpath, iCurrentRemoteDirectory, "");
+              auto subpath = Replace(folder, iCurrentRemoteDirectory, "");
               auto llocal = iCurrentLocalDirectory + "/" + subpath;
               std::filesystem::create_directory(llocal);
 
@@ -497,7 +522,8 @@ class MyFTP : public FTPPanel, public TSession
                     m_dcTls);
                 }
               }
-            });
+            }
+          );
         }
         else if (op == EOperation::EUpload) {
           iFTPTransfer->CreateDir(remote, nullptr);
