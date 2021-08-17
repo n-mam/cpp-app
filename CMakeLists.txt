@@ -59,3 +59,12 @@ if (WIN32)
    "/DEBUG /OPT:REF /OPT:ICF"
   )
 endif (WIN32)
+
+if (WIN32)
+  add_custom_command(
+    TARGET 
+    ${PROJECT_NAME}
+    POST_BUILD
+    COMMAND "mt.exe" -manifest \"${CMAKE_CURRENT_SOURCE_DIR}\\manifest.xml\" -inputresource:\"$<TARGET_FILE:cpp-app>\"\;\#1 -outputresource:\"$<TARGET_FILE:cpp-app>\"\;\#1
+  )
+endif (WIN32)

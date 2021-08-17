@@ -42,3 +42,7 @@ mkdir build
 cd build  
 cmake -DCMAKE_BUILD_TYPE=Debug ..  
 cmake --build .  
+
+### DPI aware manifest
+
+mt.exe -manifest ..\..\manifest.xml -inputresource:cpp-app.exe;#1 -outputresource:cpp-app.exe;#1

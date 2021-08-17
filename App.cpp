@@ -38,7 +38,7 @@ bool MyApp::OnInit()
           if (log.find("Command  :") == 0) {
             trace->SetDefaultStyle(wxTextAttr(wxColour(0, 58, 200)));
           } else if (log.find("Response :") == 0) {
-            trace->SetDefaultStyle(wxTextAttr(wxColour(0, 150, 0)));
+            trace->SetDefaultStyle(wxTextAttr(wxColour(0, 117, 0)));
           }
 
           trace->AppendText(" " + log);
