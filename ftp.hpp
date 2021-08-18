@@ -5,6 +5,7 @@
 
 #include <images/up.xpm>
 #include <images/down.xpm>
+#include <images/sync.xpm>
 #include <images/delete.xpm>
 #include <images/rename.xpm>
 
@@ -155,7 +156,7 @@ class MyFTP : public FTPPanel, public TSession
   virtual void iListViewLocalOnListItemRightClick(wxListEvent& event)
   {
     auto count = iListViewLocal->GetSelectedItemCount();
-    ShowListViewContextMenu(true, count);
+    ShowListViewContextMenu(ID_LOCAL_BASE, _("Upload"), count);
   }
 
   virtual void UpdateLocalListView(const std::string& dir)
@@ -275,7 +276,7 @@ class MyFTP : public FTPPanel, public TSession
   virtual void iListViewRemoteOnListItemRightClick(wxListEvent& event)
   {
     auto count = iListViewRemote->GetSelectedItemCount();
-    ShowListViewContextMenu(false, count);
+    ShowListViewContextMenu(ID_REMOTE_BASE, _("Download"), count);
   }
 
   virtual void UpdateRemoteListView(const std::string& dir, const std::string& list)
@@ -348,27 +349,27 @@ class MyFTP : public FTPPanel, public TSession
     return idx;
   }
 
-  void ShowListViewContextMenu(bool local, int count)
+  void ShowListViewContextMenu(int id, wxString direction, int count)
   {
-    int id;
-    wxString direction;
-    
-    if (local)
-    {
-      id = ID_LOCAL_BASE;
-      direction = wxString(_("Upload"));
-    }
-    else
-    {
-      id = ID_REMOTE_BASE;
-      direction = wxString(_("Download"));
-    }
-
     wxMenu *lvMenu = new wxMenu();
 
+    wxMenuItem *itemRefresh = new wxMenuItem(lvMenu, id, wxString(_("Refresh")) , wxEmptyString, wxITEM_NORMAL);
+    itemRefresh->SetBitmap(wxBitmap(sync_xpm));
+    lvMenu->Append(itemRefresh), id++;
+
     wxMenuItem *itemAction = new wxMenuItem(lvMenu, id, direction, wxEmptyString, wxITEM_NORMAL);
-    itemAction->SetBitmap(local ? wxBitmap(up_xpm) : wxBitmap(down_xpm));
+    itemAction->SetBitmap((direction == _("Upload")) ? wxBitmap(up_xpm) : wxBitmap(down_xpm));
     lvMenu->Append(itemAction), id++;
+
+    wxMenuItem *itemNew = new wxMenuItem(lvMenu, id, wxString(_("New Folder")) , wxEmptyString, wxITEM_NORMAL);
+    itemNew->SetBitmap(wxBitmap(folder_xpm));
+    lvMenu->Append(itemNew), id++;
+
+    lvMenu->AppendSeparator();
+ 
+    wxMenuItem *itemDelete = new wxMenuItem(lvMenu, id, wxString(_("Delete")) , wxEmptyString, wxITEM_NORMAL);
+    itemDelete->SetBitmap(wxBitmap(delete_xpm));
+    lvMenu->Append(itemDelete), id++;
 
     if (count == 1)
     {
@@ -377,14 +378,10 @@ class MyFTP : public FTPPanel, public TSession
       lvMenu->Append(itemRename);
     }
 
-    lvMenu->AppendSeparator(), id++;
+    id++;
 
-    wxMenuItem *itemDelete = new wxMenuItem(lvMenu, id, wxString(_("Delete")) , wxEmptyString, wxITEM_NORMAL);
-    itemDelete->SetBitmap(wxBitmap(delete_xpm));
-    lvMenu->Append(itemDelete), id++;
-
-    wxMenuItem *itemWalk = new wxMenuItem(lvMenu, id, wxString(_("Walk")) , wxEmptyString, wxITEM_NORMAL);
-    lvMenu->Append(itemWalk), id++;
+    // wxMenuItem *itemWalk = new wxMenuItem(lvMenu, id, wxString(_("Walk")) , wxEmptyString, wxITEM_NORMAL);
+    // lvMenu->Append(itemWalk), id++;
 
     lvMenu->Connect(wxEVT_COMMAND_MENU_SELECTED, (wxObjectEventFunction) &MyFTP::OnListViewContextMenu, NULL, this);
 
@@ -395,16 +392,21 @@ class MyFTP : public FTPPanel, public TSession
   {
     switch (e.GetId())
     {
-      case ID_LOCAL_BASE: // upload
+      case ID_LOCAL_BASE: // refresh
+      {
+        UpdateLocalListView(iCurrentLocalDirectory);
+        break;
+      }
+      case ID_LOCAL_BASE + 1: // upload
       {
         InitiateOperation(iListViewLocal, m_llist, EOperation::EUpload);
         break;
       }
-      case ID_LOCAL_BASE + 1: // rename
+      case ID_LOCAL_BASE + 2: // new
       {
         break;
       }
-      case ID_LOCAL_BASE + 2: // delete
+      case ID_LOCAL_BASE + 3: // delete
       {
         auto answer = wxMessageBox(
           "Do you want to delete the selected items ?", 
@@ -428,17 +430,38 @@ class MyFTP : public FTPPanel, public TSession
 
         break;
       }
-      case ID_REMOTE_BASE: // download
+      case ID_LOCAL_BASE + 4: // rename
       {
+        break;
+      }
+      case ID_LOCAL_BASE + 5: // walk
+      {
+        break;
+      }
+
+      case ID_REMOTE_BASE: // refresh
+      {
+        GetDirectoryList(
+          iCurrentRemoteDirectory,
+          [this](const std::string& path, const std::string& list) {
+            UpdateRemoteListView(path, list);
+          });
+        break;
+      }
+      case ID_REMOTE_BASE + 1: // download
+      {
+        LOG << "download";
         InitiateOperation(iListViewRemote, m_rlist, EOperation::EDownload);
         break;
       }
-      case ID_REMOTE_BASE + 1: //rename
+      case ID_REMOTE_BASE + 2: // new 
       {
+        LOG << "New folder";
         break;
       }
-      case ID_REMOTE_BASE + 2: //delete
+      case ID_REMOTE_BASE + 3: // delete
       {
+        LOG << "Delete";
         auto answer = wxMessageBox(
           "Do you want to delete the selected files ?", 
           "Remote Delete", wxYES_NO, this);
@@ -455,7 +478,12 @@ class MyFTP : public FTPPanel, public TSession
 
         break;
       }
-      case ID_REMOTE_BASE + 3: // walk
+      case ID_REMOTE_BASE + 4: // rename
+      {
+        LOG << "rename";
+        break;
+      }
+      case ID_REMOTE_BASE + 5: // walk
       {
         auto items = iListViewRemote->GetSelectedItemIndexes();
 
@@ -555,7 +583,7 @@ class MyFTP : public FTPPanel, public TSession
 
               while (count == 0) 
               {
-                LOG << "WRF : RMDIR " + p;
+                //LOG << "WRF : RMDIR " + p;
                 iFTPTransfer->RemoveDir(p, nullptr);
 
                 auto parent = std::filesystem::path(p).parent_path().string();
@@ -674,15 +702,18 @@ class MyFTP : public FTPPanel, public TSession
     return elements;
   }
 
-  void WalkRemoteFolder(const std::string& root, TWalkRemoteCallback cbk)
+  void WalkRemoteFolder(const std::string& root, TWalkRemoteCallback callback)
   {
     GetDirectoryList(root,
-      [this, cbk] (const std::string& path, const std::string& list) {
+      [this, callback] (const std::string& path, const std::string& list) 
+      {
         auto elements = ParseDirectoryListUnix(list);
-        cbk(path, elements);
-        for (auto& e : elements) {
-          if (e.e_type == EType::EFolder) {
-            WalkRemoteFolder(path + "/" + e.e_name, cbk);
+        callback(path, elements);
+        for (auto& e : elements) 
+        {
+          if (e.e_type == EType::EFolder) 
+          {
+            WalkRemoteFolder(path + "/" + e.e_name, callback);
           }
         }
       });
