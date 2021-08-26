@@ -30,13 +30,14 @@ export CXX=/opt/gcc-11/bin/g++
 ##### Build wxwidgets  
 download wxwidgets 3.1* and build it :  
 
-./configure  
+./configure --prefix=/path/to/install/folder  
 make  
-sudo make install  
+make install  
 sudo ldconfig  
 
 ##### Build cpp-app  
 export OPENSSL_ROOT_DIR=~/vcpkg/installed/x64-linux/  
+export OPENSSL_ROOT_DIR=/Users/neelabh.mam/code/vcpkg/installed/x64-osx
 
 mkdir build  
 cd build  

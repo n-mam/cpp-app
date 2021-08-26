@@ -5,12 +5,19 @@ cmake_minimum_required(VERSION 3.0)
 # SET wxWidgets_ROOT_DIR=d:\wxWidgets-3.1.2
 # SET OPENSSL_ROOT_DIR=D:/vcpkg.1/installed/x64-windows
 # export OPENSSL_ROOT_DIR=/home/nmam/vcpkg/installed/x64-linux
+# export OPENSSL_ROOT_DIR=/Users/neelabh.mam/code/vcpkg/installed/x64-osx
 
 project(cpp-app)
+
+## wx-config --query-toolkit
 
 if (UNIX)
   set(wxWidgets_CONFIG_OPTIONS --toolkit=gtk3 --prefix=/usr/local)
 endif(UNIX)
+
+if(APPLE)
+  set(wxWidgets_CONFIG_OPTIONS --toolkit=osx_cocoa --prefix=/Users/neelabh.mam/code/install)
+endif(APPLE)
 
 find_package(OpenSSL REQUIRED)
 find_package(wxWidgets COMPONENTS core base richtext adv html xml REQUIRED)
