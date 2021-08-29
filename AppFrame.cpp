@@ -26,13 +26,11 @@ AppFrame::AppFrame( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	szTB = new wxBoxSizer( wxHORIZONTAL );
 
 	m_toolBar = new wxToolBar( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTB_HORZ_LAYOUT|wxTB_HORZ_TEXT|wxTB_NODIVIDER|wxTB_TEXT );
-	m_toolBar->SetBackgroundColour( wxColour( 255, 255, 255 ) );
-
 	m_toolHome = m_toolBar->AddTool( ID_PAGE_BASE, _("Home"), wxBitmap( config_xpm ), wxNullBitmap, wxITEM_RADIO, wxEmptyString, wxEmptyString, NULL );
 
 	m_toolBar->Realize();
 
-	szTB->Add( m_toolBar, 1, wxEXPAND|wxTOP|wxALIGN_CENTER_VERTICAL, 5 );
+	szTB->Add( m_toolBar, 1, wxEXPAND|wxTOP, 5 );
 
 
 	szTop->Add( szTB, 0, wxEXPAND|wxRIGHT|wxLEFT, 5 );
@@ -41,15 +39,13 @@ AppFrame::AppFrame( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	m_splitter->Connect( wxEVT_IDLE, wxIdleEventHandler( AppFrame::m_splitterOnIdle ), NULL, this );
 
 	m_panel6 = new wxPanel( m_splitter, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
-	m_panel6->SetBackgroundColour( wxColour( 255, 255, 255 ) );
-
 	wxBoxSizer* bSizer11;
 	bSizer11 = new wxBoxSizer( wxVERTICAL );
 
 	m_trace = new wxTextCtrl( m_panel6, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_MULTILINE|wxTE_RICH|wxTE_RICH2 );
 	m_trace->SetFont( wxFont( wxNORMAL_FONT->GetPointSize(), wxFONTFAMILY_MODERN, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL, false, wxEmptyString ) );
 
-	bSizer11->Add( m_trace, 1, wxEXPAND|wxALL, 5 );
+	bSizer11->Add( m_trace, 1, wxTOP|wxRIGHT|wxLEFT|wxEXPAND, 5 );
 
 
 	m_panel6->SetSizer( bSizer11 );
@@ -61,8 +57,6 @@ AppFrame::AppFrame( wxWindow* parent, wxWindowID id, const wxString& title, cons
 
 	m_book = new wxSimplebook( m_panel8, wxID_ANY, wxDefaultPosition, wxDefaultSize, 0 );
 	m_homePage = new wxPanel( m_book, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
-	m_homePage->SetBackgroundColour( wxColour( 255, 255, 255 ) );
-
 	wxBoxSizer* bSizer13;
 	bSizer13 = new wxBoxSizer( wxHORIZONTAL );
 
@@ -231,8 +225,6 @@ AppFrame::AppFrame( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	this->SetSizer( szTop );
 	this->Layout();
 	m_status = this->CreateStatusBar( 1, wxSTB_SIZEGRIP, wxID_ANY );
-	m_status->SetBackgroundColour( wxColour( 255, 255, 255 ) );
-
 
 	this->Centre( wxBOTH );
 
