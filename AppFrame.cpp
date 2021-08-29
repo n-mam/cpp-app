@@ -17,7 +17,7 @@ AppFrame::AppFrame( wxWindow* parent, wxWindowID id, const wxString& title, cons
 {
 	this->SetSizeHints( wxDefaultSize, wxDefaultSize );
 	this->SetFont( wxFont( wxNORMAL_FONT->GetPointSize(), wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL, false, wxEmptyString ) );
-	this->SetBackgroundColour( wxSystemSettings::GetColour( wxSYS_COLOUR_MENU ) );
+	this->SetBackgroundColour( wxSystemSettings::GetColour( wxSYS_COLOUR_WINDOW ) );
 
 	wxBoxSizer* szTop;
 	szTop = new wxBoxSizer( wxVERTICAL );
@@ -30,7 +30,7 @@ AppFrame::AppFrame( wxWindow* parent, wxWindowID id, const wxString& title, cons
 
 	m_toolBar->Realize();
 
-	szTB->Add( m_toolBar, 1, wxEXPAND|wxTOP|wxRIGHT|wxLEFT, 5 );
+	szTB->Add( m_toolBar, 1, wxEXPAND|wxTOP, 5 );
 
 
 	szTop->Add( szTB, 0, wxEXPAND|wxRIGHT|wxLEFT, 5 );
@@ -70,16 +70,16 @@ AppFrame::AppFrame( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	szLine1 = new wxBoxSizer( wxHORIZONTAL );
 
 	m_host = new wxTextCtrl( szNew->GetStaticBox(), wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( -1,-1 ), 0|wxBORDER_DEFAULT );
-	szLine1->Add( m_host, 1, wxALL, 5 );
+	szLine1->Add( m_host, 1, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
 
 	m_port = new wxTextCtrl( szNew->GetStaticBox(), wxID_ANY, _("21"), wxDefaultPosition, wxSize( 55,-1 ), 0|wxBORDER_DEFAULT );
-	szLine1->Add( m_port, 0, wxALL, 5 );
+	szLine1->Add( m_port, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
 
 	wxString m_protocolChoices[] = { _("FTP"), _("SSH") };
 	int m_protocolNChoices = sizeof( m_protocolChoices ) / sizeof( wxString );
 	m_protocol = new wxChoice( szNew->GetStaticBox(), wxID_ANY, wxDefaultPosition, wxDefaultSize, m_protocolNChoices, m_protocolChoices, 0|wxBORDER_STATIC );
 	m_protocol->SetSelection( 0 );
-	szLine1->Add( m_protocol, 0, wxALL, 5 );
+	szLine1->Add( m_protocol, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
 
 
 	szNew->Add( szLine1, 0, wxEXPAND|wxTOP, 5 );
@@ -88,10 +88,10 @@ AppFrame::AppFrame( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	szLine2 = new wxBoxSizer( wxHORIZONTAL );
 
 	m_user = new wxTextCtrl( szNew->GetStaticBox(), wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( 150,-1 ), 0|wxBORDER_DEFAULT );
-	szLine2->Add( m_user, 1, wxALL, 5 );
+	szLine2->Add( m_user, 1, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
 
 	m_pass = new wxTextCtrl( szNew->GetStaticBox(), wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( 150,-1 ), wxTE_PASSWORD|wxBORDER_DEFAULT );
-	szLine2->Add( m_pass, 1, wxALL, 5 );
+	szLine2->Add( m_pass, 1, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
 
 
 	szNew->Add( szLine2, 0, wxEXPAND|wxTOP, 5 );
@@ -201,7 +201,7 @@ AppFrame::AppFrame( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	szSettings->Add( szTrace, 0, wxEXPAND|wxALL, 5 );
 
 
-	bSizer19->Add( szSettings, 1, wxEXPAND|wxALL, 5 );
+	bSizer19->Add( szSettings, 1, wxEXPAND|wxTOP|wxBOTTOM, 5 );
 
 
 	bSizer13->Add( bSizer19, 1, wxEXPAND|wxTOP|wxBOTTOM, 5 );
