@@ -48,6 +48,7 @@ class AppFrame : public wxFrame
 	private:
 
 	protected:
+		wxPanel* m_panel81;
 		wxToolBarToolBase* m_toolHome;
 		wxSplitterWindow* m_splitter;
 		wxPanel* m_panel6;

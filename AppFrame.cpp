@@ -23,10 +23,17 @@ AppFrame::AppFrame( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	wxBoxSizer* szTop;
 	szTop = new wxBoxSizer( wxVERTICAL );
 
+	m_panel81 = new wxPanel( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
+	m_panel81->SetForegroundColour( wxColour( 0, 0, 0 ) );
+	m_panel81->SetBackgroundColour( wxColour( 255, 255, 255 ) );
+
+	wxBoxSizer* bSizer16;
+	bSizer16 = new wxBoxSizer( wxVERTICAL );
+
 	wxBoxSizer* szTB;
 	szTB = new wxBoxSizer( wxHORIZONTAL );
 
-	m_toolBar = new wxToolBar( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTB_HORZ_LAYOUT|wxTB_HORZ_TEXT|wxTB_NODIVIDER|wxTB_TEXT );
+	m_toolBar = new wxToolBar( m_panel81, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTB_HORZ_LAYOUT|wxTB_HORZ_TEXT|wxTB_NODIVIDER|wxTB_TEXT );
 	m_toolBar->SetBackgroundColour( wxColour( 255, 255, 255 ) );
 
 	m_toolHome = m_toolBar->AddTool( ID_PAGE_BASE, _("Home"), wxBitmap( config_xpm ), wxNullBitmap, wxITEM_RADIO, wxEmptyString, wxEmptyString, NULL );
@@ -36,9 +43,9 @@ AppFrame::AppFrame( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	szTB->Add( m_toolBar, 1, wxEXPAND|wxTOP|wxBOTTOM, 5 );
 
 
-	szTop->Add( szTB, 0, wxEXPAND|wxRIGHT|wxLEFT, 5 );
+	bSizer16->Add( szTB, 0, wxEXPAND|wxRIGHT|wxLEFT, 5 );
 
-	m_splitter = new wxSplitterWindow( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxSP_LIVE_UPDATE|wxSP_NOBORDER );
+	m_splitter = new wxSplitterWindow( m_panel81, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxSP_LIVE_UPDATE|wxSP_NOBORDER );
 	m_splitter->Connect( wxEVT_IDLE, wxIdleEventHandler( AppFrame::m_splitterOnIdle ), NULL, this );
 
 	m_splitter->SetForegroundColour( wxColour( 0, 0, 0 ) );
@@ -69,7 +76,7 @@ AppFrame::AppFrame( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	m_book->SetBackgroundColour( wxSystemSettings::GetColour( wxSYS_COLOUR_WINDOW ) );
 
 	m_homePage = new wxPanel( m_book, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
-	m_homePage->SetForegroundColour( wxSystemSettings::GetColour( wxSYS_COLOUR_WINDOW ) );
+	m_homePage->SetForegroundColour( wxColour( 0, 0, 0 ) );
 	m_homePage->SetBackgroundColour( wxColour( 255, 255, 255 ) );
 
 	wxBoxSizer* bSizer13;
@@ -153,7 +160,7 @@ AppFrame::AppFrame( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	szDC = new wxStaticBoxSizer( new wxStaticBox( szProtocol->GetStaticBox(), wxID_ANY, _("Data") ), wxHORIZONTAL );
 
 	m_panelDCProt = new wxPanel( szDC->GetStaticBox(), wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
-	m_panelDCProt->SetForegroundColour( wxSystemSettings::GetColour( wxSYS_COLOUR_WINDOW ) );
+	m_panelDCProt->SetForegroundColour( wxColour( 0, 0, 0 ) );
 	m_panelDCProt->SetBackgroundColour( wxColour( 255, 255, 255 ) );
 
 	wxBoxSizer* bSizer17;
@@ -161,12 +168,14 @@ AppFrame::AppFrame( wxWindow* parent, wxWindowID id, const wxString& title, cons
 
 	m_radioDCProtClear = new wxRadioButton( m_panelDCProt, wxID_ANY, _("Clear"), wxDefaultPosition, wxDefaultSize, wxRB_GROUP );
 	m_radioDCProtClear->SetForegroundColour( wxColour( 0, 0, 0 ) );
+	m_radioDCProtClear->SetBackgroundColour( wxColour( 255, 255, 255 ) );
 
 	bSizer17->Add( m_radioDCProtClear, 0, wxALL, 5 );
 
 	m_radioDCProtProtected = new wxRadioButton( m_panelDCProt, wxID_ANY, _("Protected"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_radioDCProtProtected->SetValue( true );
 	m_radioDCProtProtected->SetForegroundColour( wxColour( 0, 0, 0 ) );
+	m_radioDCProtProtected->SetBackgroundColour( wxColour( 255, 255, 255 ) );
 
 	bSizer17->Add( m_radioDCProtProtected, 0, wxALL, 5 );
 
@@ -259,7 +268,13 @@ AppFrame::AppFrame( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	m_panel8->Layout();
 	szBook->Fit( m_panel8 );
 	m_splitter->SplitHorizontally( m_panel6, m_panel8, 130 );
-	szTop->Add( m_splitter, 1, wxEXPAND|wxRIGHT|wxLEFT, 5 );
+	bSizer16->Add( m_splitter, 1, wxEXPAND|wxRIGHT|wxLEFT, 5 );
+
+
+	m_panel81->SetSizer( bSizer16 );
+	m_panel81->Layout();
+	bSizer16->Fit( m_panel81 );
+	szTop->Add( m_panel81, 1, wxEXPAND | wxALL, 5 );
 
 
 	this->SetSizer( szTop );
