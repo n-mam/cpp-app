@@ -52,11 +52,16 @@ AppFrame::AppFrame( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	m_splitter->SetBackgroundColour( wxColour( 255, 255, 255 ) );
 
 	m_panel6 = new wxPanel( m_splitter, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
+	m_panel6->SetForegroundColour( wxColour( 0, 0, 0 ) );
+	m_panel6->SetBackgroundColour( wxColour( 255, 255, 255 ) );
+
 	wxBoxSizer* bSizer11;
 	bSizer11 = new wxBoxSizer( wxVERTICAL );
 
 	m_trace = new wxTextCtrl( m_panel6, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_MULTILINE|wxTE_RICH|wxTE_RICH2 );
 	m_trace->SetFont( wxFont( wxNORMAL_FONT->GetPointSize(), wxFONTFAMILY_MODERN, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL, false, wxEmptyString ) );
+	m_trace->SetForegroundColour( wxColour( 0, 0, 0 ) );
+	m_trace->SetBackgroundColour( wxColour( 255, 255, 255 ) );
 
 	bSizer11->Add( m_trace, 1, wxEXPAND|wxBOTTOM, 5 );
 
@@ -197,21 +202,25 @@ AppFrame::AppFrame( wxWindow* parent, wxWindowID id, const wxString& title, cons
 
 	bSizer14->Add( 0, 0, 1, wxEXPAND, 5 );
 
+	m_panel10 = new wxPanel( m_homePage, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
+	m_panel10->SetForegroundColour( wxColour( 0, 0, 0 ) );
+	m_panel10->SetBackgroundColour( wxColour( 255, 255, 255 ) );
+
 	wxBoxSizer* szLine3;
 	szLine3 = new wxBoxSizer( wxHORIZONTAL );
 
 
 	szLine3->Add( 0, 0, 1, wxEXPAND, 5 );
 
-	m_save = new wxButton( m_homePage, wxID_ANY, _("Save"), wxDefaultPosition, wxDefaultSize, 0|wxBORDER_STATIC );
+	m_save = new wxButton( m_panel10, wxID_ANY, _("Save"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_save->SetForegroundColour( wxColour( 0, 0, 0 ) );
-	m_save->SetBackgroundColour( wxColour( 208, 208, 208 ) );
+	m_save->SetBackgroundColour( wxColour( 181, 181, 181 ) );
 
 	szLine3->Add( m_save, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
 
-	m_connect = new wxButton( m_homePage, wxID_ANY, _("Connect"), wxDefaultPosition, wxDefaultSize, 0|wxBORDER_STATIC );
+	m_connect = new wxButton( m_panel10, wxID_ANY, _("Connect"), wxDefaultPosition, wxDefaultSize, 0|wxBORDER_STATIC );
 	m_connect->SetForegroundColour( wxColour( 0, 0, 0 ) );
-	m_connect->SetBackgroundColour( wxColour( 208, 208, 208 ) );
+	m_connect->SetBackgroundColour( wxColour( 181, 181, 181 ) );
 
 	szLine3->Add( m_connect, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
 
@@ -219,19 +228,29 @@ AppFrame::AppFrame( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	szLine3->Add( 0, 0, 1, wxEXPAND, 5 );
 
 
-	bSizer14->Add( szLine3, 1, wxEXPAND|wxTOP|wxBOTTOM|wxRIGHT, 5 );
+	m_panel10->SetSizer( szLine3 );
+	m_panel10->Layout();
+	szLine3->Fit( m_panel10 );
+	bSizer14->Add( m_panel10, 1, wxEXPAND | wxALL, 5 );
 
 
 	bSizer13->Add( bSizer14, 1, wxEXPAND|wxRIGHT, 5 );
 
+	m_panel9 = new wxPanel( m_homePage, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
+	m_panel9->SetForegroundColour( wxColour( 0, 0, 0 ) );
+	m_panel9->SetBackgroundColour( wxColour( 255, 255, 255 ) );
+
 	wxBoxSizer* bSizer19;
 	bSizer19 = new wxBoxSizer( wxVERTICAL );
 
-	iListViewSavedSessions = new MyList( m_homePage, wxID_ANY, wxDefaultPosition, wxSize( 300,-1 ), wxLC_REPORT|wxLC_VIRTUAL|wxBORDER_DEFAULT );
+	iListViewSavedSessions = new MyList( m_panel9, wxID_ANY, wxDefaultPosition, wxSize( 300,-1 ), wxLC_REPORT|wxLC_VIRTUAL|wxBORDER_DEFAULT );
+	iListViewSavedSessions->SetForegroundColour( wxColour( 0, 0, 0 ) );
+	iListViewSavedSessions->SetBackgroundColour( wxColour( 255, 255, 255 ) );
+
 	bSizer19->Add( iListViewSavedSessions, 1, wxEXPAND|wxTOP|wxBOTTOM|wxLEFT, 5 );
 
 	wxStaticBoxSizer* szSettings;
-	szSettings = new wxStaticBoxSizer( new wxStaticBox( m_homePage, wxID_ANY, _("Settings") ), wxVERTICAL );
+	szSettings = new wxStaticBoxSizer( new wxStaticBox( m_panel9, wxID_ANY, _("Settings") ), wxVERTICAL );
 
 
 	szSettings->Add( 0, 0, 1, wxEXPAND, 5 );
@@ -253,7 +272,10 @@ AppFrame::AppFrame( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	bSizer19->Add( szSettings, 1, wxEXPAND|wxTOP|wxBOTTOM|wxLEFT, 5 );
 
 
-	bSizer13->Add( bSizer19, 1, wxEXPAND|wxTOP|wxBOTTOM, 5 );
+	m_panel9->SetSizer( bSizer19 );
+	m_panel9->Layout();
+	bSizer19->Fit( m_panel9 );
+	bSizer13->Add( m_panel9, 1, wxEXPAND, 5 );
 
 
 	m_homePage->SetSizer( bSizer13 );

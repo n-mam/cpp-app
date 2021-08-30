@@ -63,8 +63,10 @@ class AppFrame : public wxFrame
 		wxPanel* m_panelDCProt;
 		wxRadioButton* m_radioDCProtClear;
 		wxRadioButton* m_radioDCProtProtected;
+		wxPanel* m_panel10;
 		wxButton* m_save;
 		wxButton* m_connect;
+		wxPanel* m_panel9;
 		MyList* iListViewSavedSessions;
 		wxCheckBox* m_traceCheck;
 
