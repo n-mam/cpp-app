@@ -97,9 +97,13 @@ AppFrame::AppFrame( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	szLine1 = new wxBoxSizer( wxHORIZONTAL );
 
 	m_host = new wxTextCtrl( szNew->GetStaticBox(), wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( -1,-1 ), 0|wxBORDER_DEFAULT );
+	m_host->SetForegroundColour( wxColour( 0, 0, 0 ) );
+
 	szLine1->Add( m_host, 1, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
 
 	m_port = new wxTextCtrl( szNew->GetStaticBox(), wxID_ANY, _("21"), wxDefaultPosition, wxSize( 55,-1 ), 0|wxBORDER_DEFAULT );
+	m_port->SetForegroundColour( wxColour( 0, 0, 0 ) );
+
 	szLine1->Add( m_port, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
 
 	wxString m_protocolChoices[] = { _("FTP"), _("SSH") };
@@ -115,9 +119,13 @@ AppFrame::AppFrame( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	szLine2 = new wxBoxSizer( wxHORIZONTAL );
 
 	m_user = new wxTextCtrl( szNew->GetStaticBox(), wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( 150,-1 ), 0|wxBORDER_DEFAULT );
+	m_user->SetForegroundColour( wxColour( 0, 0, 0 ) );
+
 	szLine2->Add( m_user, 1, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
 
 	m_pass = new wxTextCtrl( szNew->GetStaticBox(), wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( 150,-1 ), wxTE_PASSWORD|wxBORDER_DEFAULT );
+	m_pass->SetForegroundColour( wxColour( 0, 0, 0 ) );
+
 	szLine2->Add( m_pass, 1, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
 
 
