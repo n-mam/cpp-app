@@ -351,13 +351,22 @@ FTPPanel::FTPPanel( wxWindow* parent, wxWindowID id, const wxPoint& pos, const w
 	m_splitter->SetSashGravity( 0 );
 
 	m_left = new wxPanel( m_splitter, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
+	m_left->SetForegroundColour( wxColour( 0, 0, 0 ) );
+	m_left->SetBackgroundColour( wxColour( 255, 255, 255 ) );
+
 	wxBoxSizer* bSizerLeft;
 	bSizerLeft = new wxBoxSizer( wxVERTICAL );
 
 	iComboBoxLocal = new wxComboBox( m_left, wxID_ANY, _("Local"), wxDefaultPosition, wxDefaultSize, 0, NULL, wxTE_PROCESS_ENTER );
+	iComboBoxLocal->SetForegroundColour( wxColour( 0, 0, 0 ) );
+	iComboBoxLocal->SetBackgroundColour( wxColour( 255, 255, 255 ) );
+
 	bSizerLeft->Add( iComboBoxLocal, 0, wxEXPAND|wxBOTTOM|wxRIGHT, 5 );
 
 	iListViewLocal = new MyList( m_left, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxLC_REPORT|wxLC_VIRTUAL );
+	iListViewLocal->SetForegroundColour( wxColour( 0, 0, 0 ) );
+	iListViewLocal->SetBackgroundColour( wxColour( 255, 255, 255 ) );
+
 	bSizerLeft->Add( iListViewLocal, 1, wxEXPAND|wxRIGHT, 5 );
 
 
@@ -365,13 +374,22 @@ FTPPanel::FTPPanel( wxWindow* parent, wxWindowID id, const wxPoint& pos, const w
 	m_left->Layout();
 	bSizerLeft->Fit( m_left );
 	m_right = new wxPanel( m_splitter, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
+	m_right->SetForegroundColour( wxColour( 0, 0, 0 ) );
+	m_right->SetBackgroundColour( wxColour( 255, 255, 255 ) );
+
 	wxBoxSizer* bSizerRight;
 	bSizerRight = new wxBoxSizer( wxVERTICAL );
 
 	iComboBoxRemote = new wxComboBox( m_right, wxID_ANY, _("Not Connected"), wxDefaultPosition, wxDefaultSize, 0, NULL, wxTE_PROCESS_ENTER );
+	iComboBoxRemote->SetForegroundColour( wxColour( 0, 0, 0 ) );
+	iComboBoxRemote->SetBackgroundColour( wxColour( 255, 255, 255 ) );
+
 	bSizerRight->Add( iComboBoxRemote, 0, wxEXPAND|wxBOTTOM|wxLEFT, 5 );
 
 	iListViewRemote = new MyList( m_right, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxLC_REPORT|wxLC_VIRTUAL );
+	iListViewRemote->SetForegroundColour( wxColour( 0, 0, 0 ) );
+	iListViewRemote->SetBackgroundColour( wxColour( 255, 255, 255 ) );
+
 	bSizerRight->Add( iListViewRemote, 1, wxEXPAND|wxLEFT, 5 );
 
 
