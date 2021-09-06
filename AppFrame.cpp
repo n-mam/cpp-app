@@ -17,16 +17,11 @@ AppFrame::AppFrame( wxWindow* parent, wxWindowID id, const wxString& title, cons
 {
 	this->SetSizeHints( wxDefaultSize, wxDefaultSize );
 	this->SetFont( wxFont( wxNORMAL_FONT->GetPointSize(), wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL, false, wxEmptyString ) );
-	this->SetForegroundColour( wxColour( 0, 0, 0 ) );
-	this->SetBackgroundColour( wxColour( 255, 255, 255 ) );
 
 	wxBoxSizer* szTop;
 	szTop = new wxBoxSizer( wxVERTICAL );
 
 	m_panel81 = new wxPanel( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
-	m_panel81->SetForegroundColour( wxColour( 0, 0, 0 ) );
-	m_panel81->SetBackgroundColour( wxColour( 255, 255, 255 ) );
-
 	wxBoxSizer* bSizer16;
 	bSizer16 = new wxBoxSizer( wxVERTICAL );
 
@@ -34,8 +29,6 @@ AppFrame::AppFrame( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	szTB = new wxBoxSizer( wxHORIZONTAL );
 
 	m_toolBar = new wxToolBar( m_panel81, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTB_HORZ_LAYOUT|wxTB_HORZ_TEXT|wxTB_NODIVIDER|wxTB_TEXT );
-	m_toolBar->SetBackgroundColour( wxColour( 255, 255, 255 ) );
-
 	m_toolHome = m_toolBar->AddTool( ID_PAGE_BASE, _("Home"), wxBitmap( config_xpm ), wxNullBitmap, wxITEM_RADIO, wxEmptyString, wxEmptyString, NULL );
 
 	m_toolBar->Realize();
@@ -48,20 +41,12 @@ AppFrame::AppFrame( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	m_splitter = new wxSplitterWindow( m_panel81, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxSP_LIVE_UPDATE|wxSP_NOBORDER );
 	m_splitter->Connect( wxEVT_IDLE, wxIdleEventHandler( AppFrame::m_splitterOnIdle ), NULL, this );
 
-	m_splitter->SetForegroundColour( wxColour( 0, 0, 0 ) );
-	m_splitter->SetBackgroundColour( wxColour( 255, 255, 255 ) );
-
 	m_panel6 = new wxPanel( m_splitter, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
-	m_panel6->SetForegroundColour( wxColour( 0, 0, 0 ) );
-	m_panel6->SetBackgroundColour( wxColour( 255, 255, 255 ) );
-
 	wxBoxSizer* bSizer11;
 	bSizer11 = new wxBoxSizer( wxVERTICAL );
 
 	m_trace = new wxTextCtrl( m_panel6, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_MULTILINE|wxTE_RICH|wxTE_RICH2 );
 	m_trace->SetFont( wxFont( wxNORMAL_FONT->GetPointSize(), wxFONTFAMILY_MODERN, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL, false, wxEmptyString ) );
-	m_trace->SetForegroundColour( wxColour( 0, 0, 0 ) );
-	m_trace->SetBackgroundColour( wxColour( 255, 255, 255 ) );
 
 	bSizer11->Add( m_trace, 1, wxEXPAND|wxBOTTOM, 5 );
 
@@ -70,9 +55,6 @@ AppFrame::AppFrame( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	m_panel6->Layout();
 	bSizer11->Fit( m_panel6 );
 	m_panel8 = new wxPanel( m_splitter, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
-	m_panel8->SetForegroundColour( wxColour( 0, 0, 0 ) );
-	m_panel8->SetBackgroundColour( wxColour( 255, 255, 255 ) );
-
 	wxBoxSizer* szBook;
 	szBook = new wxBoxSizer( wxVERTICAL );
 
@@ -81,9 +63,6 @@ AppFrame::AppFrame( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	m_book->SetBackgroundColour( wxSystemSettings::GetColour( wxSYS_COLOUR_WINDOW ) );
 
 	m_homePage = new wxPanel( m_book, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
-	m_homePage->SetForegroundColour( wxColour( 0, 0, 0 ) );
-	m_homePage->SetBackgroundColour( wxColour( 255, 255, 255 ) );
-
 	wxBoxSizer* bSizer13;
 	bSizer13 = new wxBoxSizer( wxHORIZONTAL );
 
@@ -97,13 +76,9 @@ AppFrame::AppFrame( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	szLine1 = new wxBoxSizer( wxHORIZONTAL );
 
 	m_host = new wxTextCtrl( szNew->GetStaticBox(), wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( -1,-1 ), 0|wxBORDER_DEFAULT );
-	m_host->SetForegroundColour( wxColour( 0, 0, 0 ) );
-
 	szLine1->Add( m_host, 1, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
 
 	m_port = new wxTextCtrl( szNew->GetStaticBox(), wxID_ANY, _("21"), wxDefaultPosition, wxSize( 55,-1 ), 0|wxBORDER_DEFAULT );
-	m_port->SetForegroundColour( wxColour( 0, 0, 0 ) );
-
 	szLine1->Add( m_port, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
 
 	wxString m_protocolChoices[] = { _("FTP"), _("SSH") };
@@ -119,13 +94,9 @@ AppFrame::AppFrame( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	szLine2 = new wxBoxSizer( wxHORIZONTAL );
 
 	m_user = new wxTextCtrl( szNew->GetStaticBox(), wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( 150,-1 ), 0|wxBORDER_DEFAULT );
-	m_user->SetForegroundColour( wxColour( 0, 0, 0 ) );
-
 	szLine2->Add( m_user, 1, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
 
 	m_pass = new wxTextCtrl( szNew->GetStaticBox(), wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( 150,-1 ), wxTE_PASSWORD|wxBORDER_DEFAULT );
-	m_pass->SetForegroundColour( wxColour( 0, 0, 0 ) );
-
 	szLine2->Add( m_pass, 1, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
 
 
@@ -139,25 +110,18 @@ AppFrame::AppFrame( wxWindow* parent, wxWindowID id, const wxString& title, cons
 
 	m_panelCCProt = new wxPanel( szCC->GetStaticBox(), wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
 	m_panelCCProt->SetForegroundColour( wxSystemSettings::GetColour( wxSYS_COLOUR_WINDOW ) );
-	m_panelCCProt->SetBackgroundColour( wxColour( 255, 255, 255 ) );
 
 	wxBoxSizer* bSizer191;
 	bSizer191 = new wxBoxSizer( wxHORIZONTAL );
 
 	m_radioCCProtNone = new wxRadioButton( m_panelCCProt, wxID_ANY, _("None"), wxDefaultPosition, wxDefaultSize, wxRB_GROUP );
 	m_radioCCProtNone->SetValue( true );
-	m_radioCCProtNone->SetForegroundColour( wxColour( 0, 0, 0 ) );
-
 	bSizer191->Add( m_radioCCProtNone, 0, wxALL, 5 );
 
 	m_radioCCProtExplicit = new wxRadioButton( m_panelCCProt, wxID_ANY, _("Explicit"), wxDefaultPosition, wxDefaultSize, 0 );
-	m_radioCCProtExplicit->SetForegroundColour( wxColour( 0, 0, 0 ) );
-
 	bSizer191->Add( m_radioCCProtExplicit, 0, wxALL, 5 );
 
 	m_radioCCProtImplicit = new wxRadioButton( m_panelCCProt, wxID_ANY, _("Implicit"), wxDefaultPosition, wxDefaultSize, 0 );
-	m_radioCCProtImplicit->SetForegroundColour( wxColour( 0, 0, 0 ) );
-
 	bSizer191->Add( m_radioCCProtImplicit, 0, wxALL, 5 );
 
 
@@ -173,23 +137,14 @@ AppFrame::AppFrame( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	szDC = new wxStaticBoxSizer( new wxStaticBox( szProtocol->GetStaticBox(), wxID_ANY, _("Data") ), wxHORIZONTAL );
 
 	m_panelDCProt = new wxPanel( szDC->GetStaticBox(), wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
-	m_panelDCProt->SetForegroundColour( wxColour( 0, 0, 0 ) );
-	m_panelDCProt->SetBackgroundColour( wxColour( 255, 255, 255 ) );
-
 	wxBoxSizer* bSizer17;
 	bSizer17 = new wxBoxSizer( wxHORIZONTAL );
 
 	m_radioDCProtClear = new wxRadioButton( m_panelDCProt, wxID_ANY, _("Clear"), wxDefaultPosition, wxDefaultSize, wxRB_GROUP );
-	m_radioDCProtClear->SetForegroundColour( wxColour( 0, 0, 0 ) );
-	m_radioDCProtClear->SetBackgroundColour( wxColour( 255, 255, 255 ) );
-
 	bSizer17->Add( m_radioDCProtClear, 0, wxALL, 5 );
 
 	m_radioDCProtProtected = new wxRadioButton( m_panelDCProt, wxID_ANY, _("Protected"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_radioDCProtProtected->SetValue( true );
-	m_radioDCProtProtected->SetForegroundColour( wxColour( 0, 0, 0 ) );
-	m_radioDCProtProtected->SetBackgroundColour( wxColour( 255, 255, 255 ) );
-
 	bSizer17->Add( m_radioDCProtProtected, 0, wxALL, 5 );
 
 
@@ -211,9 +166,6 @@ AppFrame::AppFrame( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	bSizer14->Add( 0, 0, 1, wxEXPAND, 5 );
 
 	m_panel10 = new wxPanel( m_homePage, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
-	m_panel10->SetForegroundColour( wxColour( 0, 0, 0 ) );
-	m_panel10->SetBackgroundColour( wxColour( 255, 255, 255 ) );
-
 	wxBoxSizer* szLine3;
 	szLine3 = new wxBoxSizer( wxHORIZONTAL );
 
@@ -221,15 +173,9 @@ AppFrame::AppFrame( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	szLine3->Add( 0, 0, 1, wxEXPAND, 5 );
 
 	m_save = new wxButton( m_panel10, wxID_ANY, _("Save"), wxDefaultPosition, wxDefaultSize, 0 );
-	m_save->SetForegroundColour( wxColour( 0, 0, 0 ) );
-	m_save->SetBackgroundColour( wxColour( 181, 181, 181 ) );
-
 	szLine3->Add( m_save, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
 
 	m_connect = new wxButton( m_panel10, wxID_ANY, _("Connect"), wxDefaultPosition, wxDefaultSize, 0|wxBORDER_STATIC );
-	m_connect->SetForegroundColour( wxColour( 0, 0, 0 ) );
-	m_connect->SetBackgroundColour( wxColour( 181, 181, 181 ) );
-
 	szLine3->Add( m_connect, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
 
 
@@ -245,16 +191,10 @@ AppFrame::AppFrame( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	bSizer13->Add( bSizer14, 1, wxEXPAND|wxRIGHT, 5 );
 
 	m_panel9 = new wxPanel( m_homePage, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
-	m_panel9->SetForegroundColour( wxColour( 0, 0, 0 ) );
-	m_panel9->SetBackgroundColour( wxColour( 255, 255, 255 ) );
-
 	wxBoxSizer* bSizer19;
 	bSizer19 = new wxBoxSizer( wxVERTICAL );
 
 	iListViewSavedSessions = new MyList( m_panel9, wxID_ANY, wxDefaultPosition, wxSize( 300,-1 ), wxLC_REPORT|wxLC_VIRTUAL|wxBORDER_DEFAULT );
-	iListViewSavedSessions->SetForegroundColour( wxColour( 0, 0, 0 ) );
-	iListViewSavedSessions->SetBackgroundColour( wxColour( 255, 255, 255 ) );
-
 	bSizer19->Add( iListViewSavedSessions, 1, wxEXPAND|wxTOP|wxBOTTOM|wxLEFT, 5 );
 
 	wxStaticBoxSizer* szSettings;
@@ -268,9 +208,6 @@ AppFrame::AppFrame( wxWindow* parent, wxWindowID id, const wxString& title, cons
 
 	m_traceCheck = new wxCheckBox( szTrace->GetStaticBox(), wxID_ANY, _("Enable"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_traceCheck->SetValue(true);
-	m_traceCheck->SetForegroundColour( wxColour( 0, 0, 0 ) );
-	m_traceCheck->SetBackgroundColour( wxColour( 255, 255, 255 ) );
-
 	szTrace->Add( m_traceCheck, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 
 
@@ -351,22 +288,13 @@ FTPPanel::FTPPanel( wxWindow* parent, wxWindowID id, const wxPoint& pos, const w
 	m_splitter->SetSashGravity( 0 );
 
 	m_left = new wxPanel( m_splitter, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
-	m_left->SetForegroundColour( wxColour( 0, 0, 0 ) );
-	m_left->SetBackgroundColour( wxColour( 255, 255, 255 ) );
-
 	wxBoxSizer* bSizerLeft;
 	bSizerLeft = new wxBoxSizer( wxVERTICAL );
 
 	iComboBoxLocal = new wxComboBox( m_left, wxID_ANY, _("Local"), wxDefaultPosition, wxDefaultSize, 0, NULL, wxTE_PROCESS_ENTER );
-	iComboBoxLocal->SetForegroundColour( wxColour( 0, 0, 0 ) );
-	iComboBoxLocal->SetBackgroundColour( wxColour( 255, 255, 255 ) );
-
 	bSizerLeft->Add( iComboBoxLocal, 0, wxEXPAND|wxBOTTOM|wxRIGHT, 5 );
 
 	iListViewLocal = new MyList( m_left, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxLC_REPORT|wxLC_VIRTUAL );
-	iListViewLocal->SetForegroundColour( wxColour( 0, 0, 0 ) );
-	iListViewLocal->SetBackgroundColour( wxColour( 255, 255, 255 ) );
-
 	bSizerLeft->Add( iListViewLocal, 1, wxEXPAND|wxRIGHT, 5 );
 
 
@@ -374,22 +302,13 @@ FTPPanel::FTPPanel( wxWindow* parent, wxWindowID id, const wxPoint& pos, const w
 	m_left->Layout();
 	bSizerLeft->Fit( m_left );
 	m_right = new wxPanel( m_splitter, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
-	m_right->SetForegroundColour( wxColour( 0, 0, 0 ) );
-	m_right->SetBackgroundColour( wxColour( 255, 255, 255 ) );
-
 	wxBoxSizer* bSizerRight;
 	bSizerRight = new wxBoxSizer( wxVERTICAL );
 
 	iComboBoxRemote = new wxComboBox( m_right, wxID_ANY, _("Not Connected"), wxDefaultPosition, wxDefaultSize, 0, NULL, wxTE_PROCESS_ENTER );
-	iComboBoxRemote->SetForegroundColour( wxColour( 0, 0, 0 ) );
-	iComboBoxRemote->SetBackgroundColour( wxColour( 255, 255, 255 ) );
-
 	bSizerRight->Add( iComboBoxRemote, 0, wxEXPAND|wxBOTTOM|wxLEFT, 5 );
 
 	iListViewRemote = new MyList( m_right, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxLC_REPORT|wxLC_VIRTUAL );
-	iListViewRemote->SetForegroundColour( wxColour( 0, 0, 0 ) );
-	iListViewRemote->SetBackgroundColour( wxColour( 255, 255, 255 ) );
-
 	bSizerRight->Add( iListViewRemote, 1, wxEXPAND|wxLEFT, 5 );
 
 
