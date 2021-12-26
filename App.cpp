@@ -1,4 +1,5 @@
-#include <npl.hpp>
+#include <glog/logging.h>
+
 #include "wx/wx.h"
 #include "MyFrame.h"
 
@@ -10,7 +11,7 @@ class MyApp : public wxApp
 {
   public:
   virtual bool OnInit();
-  MyFrame *m_frame;
+  MyFrame *m_frame = nullptr;
 };
 
 IMPLEMENT_APP(MyApp)
@@ -21,33 +22,33 @@ bool MyApp::OnInit()
   if (!wxApp::OnInit())
     return false;
 
-  NPL::CLogger::SetLogCallback(
-    [](const std::string& msg)
-    {
-      //OutputDebugStringA(msg.c_str());
-      wxGetApp().CallAfter([log = msg]() {
-        if (log.find("status ") == 0)
-        {
-          (wxGetApp().m_frame)->m_status->SetStatusText(
-            log.substr(strlen("status")));
-        }
-        else
-        {
-          auto trace = (wxGetApp().m_frame)->m_trace;
+  // npl::CLogger::SetLogCallback(
+  //   [](const std::string& msg)
+  //   {
+  //     //OutputDebugStringA(msg.c_str());
+  //     wxGetApp().CallAfter([log = msg]() {
+  //       if (log.find("status ") == 0)
+  //       {
+  //         (wxGetApp().m_frame)->m_status->SetStatusText(
+  //           log.substr(strlen("status")));
+  //       }
+  //       else
+  //       {
+  //         auto trace = (wxGetApp().m_frame)->m_trace;
 
-          if (log.find("Command  :") == 0) {
-            trace->SetDefaultStyle(wxTextAttr(wxColour(0, 58, 200)));
-          } else if (log.find("Response :") == 0) {
-            trace->SetDefaultStyle(wxTextAttr(wxColour(0, 117, 0)));
-          }
+  //         if (log.find("Command  :") == 0) {
+  //           trace->SetDefaultStyle(wxTextAttr(wxColour(0, 58, 200)));
+  //         } else if (log.find("Response :") == 0) {
+  //           trace->SetDefaultStyle(wxTextAttr(wxColour(0, 117, 0)));
+  //         }
 
-          trace->AppendText(" " + log);
+  //         trace->AppendText(" " + log);
 
-          trace->SetDefaultStyle(wxTextAttr());
-        }
-      });
-    }
-  );
+  //         trace->SetDefaultStyle(wxTextAttr());
+  //       }
+  //     });
+  //   }
+  // );
 
   wxInitAllImageHandlers();
 

@@ -140,25 +140,25 @@ class MyFrame : public AppFrame
       return {};
     }
 
-    session.m_ccTls = NPL::TLS::No;
-    session.m_dcTls = NPL::TLS::No;
+    session.m_ccTls = npl::TLS::No;
+    session.m_dcTls = npl::TLS::No;
 
     if (session.m_prot == "FTP")
     {
       if (m_radioCCProtExplicit->GetValue())
       {
-        session.m_ccTls = NPL::TLS::Yes;
+        session.m_ccTls = npl::TLS::Yes;
       }
       else if (m_radioCCProtImplicit->GetValue())
       {
-        session.m_ccTls = NPL::TLS::Implicit;
+        session.m_ccTls = npl::TLS::Implicit;
       }
 
-      if (session.m_ccTls != NPL::TLS::No)
+      if (session.m_ccTls != npl::TLS::No)
       {
         if (m_radioDCProtProtected->GetValue())
         {
-          session.m_dcTls = NPL::TLS::Yes;
+          session.m_dcTls = npl::TLS::Yes;
         }
       }
     }
@@ -307,8 +307,8 @@ class MyFrame : public AppFrame
     std::string line;
     std::istringstream ss(buf);
 
-    session.m_ccTls = NPL::TLS::No;
-    session.m_dcTls = NPL::TLS::No;
+    session.m_ccTls = npl::TLS::No;
+    session.m_dcTls = npl::TLS::No;
 
     while (std::getline(ss, line))
     {
@@ -339,15 +339,15 @@ class MyFrame : public AppFrame
         } else if (key.CmpNoCase("TLS") == 0) {
           auto flags = wxAtoi(val);
           if (!flags) {
-            session.m_ccTls = session.m_dcTls = NPL::TLS::No;
+            session.m_ccTls = session.m_dcTls = npl::TLS::No;
           } else {
             if (flags & 0x01) { //cc
-              session.m_ccTls = NPL::TLS::Yes;
+              session.m_ccTls = npl::TLS::Yes;
             } else if (flags & 0x02) {
-              session.m_ccTls = NPL::TLS::Implicit;
+              session.m_ccTls = npl::TLS::Implicit;
             }
             if (flags & 0x04) { //dc
-              session.m_dcTls = NPL::TLS::Yes;
+              session.m_dcTls = npl::TLS::Yes;
             }
           }
         }
@@ -365,8 +365,8 @@ class MyFrame : public AppFrame
         session.m_pass.Clear();
         session.m_port.Clear();
         session.m_prot.Clear();
-        session.m_ccTls = NPL::TLS::No;
-        session.m_dcTls = NPL::TLS::No;
+        session.m_ccTls = npl::TLS::No;
+        session.m_dcTls = npl::TLS::No;
       }
     }
   }

@@ -1,5 +1,5 @@
 ///////////////////////////////////////////////////////////////////////////
-// C++ code generated with wxFormBuilder (version Oct 26 2018)
+// C++ code generated with wxFormBuilder (version 3.10.1-0-g8feb16b3)
 // http://www.wxformbuilder.org/
 //
 // PLEASE DO *NOT* EDIT THIS FILE!
@@ -22,21 +22,19 @@ AppFrame::AppFrame( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	szTop = new wxBoxSizer( wxVERTICAL );
 
 	m_panel81 = new wxPanel( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
+	m_panel81->SetBackgroundColour( wxSystemSettings::GetColour( wxSYS_COLOUR_ACTIVEBORDER ) );
+
 	wxBoxSizer* bSizer16;
 	bSizer16 = new wxBoxSizer( wxVERTICAL );
 
-	wxBoxSizer* szTB;
-	szTB = new wxBoxSizer( wxHORIZONTAL );
-
 	m_toolBar = new wxToolBar( m_panel81, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTB_HORZ_LAYOUT|wxTB_HORZ_TEXT|wxTB_NODIVIDER|wxTB_TEXT );
+	m_toolBar->SetBackgroundColour( wxSystemSettings::GetColour( wxSYS_COLOUR_WINDOW ) );
+
 	m_toolHome = m_toolBar->AddTool( ID_PAGE_BASE, _("Home"), wxBitmap( config_xpm ), wxNullBitmap, wxITEM_RADIO, wxEmptyString, wxEmptyString, NULL );
 
 	m_toolBar->Realize();
 
-	szTB->Add( m_toolBar, 1, wxEXPAND|wxTOP|wxBOTTOM, 5 );
-
-
-	bSizer16->Add( szTB, 0, wxEXPAND|wxRIGHT|wxLEFT, 5 );
+	bSizer16->Add( m_toolBar, 1, wxEXPAND|wxALL, 5 );
 
 	m_splitter = new wxSplitterWindow( m_panel81, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxSP_LIVE_UPDATE|wxSP_NOBORDER );
 	m_splitter->Connect( wxEVT_IDLE, wxIdleEventHandler( AppFrame::m_splitterOnIdle ), NULL, this );
@@ -241,7 +239,7 @@ AppFrame::AppFrame( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	m_panel81->SetSizer( bSizer16 );
 	m_panel81->Layout();
 	bSizer16->Fit( m_panel81 );
-	szTop->Add( m_panel81, 1, wxEXPAND | wxALL, 5 );
+	szTop->Add( m_panel81, 1, wxEXPAND, 5 );
 
 
 	this->SetSizer( szTop );

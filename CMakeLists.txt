@@ -20,6 +20,7 @@ if(APPLE)
 endif(APPLE)
 
 find_package(OpenSSL REQUIRED)
+find_package(glog CONFIG REQUIRED)
 find_package(wxWidgets COMPONENTS core base richtext adv html xml REQUIRED)
 
 include(${wxWidgets_USE_FILE})
@@ -48,6 +49,7 @@ target_include_directories(
 target_link_libraries(
   ${PROJECT_NAME} 
   ${wxWidgets_LIBRARIES}
+  glog::glog
   OpenSSL::SSL
   OpenSSL::Crypto
 )

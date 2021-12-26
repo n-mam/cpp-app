@@ -1,5 +1,5 @@
 ///////////////////////////////////////////////////////////////////////////
-// C++ code generated with wxFormBuilder (version Oct 26 2018)
+// C++ code generated with wxFormBuilder (version 3.10.1-0-g8feb16b3)
 // http://www.wxformbuilder.org/
 //
 // PLEASE DO *NOT* EDIT THIS FILE!
@@ -21,8 +21,8 @@ class MyList;
 #include <wx/font.h>
 #include <wx/colour.h>
 #include <wx/settings.h>
-#include <wx/sizer.h>
 #include <wx/textctrl.h>
+#include <wx/sizer.h>
 #include <wx/panel.h>
 #include <wx/choice.h>
 #include <wx/radiobut.h>
@@ -70,7 +70,7 @@ class AppFrame : public wxFrame
 		MyList* iListViewSavedSessions;
 		wxCheckBox* m_traceCheck;
 
-		// Virtual event handlers, overide them in your derived class
+		// Virtual event handlers, override them in your derived class
 		virtual void onToolClicked( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnTraceRightDown( wxMouseEvent& event ) { event.Skip(); }
 		virtual void m_protocolOnChoice( wxCommandEvent& event ) { event.Skip(); }
@@ -114,7 +114,7 @@ class FTPPanel : public wxPanel
 		wxPanel* m_left;
 		wxPanel* m_right;
 
-		// Virtual event handlers, overide them in your derived class
+		// Virtual event handlers, override them in your derived class
 		virtual void FTPPanelOnSize( wxSizeEvent& event ) { event.Skip(); }
 		virtual void iComboBoxLocalOnCombobox( wxCommandEvent& event ) { event.Skip(); }
 		virtual void iComboBoxLocalOnTextEnter( wxCommandEvent& event ) { event.Skip(); }
@@ -135,6 +135,7 @@ class FTPPanel : public wxPanel
 		MyList* iListViewRemote;
 
 		FTPPanel( wxWindow* parent, wxWindowID id = wxID_ANY, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 500,300 ), long style = wxTAB_TRAVERSAL, const wxString& name = wxEmptyString );
+
 		~FTPPanel();
 
 };

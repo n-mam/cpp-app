@@ -1,6 +1,8 @@
 #ifndef TSESSION_HPP
 #define TSESSION_HPP
 
+#include <npl.hpp>
+
 struct TSession
 {
   wxString m_host;
@@ -10,8 +12,8 @@ struct TSession
   wxString m_prot;
 
   // FTPS
-  NPL::TLS m_ccTls;
-  NPL::TLS m_dcTls;
+  npl::TLS m_ccTls;
+  npl::TLS m_dcTls;
 
   // SSH
 

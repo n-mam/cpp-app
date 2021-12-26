@@ -45,8 +45,8 @@ class MyFTP : public FTPPanel, public TSession
 {
   public:
 
-  NPL::SPCProtocolFTP iFTP;
-  NPL::SPCProtocolFTP iFTPTransfer;
+  npl::SPCProtocolFTP iFTP;
+  npl::SPCProtocolFTP iFTPTransfer;
   std::string iCurrentLocalDirectory;
   std::string iCurrentRemoteDirectory;
 
@@ -102,7 +102,7 @@ class MyFTP : public FTPPanel, public TSession
 
   virtual void StartSession(void)
   {
-    iFTP = NPL::make_ftp(m_host.ToStdString(), wxAtoi(m_port), m_ccTls);
+    iFTP = npl::make_ftp(m_host.ToStdString(), wxAtoi(m_port), m_ccTls);
 
     iFTP->SetCredentials(m_user.ToStdString(), m_pass.ToStdString());
 
@@ -422,7 +422,7 @@ class MyFTP : public FTPPanel, public TSession
           std::filesystem::remove_all(iCurrentLocalDirectory + "/" + m_llist[item].e_name, ec);
 
           if (ec) {
-            LOG << ec.message();
+            LOG(INFO) << ec.message();
           } else {
             UpdateLocalListView(iCurrentLocalDirectory);
           }
@@ -450,18 +450,18 @@ class MyFTP : public FTPPanel, public TSession
       }
       case ID_REMOTE_BASE + 1: // download
       {
-        LOG << "download";
+        LOG(INFO) << "download";
         InitiateOperation(iListViewRemote, m_rlist, EOperation::EDownload);
         break;
       }
       case ID_REMOTE_BASE + 2: // new 
       {
-        LOG << "New folder";
+        LOG(INFO) << "New folder";
         break;
       }
       case ID_REMOTE_BASE + 3: // delete
       {
-        LOG << "Delete";
+        LOG(INFO) << "Delete";
         auto answer = wxMessageBox(
           "Do you want to delete the selected files ?", 
           "Remote Delete", wxYES_NO, this);
@@ -480,7 +480,7 @@ class MyFTP : public FTPPanel, public TSession
       }
       case ID_REMOTE_BASE + 4: // rename
       {
-        LOG << "rename";
+        LOG(INFO) << "rename";
         break;
       }
       case ID_REMOTE_BASE + 5: // walk
@@ -493,19 +493,19 @@ class MyFTP : public FTPPanel, public TSession
           {
             WalkRemoteFolder(m_rlist[item].e_name,
               [](const std::string& folder, const TListFTPElementVector& elements) {
-                LOG << "Listing : " + folder;
+                LOG(INFO) << "Listing : " + folder;
                 for (auto& e : elements) {
                   if (e.e_type == EType::EFile)
-                    LOG << "File : " + e.e_name;
+                    LOG(INFO) << "File : " + e.e_name;
                   if (e.e_type == EType::EFolder)
-                    LOG << "Folder : " + e.e_name;
+                    LOG(INFO) << "Folder : " + e.e_name;
                 }
               }
             );
           }
           else
           {
-            LOG << "File : " + m_rlist[item].e_name;
+            LOG(INFO) << "File : " + m_rlist[item].e_name;
           }
         }
       }
@@ -516,7 +516,7 @@ class MyFTP : public FTPPanel, public TSession
   {
     if (!iFTPTransfer)
     {
-      iFTPTransfer = NPL::make_ftp(m_host.ToStdString(), wxAtoi(m_port), m_ccTls);
+      iFTPTransfer = npl::make_ftp(m_host.ToStdString(), wxAtoi(m_port), m_ccTls);
       iFTPTransfer->SetCredentials(m_user.ToStdString(), m_pass.ToStdString());
       iFTPTransfer->StartClient();
     }
@@ -583,7 +583,7 @@ class MyFTP : public FTPPanel, public TSession
 
               while (count == 0) 
               {
-                //LOG << "WRF : RMDIR " + p;
+                //LOG(INFO) << "WRF : RMDIR " + p;
                 iFTPTransfer->RemoveDir(p, nullptr);
 
                 auto parent = std::filesystem::path(p).parent_path().string();
@@ -745,13 +745,13 @@ class MyFTP : public FTPPanel, public TSession
         }
         else
         {
-          LOG << "WalkLocalFolder neither file nor folder";
+          LOG(INFO) << "WalkLocalFolder neither file nor folder";
         }
       }
     }
     catch(const std::exception& e)
     {
-      LOG << "WalkLocalFolder exception : "s + e.what();
+      LOG(INFO) << "WalkLocalFolder exception : " << e.what();
     }
   }
 
